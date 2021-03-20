@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 
+import { port } from '../../config/config.js'
+
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -52,6 +54,7 @@ export default function Login() {
   const [password, setPassword] = useState('');
 
   const clickLogin = async () => {
+    console.log(port);
     console.log(username);
     console.log(password);
     try {
