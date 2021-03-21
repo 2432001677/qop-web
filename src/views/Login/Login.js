@@ -1,15 +1,14 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import axios from 'axios';
 
-import { port } from '../../config/config.js'
+import { urlPrefix } from 'Config/Config.js';
+import { emailReg, phoneNumberReg } from 'Utils/Reg.js';
 
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
 import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
 import AccountCircle from '@material-ui/icons/AccountCircle';
@@ -39,34 +38,51 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(1),
     backgroundColor: theme.palette.primary.main,
   },
-  form: {
-    width: '100%', // Fix IE 11 issue.
-    marginTop: theme.spacing(1),
-  },
   submit: {
     margin: theme.spacing(3, 0, 2),
   },
 }));
 
 export default function Login() {
+  const history = useHistory();
   const classes = useStyles();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [usernameErrorInput, setUsernameErrorInput] = useState(false);
+  const [passwordErrorInput, setPasswordErrorInput] = useState(false);
+
+  const changeUsername = (e) => {
+    const input = e.target.value;
+    const isValid = emailReg(input) || phoneNumberReg(input);
+    setUsername(isValid ? input : '');
+    setUsernameErrorInput(!isValid);
+  };
+
+  const changePassword = (e) => {
+    const input = e.target.value;
+    setPasswordErrorInput(!input);
+    setPassword(input || '');
+  };
 
   const clickLogin = async () => {
-    console.log(port);
     console.log(username);
     console.log(password);
     try {
-      const res = await axios.post('http://127.0.0.1:9001/account/user/login', {
-        username: username,
-        password: password,
-      });
-      console.log(res.headers);
-      console.log(res.data);
+      const res = await axios.post(
+        urlPrefix + '/account/user/login',
+        {
+          user_name: username,
+          password: password,
+        },
+        { validateStatus: false }
+      );
+      console.log(res);
+      if (res.status === 200) {
+        localStorage.setItem('token', res.headers.authorization);
+        history.push('/admin');
+      }
     } catch (error) {
       console.log(error);
-      alert('err');
     }
   };
 
@@ -78,39 +94,35 @@ export default function Login() {
           <AccountCircle />
         </Avatar>
         <Typography component="h1" variant="h5">
-          Log in
+          登录
         </Typography>
         <TextField
-          onChange={(e) => {
-            setUsername(e.target.value);
-          }}
+          error={usernameErrorInput}
+          onChange={changeUsername}
           variant="outlined"
           margin="normal"
           required
           fullWidth
           id="email"
-          label="Email Address"
+          label="电子邮件/手机号"
           name="email"
           autoComplete="email"
           autoFocus
+          helperText={usernameErrorInput ? '请输入正确的账号' : ''}
         />
         <TextField
-          onChange={(e) => {
-            setPassword(e.target.value);
-          }}
+          error={passwordErrorInput}
+          onChange={changePassword}
           variant="outlined"
           margin="normal"
           required
           fullWidth
           name="password"
-          label="Password"
+          label="密码"
           type="password"
           id="password"
           autoComplete="current-password"
-        />
-        <FormControlLabel
-          control={<Checkbox value="remember" color="primary" />}
-          label="Remember me"
+          helperText={passwordErrorInput ? '请输入正确的密码' : ''}
         />
         <Button
           fullWidth
@@ -119,17 +131,17 @@ export default function Login() {
           color="primary"
           className={classes.submit}
         >
-          Log In
+          登录
         </Button>
         <Grid container>
           <Grid item xs>
             <Link to="#" variant="body2">
-              Forgot password?
+              忘记密码？
             </Link>
           </Grid>
           <Grid item>
             <Link to="register" variant="body2">
-              Don't have an account? Sign Up
+              没有账号？注册一个
             </Link>
           </Grid>
         </Grid>
