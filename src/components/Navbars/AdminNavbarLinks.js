@@ -205,7 +205,7 @@ export default function AdminNavbarLinks() {
                       onClick={handleCloseProfile}
                       className={classes.dropdownItem}
                     >
-                      Settings
+                      设置
                     </MenuItem>
                     <Divider light />
                     <MenuItem

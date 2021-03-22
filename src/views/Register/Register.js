@@ -16,6 +16,7 @@ import Container from '@material-ui/core/Container';
 import Copyright from 'components/Copyright/Copyright.js';
 import { urlPrefix } from 'Config/Config.js';
 import { emailReg, phoneNumberReg } from 'Utils/Reg.js';
+import ResponsiveDialog from 'components/Dialog/ResponsiveDialog.js';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -40,30 +41,22 @@ const useStyles = makeStyles((theme) => ({
 export default function LoginIn() {
   const history = useHistory();
   const classes = useStyles();
-  const [username, setUsername] = useState('');
-  const [nickname, setNickname] = useState('');
-  const [password, setPassword] = useState('');
+  const [openDialog, setOpenDialog] = useState(false);
+  const [registerForm, setRegisterForm] = useState({});
   const [usernameErrorInput, setUsernameErrorInput] = useState(false);
   const [nicknameErrorInput, setNicknameErrorInput] = useState(false);
   const [passwordErrorInput, setPasswordErrorInput] = useState(false);
 
   const clickRegister = async () => {
-    console.log(username);
-    console.log(password);
     try {
       const res = await axios.post(
         urlPrefix + '/account/user/register',
-        {
-          user_name: username,
-          nick_name: nickname,
-          password: password,
-          img: '',
-        },
+        registerForm,
         { validateStatus: false }
       );
       console.log(res);
       if (res.status === 200) {
-        history.push('/login');
+        setOpenDialog(true);
       }
     } catch (error) {
       console.log(error);
@@ -71,23 +64,27 @@ export default function LoginIn() {
   };
 
   const changeUsername = (e) => {
+    e.target.value = e.target.value.trim();
     const input = e.target.value;
     const isValid = emailReg(input) || phoneNumberReg(input);
-    setUsername(isValid ? input : '');
+    registerForm['user_name'] = isValid ? input : '';
+    setRegisterForm(registerForm);
     setUsernameErrorInput(!isValid);
   };
 
   const changeNickname = (e) => {
     e.target.value = e.target.value.trim();
     const input = e.target.value;
+    registerForm['nick_name'] = input || '';
+    setRegisterForm(registerForm);
     setNicknameErrorInput(!input);
-    setNickname(input || '');
   };
 
   const changePassword = (e) => {
+    e.target.value = e.target.value.trim();
     const input = e.target.value;
+    registerForm['password'] = input || '';
     setPasswordErrorInput(!input);
-    setPassword(input || '');
   };
 
   return (
@@ -98,7 +95,7 @@ export default function LoginIn() {
           <LockOutlinedIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
-          Sign Up
+          注册
         </Typography>
         <TextField
           error={usernameErrorInput}
@@ -157,6 +154,14 @@ export default function LoginIn() {
       <Box mt={8}>
         <Copyright />
       </Box>
+      <ResponsiveDialog
+        info={registerForm}
+        open={openDialog}
+        onChange={setOpenDialog}
+        onExit={() => {
+          history.push('/login');
+        }}
+      />
     </Container>
   );
 }

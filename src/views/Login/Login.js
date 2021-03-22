@@ -36,34 +36,31 @@ const useStyles = makeStyles((theme) => ({
 export default function Login() {
   const history = useHistory();
   const classes = useStyles();
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [loginForm, setLoginForm] = useState({});
   const [usernameErrorInput, setUsernameErrorInput] = useState(false);
   const [passwordErrorInput, setPasswordErrorInput] = useState(false);
 
-  const changeUsername = (e) => {
+  const changeUserName = (e) => {
     const input = e.target.value;
     const isValid = emailReg(input) || phoneNumberReg(input);
-    setUsername(isValid ? input : '');
+    loginForm['user_name'] = isValid ? input : '';
     setUsernameErrorInput(!isValid);
+    setLoginForm(loginForm);
   };
 
   const changePassword = (e) => {
     const input = e.target.value;
+    loginForm['password'] = input || '';
     setPasswordErrorInput(!input);
-    setPassword(input || '');
+    setLoginForm(loginForm);
   };
 
   const clickLogin = async () => {
-    console.log(username);
-    console.log(password);
+    console.log(loginForm);
     try {
       const res = await axios.post(
         urlPrefix + '/account/user/login',
-        {
-          user_name: username,
-          password: password,
-        },
+        loginForm,
         { validateStatus: false }
       );
       console.log(res);
@@ -90,7 +87,7 @@ export default function Login() {
         </Typography>
         <TextField
           error={usernameErrorInput}
-          onChange={changeUsername}
+          onChange={changeUserName}
           variant="outlined"
           margin="normal"
           required
@@ -127,14 +124,10 @@ export default function Login() {
         </Button>
         <Grid container>
           <Grid item xs>
-            <Link to="#">
-              忘记密码？
-            </Link>
+            <Link to="#">忘记密码？</Link>
           </Grid>
           <Grid item>
-            <Link to="/register">
-              没有账号？注册一个
-            </Link>
+            <Link to="/register">没有账号？注册一个</Link>
           </Grid>
         </Grid>
       </div>
