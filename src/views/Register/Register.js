@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
+import { Link, useHistory } from 'react-router-dom';
 import axios from 'axios';
 
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import TextField from '@material-ui/core/TextField';
-import Link from '@material-ui/core/Link';
 import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
@@ -13,18 +13,9 @@ import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 
-function Copyright() {
-  return (
-    <Typography variant="body2" color="textSecondary" align="center">
-      {'Copyright © '}
-      <Link color="inherit" href="https://github.com/2432001677/qop-web">
-        Bruce
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
+import Copyright from 'components/Copyright/Copyright.js';
+import { urlPrefix } from 'Config/Config.js';
+import { emailReg, phoneNumberReg } from 'Utils/Reg.js';
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -47,29 +38,56 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function LoginIn() {
+  const history = useHistory();
   const classes = useStyles();
   const [username, setUsername] = useState('');
-  const [nickName, setNickName] = useState('');
+  const [nickname, setNickname] = useState('');
   const [password, setPassword] = useState('');
+  const [usernameErrorInput, setUsernameErrorInput] = useState(false);
+  const [nicknameErrorInput, setNicknameErrorInput] = useState(false);
+  const [passwordErrorInput, setPasswordErrorInput] = useState(false);
 
-  const clickLogin = async () => {
+  const clickRegister = async () => {
     console.log(username);
     console.log(password);
     try {
       const res = await axios.post(
-        'http://127.0.0.1:9001/account/user/register',
+        urlPrefix + '/account/user/register',
         {
-          username: username,
-          nickname: nickName,
+          user_name: username,
+          nick_name: nickname,
           password: password,
-        }
+          img: '',
+        },
+        { validateStatus: false }
       );
-      console.log(res.headers);
-      console.log(res.data);
+      console.log(res);
+      if (res.status === 200) {
+        history.push('/login');
+      }
     } catch (error) {
       console.log(error);
-      alert('err');
     }
+  };
+
+  const changeUsername = (e) => {
+    const input = e.target.value;
+    const isValid = emailReg(input) || phoneNumberReg(input);
+    setUsername(isValid ? input : '');
+    setUsernameErrorInput(!isValid);
+  };
+
+  const changeNickname = (e) => {
+    e.target.value = e.target.value.trim();
+    const input = e.target.value;
+    setNicknameErrorInput(!input);
+    setNickname(input || '');
+  };
+
+  const changePassword = (e) => {
+    const input = e.target.value;
+    setPasswordErrorInput(!input);
+    setPassword(input || '');
   };
 
   return (
@@ -83,61 +101,56 @@ export default function LoginIn() {
           Sign Up
         </Typography>
         <TextField
-          onChange={(e) => {
-            setUsername(e.target.value);
-          }}
+          error={usernameErrorInput}
+          onChange={changeUsername}
           variant="outlined"
           margin="normal"
           required
           fullWidth
           id="email/phone"
-          label="Email/Phone"
+          label="电子邮件/手机号"
           name="email/phone"
           autoComplete="email/phone"
           autoFocus
         />
         <TextField
-          onChange={(e) => {
-            setNickName(e.target.value);
-          }}
+          error={nicknameErrorInput}
+          onChange={changeNickname}
           variant="outlined"
           margin="normal"
           required
           fullWidth
           id="nick-name"
-          label="Nick Name"
+          label="昵称"
           name="nick-name"
           autoComplete="nick-name"
           autoFocus
         />
         <TextField
-          onChange={(e) => {
-            setPassword(e.target.value);
-          }}
+          error={passwordErrorInput}
+          onChange={changePassword}
           variant="outlined"
           margin="normal"
           required
           fullWidth
           name="password"
-          label="Password"
+          label="密码"
           type="password"
           id="password"
           autoComplete="current-password"
         />
         <Button
           fullWidth
-          onClick={clickLogin}
+          onClick={clickRegister}
           variant="contained"
           color="primary"
           className={classes.submit}
         >
-          Sign Up
+          注册
         </Button>
         <Grid container>
           <Grid item xs>
-            <Link href="#" variant="body2">
-              {"Already have an account? Log In"}
-            </Link>
+            <Link to="/login">已经有账号了？登录</Link>
           </Grid>
         </Grid>
       </div>

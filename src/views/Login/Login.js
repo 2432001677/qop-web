@@ -4,6 +4,7 @@ import axios from 'axios';
 
 import { urlPrefix } from 'Config/Config.js';
 import { emailReg, phoneNumberReg } from 'Utils/Reg.js';
+import Copyright from 'components/Copyright/Copyright.js';
 
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
@@ -15,17 +16,6 @@ import AccountCircle from '@material-ui/icons/AccountCircle';
 import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-
-function Copyright() {
-  return (
-    <Typography variant="body2" color="textSecondary" align="center">
-      {'Copyright © '}
-      <a href="https://github.com/2432001677/qop-web">Bruce</a>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
 
 const useStyles = makeStyles((theme) => ({
   paper: {
@@ -80,6 +70,8 @@ export default function Login() {
       if (res.status === 200) {
         localStorage.setItem('token', res.headers.authorization);
         history.push('/admin');
+      } else {
+        alert(res.msg);
       }
     } catch (error) {
       console.log(error);
@@ -135,12 +127,12 @@ export default function Login() {
         </Button>
         <Grid container>
           <Grid item xs>
-            <Link to="#" variant="body2">
+            <Link to="#">
               忘记密码？
             </Link>
           </Grid>
           <Grid item>
-            <Link to="register" variant="body2">
+            <Link to="/register">
               没有账号？注册一个
             </Link>
           </Grid>

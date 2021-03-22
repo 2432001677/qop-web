@@ -199,7 +199,7 @@ export default function AdminNavbarLinks() {
                       onClick={handleCloseProfile}
                       className={classes.dropdownItem}
                     >
-                      Profile
+                      <Link to="/profiles">资料</Link>
                     </MenuItem>
                     <MenuItem
                       onClick={handleCloseProfile}
@@ -212,7 +212,7 @@ export default function AdminNavbarLinks() {
                       onClick={handleCloseProfile}
                       className={classes.dropdownItem}
                     >
-                      <Link to="/login">Login</Link>
+                      <Link to="/login">登录</Link>
                     </MenuItem>
                   </MenuList>
                 </ClickAwayListener>
