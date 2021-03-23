@@ -64,8 +64,7 @@ export default function LoginIn() {
   };
 
   const changeUsername = (e) => {
-    e.target.value = e.target.value.trim();
-    const input = e.target.value;
+    const input = (e.target.value = e.target.value.trim());
     const isValid = emailReg(input) || phoneNumberReg(input);
     registerForm['user_name'] = isValid ? input : '';
     setRegisterForm(registerForm);
@@ -73,16 +72,14 @@ export default function LoginIn() {
   };
 
   const changeNickname = (e) => {
-    e.target.value = e.target.value.trim();
-    const input = e.target.value;
+    const input = (e.target.value = e.target.value.trim());
     registerForm['nick_name'] = input || '';
     setRegisterForm(registerForm);
     setNicknameErrorInput(!input);
   };
 
   const changePassword = (e) => {
-    e.target.value = e.target.value.trim();
-    const input = e.target.value;
+    const input = (e.target.value = e.target.value.trim());
     registerForm['password'] = input || '';
     setPasswordErrorInput(!input);
   };
@@ -109,6 +106,7 @@ export default function LoginIn() {
           name="email/phone"
           autoComplete="email/phone"
           autoFocus
+          helperText={usernameErrorInput ? '请输入正确的账号' : ''}
         />
         <TextField
           error={nicknameErrorInput}
@@ -121,7 +119,7 @@ export default function LoginIn() {
           label="昵称"
           name="nick-name"
           autoComplete="nick-name"
-          autoFocus
+          helperText={nicknameErrorInput ? '请输入正确的昵称' : ''}
         />
         <TextField
           error={passwordErrorInput}
@@ -135,6 +133,7 @@ export default function LoginIn() {
           type="password"
           id="password"
           autoComplete="current-password"
+          helperText={passwordErrorInput ? '请输入正确的密码' : ''}
         />
         <Button
           fullWidth

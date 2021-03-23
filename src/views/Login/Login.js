@@ -41,7 +41,7 @@ export default function Login() {
   const [passwordErrorInput, setPasswordErrorInput] = useState(false);
 
   const changeUserName = (e) => {
-    const input = e.target.value;
+    const input = (e.target.value = e.target.value.trim());
     const isValid = emailReg(input) || phoneNumberReg(input);
     loginForm['user_name'] = isValid ? input : '';
     setUsernameErrorInput(!isValid);
@@ -49,7 +49,7 @@ export default function Login() {
   };
 
   const changePassword = (e) => {
-    const input = e.target.value;
+    const input = (e.target.value = e.target.value.trim());
     loginForm['password'] = input || '';
     setPasswordErrorInput(!input);
     setLoginForm(loginForm);

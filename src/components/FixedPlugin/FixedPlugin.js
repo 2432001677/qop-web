@@ -150,7 +150,7 @@ export default function FixedPlugin(props) {
               </Button>
             </div>
           </li>
-          <li className="button-container">
+          {/* <li className="button-container">
             <div className="button-container">
               <Button
                 color="warning"
@@ -161,7 +161,7 @@ export default function FixedPlugin(props) {
                 Get PRO version
               </Button>
             </div>
-          </li>
+          </li> */}
           <li className="button-container">
             <Button
               color="info"
