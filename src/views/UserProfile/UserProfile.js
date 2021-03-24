@@ -1,6 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
-import axios from 'axios';
-import { urlPrefix } from 'Config/Config.js';
+import { get, post } from 'Utils/Axios.js';
 import { emailReg, phoneNumberReg } from 'Utils/Reg.js';
 // @material-ui/core components
 import { makeStyles } from '@material-ui/core/styles';
@@ -8,58 +7,61 @@ import { makeStyles } from '@material-ui/core/styles';
 // core components
 import GridItem from 'components/Grid/GridItem.js';
 import GridContainer from 'components/Grid/GridContainer.js';
-import CustomInput from 'components/CustomInput/CustomInput.js';
 import Button from 'components/CustomButtons/Button.js';
 import Card from 'components/Card/Card.js';
 import CardHeader from 'components/Card/CardHeader.js';
 import CardAvatar from 'components/Card/CardAvatar.js';
 import CardBody from 'components/Card/CardBody.js';
 import CardFooter from 'components/Card/CardFooter.js';
+
 import TextField from '@material-ui/core/TextField';
 import AccountCircle from '@material-ui/icons/AccountCircle';
 import InputAdornment from '@material-ui/core/InputAdornment';
+import MailIcon from '@material-ui/icons/Mail';
+import PhoneIcon from '@material-ui/icons/Phone';
+import Snackbar from '@material-ui/core/Snackbar';
+import Fade from '@material-ui/core/Fade';
+import Slide from '@material-ui/core/Slide';
 
-import avatar from 'assets/img/faces/marc.jpg';
 import styles from 'assets/jss/material-dashboard-react/views/dashboardStyle.js';
-
-// const styles = {
-//   cardCategoryWhite: {
-//     color: 'rgba(255,255,255,.62)',
-//     margin: '0',
-//     fontSize: '14px',
-//     marginTop: '0',
-//     marginBottom: '0',
-//   },
-//   cardTitleWhite: {
-//     color: '#FFFFFF',
-//     marginTop: '0px',
-//     minHeight: 'auto',
-//     fontWeight: '300',
-//     fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
-//     marginBottom: '3px',
-//     textDecoration: 'none',
-//   },
-// };
 
 const useStyles = makeStyles(styles);
 
 export default function UserProfile() {
   const classes = useStyles();
-  const [profilesForm, setProfilesForm] = useState();
+  const [profilesForm, setProfilesForm] = useState({});
+  const [msg, setMsg] = useState('ok');
+  const [nicknameErrorInput, setNicknameErrorInput] = useState(false);
+  const [emailErrorInput, setEmailErrorInput] = useState(false);
+  const [phoneNumberErrorInput, setPhoneNumberErrorInput] = useState(false);
   const nickRef = useRef('');
+  const emailRef = useRef('');
+  const phoneNumberRef = useRef('');
+  const [state, setState] = React.useState({
+    open: false,
+    Transition: Fade,
+  });
+
+  function SlideTransition(props) {
+    return <Slide {...props} direction="up" />;
+  }
+
+  const handleClose = () => {
+    setState({
+      ...state,
+      open: false,
+    });
+  };
 
   useEffect(() => {
     const getUserProfiles = async () => {
       try {
-        const res = await axios.get(urlPrefix + '/account/user/profiles', {
-          validateStatus: false,
-          headers: {
-            Authorization: localStorage.getItem('token'),
-          },
-        });
-        console.log(res);
-        setProfilesForm(res.data.data);
-        nickRef.current.value = res.data.data['nick_name'];
+        const { data } = await get('/account/user/profiles', false, true);
+        console.log(data);
+        setProfilesForm(data.data);
+        nickRef.current.value = data.data['nick_name'];
+        emailRef.current.value = data.data['email'];
+        phoneNumberRef.current.value = data.data['phone_number'];
       } catch (error) {
         console.log(error);
       }
@@ -67,17 +69,39 @@ export default function UserProfile() {
     getUserProfiles();
   }, []);
 
-  const clickModify = () => {
-    console.log(profilesForm);
+  const clickModify = (Transition) => async () => {
+    setState({
+      open: true,
+      Transition,
+    });
+    if (nicknameErrorInput || emailErrorInput || phoneNumberErrorInput) {
+      setMsg('输入格式错误');
+      return;
+    }
+
+    try {
+      let profiles = {};
+      profiles['nick_name'] = nickRef.current.value;
+      profiles['email'] = emailRef.current.value;
+      profiles['phone_numebr'] = phoneNumberRef.current.value;
+      const { data } = await post(
+        '/account/user/profiles',
+        profiles,
+        false,
+        true
+      );
+      setMsg(data.msg);
+    } catch (error) {
+      alert(error);
+    }
   };
 
   const changeText = (dataType) => {
     return (e) => {
       const input = (e.target.value = e.target.value.trim());
       profilesForm[dataType] = input || '';
-      console.log(profilesForm);
-      console.log(nickRef.current.value);
       setProfilesForm(profilesForm);
+      setNicknameErrorInput(!input);
     };
   };
 
@@ -85,16 +109,33 @@ export default function UserProfile() {
     const input = (e.target.value = e.target.value.trim());
     profilesForm['email'] = emailReg(input) ? input : '';
     setProfilesForm(profilesForm);
+    setEmailErrorInput(!emailReg(input));
   };
 
   const changePhoneNumber = (e) => {
     const input = (e.target.value = e.target.value.trim());
     profilesForm['phone_number'] = phoneNumberReg(input) ? input : '';
     setProfilesForm(profilesForm);
+    setPhoneNumberErrorInput(!phoneNumberReg(input));
   };
+
+  function Name() {
+    return (
+      <h4 className={classes.cardTitle}>
+        {profilesForm ? profilesForm['nick_name'] : '未知'}
+      </h4>
+    );
+  }
 
   return (
     <div>
+      <Snackbar
+        open={state.open}
+        onClose={handleClose}
+        TransitionComponent={state.Transition}
+        message={msg}
+        key={state.Transition.name}
+      />
       <GridContainer>
         <GridItem xs={12} sm={12} md={8}>
           <Card>
@@ -124,6 +165,7 @@ export default function UserProfile() {
                 /> */}
                 <GridItem xs={12} sm={6} md={4}>
                   <TextField
+                    error={nicknameErrorInput}
                     label="昵称"
                     id="nick-name"
                     variant="outlined"
@@ -140,13 +182,16 @@ export default function UserProfile() {
                 </GridItem>
                 <GridItem xs={12} sm={6} md={4}>
                   <TextField
+                    error={emailErrorInput}
                     label="电子邮箱"
                     id="email"
                     variant="outlined"
+                    onChange={changeEmail}
+                    inputRef={emailRef}
                     InputProps={{
                       startAdornment: (
                         <InputAdornment position="start">
-                          <AccountCircle />
+                          <MailIcon />
                         </InputAdornment>
                       ),
                     }}
@@ -154,13 +199,16 @@ export default function UserProfile() {
                 </GridItem>
                 <GridItem xs={12} sm={6} md={4}>
                   <TextField
+                    error={phoneNumberErrorInput}
                     label="手机号"
                     id="phone-number"
                     variant="outlined"
+                    onChange={changePhoneNumber}
+                    inputRef={phoneNumberRef}
                     InputProps={{
                       startAdornment: (
                         <InputAdornment position="start">
-                          <AccountCircle />
+                          <PhoneIcon />
                         </InputAdornment>
                       ),
                     }}
@@ -214,7 +262,7 @@ export default function UserProfile() {
               </GridContainer> */}
             </CardBody>
             <CardFooter>
-              <Button color="primary" onClick={clickModify}>
+              <Button color="primary" onClick={clickModify(SlideTransition)}>
                 更新资料
               </Button>
             </CardFooter>
@@ -224,19 +272,22 @@ export default function UserProfile() {
           <Card profile>
             <CardAvatar profile>
               <a href="#pablo" onClick={(e) => e.preventDefault()}>
-                <img src={avatar} alt="..." />
+                <img
+                  src={
+                    profilesForm['img'] ||
+                    'https://cdn.sstatic.net/Img/teams/teams-illo-free-sidebar-promo.svg?v=47faa659a05e'
+                  }
+                  alt="..."
+                />
               </a>
             </CardAvatar>
             <CardBody profile>
-              <h4 className={classes.cardTitle}>Bruce</h4>
+              <Name />
               <p className={classes.description}>
                 Don{"'"}t be scared of the truth because we need to restart the
                 human foundation in truth And I love you like Kanye loves Kanye
                 I love Rick Owens’ bed design but the back is...
               </p>
-              {/* <Button color="primary" round>
-                Follow
-              </Button> */}
             </CardBody>
           </Card>
         </GridItem>

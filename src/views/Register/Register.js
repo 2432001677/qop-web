@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useHistory } from 'react-router-dom';
-import axios from 'axios';
+import { post } from 'Utils/Axios.js';
 
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
@@ -14,7 +14,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 
 import Copyright from 'components/Copyright/Copyright.js';
-import { urlPrefix } from 'Config/Config.js';
 import { emailReg, phoneNumberReg } from 'Utils/Reg.js';
 import ResponsiveDialog from 'components/Dialog/ResponsiveDialog.js';
 
@@ -49,11 +48,17 @@ export default function LoginIn() {
 
   const clickRegister = async () => {
     try {
-      const res = await axios.post(
-        urlPrefix + '/account/user/register',
+      const res = await post(
+        '/account/user/register',
         registerForm,
-        { validateStatus: false }
+        false,
+        false
       );
+      // const res = await axios.post(
+      //   urlPrefix + '/account/user/register',
+      //   registerForm,
+      //   { validateStatus: false }
+      // );
       console.log(res);
       if (res.status === 200) {
         setOpenDialog(true);
