@@ -20,12 +20,13 @@ import CustomInput from 'components/CustomInput/CustomInput.js';
 import Button from 'components/CustomButtons/Button.js';
 
 import styles from 'assets/jss/material-dashboard-react/components/headerLinksStyle.js';
-import { Link } from 'react-router-dom';
+import { useHistory, Link } from 'react-router-dom';
 
 const useStyles = makeStyles(styles);
 
-export default function AdminNavbarLinks() {
+export default function AdminNavbarLinks(props) {
   const classes = useStyles();
+  const history = useHistory();
   const [openNotification, setOpenNotification] = React.useState(null);
   const [openProfile, setOpenProfile] = React.useState(null);
   const handleClickNotification = (event) => {
@@ -47,6 +48,15 @@ export default function AdminNavbarLinks() {
   };
   const handleCloseProfile = () => {
     setOpenProfile(null);
+  };
+
+  const handleLogin = () => {
+    const state = props.state;
+    if (state.login) {
+      localStorage.setItem('token', '');
+      state.change(false);
+    }
+    history.push('/login');
   };
 
   return (
@@ -199,7 +209,7 @@ export default function AdminNavbarLinks() {
                       onClick={handleCloseProfile}
                       className={classes.dropdownItem}
                     >
-                      <Link to="/profiles">资料</Link>
+                      <Link to="/admin/user">资料</Link>
                     </MenuItem>
                     <MenuItem
                       onClick={handleCloseProfile}
@@ -209,10 +219,11 @@ export default function AdminNavbarLinks() {
                     </MenuItem>
                     <Divider light />
                     <MenuItem
-                      onClick={handleCloseProfile}
+                      onClick={handleLogin}
                       className={classes.dropdownItem}
                     >
-                      <Link to="/login">登录</Link>
+                      {'登录'}
+                      {/* {login ? '退出' : '登录'} */}
                     </MenuItem>
                   </MenuList>
                 </ClickAwayListener>

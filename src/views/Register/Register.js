@@ -48,19 +48,14 @@ export default function LoginIn() {
 
   const clickRegister = async () => {
     try {
-      const res = await post(
+      const { data, status } = await post(
         '/account/user/register',
         registerForm,
         false,
         false
       );
-      // const res = await axios.post(
-      //   urlPrefix + '/account/user/register',
-      //   registerForm,
-      //   { validateStatus: false }
-      // );
-      console.log(res);
-      if (res.status === 200) {
+      console.log(data);
+      if (status === 200) {
         setOpenDialog(true);
       }
     } catch (error) {
