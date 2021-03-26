@@ -13,7 +13,6 @@ export default function ResponsiveDialog(props) {
   const fullScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
   const handleClose = () => {
-    console.log(props.info);
     props.onChange(false);
     props.onExit();
   };

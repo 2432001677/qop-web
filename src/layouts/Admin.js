@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Switch, Route, Redirect } from 'react-router-dom';
+import { Switch, Route } from 'react-router-dom';
 // creates a beautiful scrollbar
 import PerfectScrollbar from 'perfect-scrollbar';
 import 'perfect-scrollbar/css/perfect-scrollbar.css';
@@ -23,8 +23,10 @@ let ps;
 const useStyles = makeStyles(styles);
 
 export default function Admin(props) {
-  console.log(props);
-  const [login, setLogin] = useState(false);
+  console.log('admin');
+  console.log(props.location.state);
+  const success = props.location.state === true ? true : false;
+  const [login, setLogin] = useState(success);
   const state = {
     login: login,
     change: setLogin,
@@ -43,10 +45,6 @@ export default function Admin(props) {
         }
         return null;
       })}
-      <Redirect
-        from="/admin"
-        to={{ pathname: '/admin/dashboard', state: state }}
-      />
     </Switch>
   );
   // styles
@@ -74,9 +72,15 @@ export default function Admin(props) {
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
-  const getRoute = () => {
-    return window.location.pathname !== '/admin/maps';
-  };
+  // const getRoute = () => {
+  //   return window.location.pathname !== '/admin/maps';
+  // };
+  function Index() {
+    if (window.location.pathname === '/admin') {
+      return <p>22</p>;
+    }
+    return null;
+  }
   const resizeFunction = () => {
     if (window.innerWidth >= 960) {
       setMobileOpen(false);
@@ -117,15 +121,11 @@ export default function Admin(props) {
           handleDrawerToggle={handleDrawerToggle}
           state={state}
         />
-        {/* On the /maps route we want the map to be on full screen - this is not possible if the content and conatiner classes are present because they have some paddings which would make the map smaller */}
-        {getRoute() ? (
-          <div className={classes.content}>
-            <div className={classes.container}>{switchRoutes}</div>
-          </div>
-        ) : (
-          <div className={classes.map}>{switchRoutes}</div>
-        )}
-        {getRoute() ? <Footer /> : null}
+        <div className={classes.content}>
+          <Index />
+          <div className={classes.container}>{switchRoutes}</div>
+        </div>
+        <Footer />
         <FixedPlugin
           handleImageClick={handleImageClick}
           handleColorClick={handleColorClick}

@@ -30,7 +30,7 @@ const useStyles = makeStyles(styles);
 export default function UserProfile() {
   const classes = useStyles();
   const [profilesForm, setProfilesForm] = useState({});
-  const [msg, setMsg] = useState('ok');
+  const [msg, setMsg] = useState('未登录');
   const [nicknameErrorInput, setNicknameErrorInput] = useState(false);
   const [emailErrorInput, setEmailErrorInput] = useState(false);
   const [phoneNumberErrorInput, setPhoneNumberErrorInput] = useState(false);

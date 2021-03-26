@@ -11,7 +11,6 @@ import Hidden from '@material-ui/core/Hidden';
 import Menu from '@material-ui/icons/Menu';
 // core components
 import AdminNavbarLinks from './AdminNavbarLinks.js';
-import RTLNavbarLinks from './RTLNavbarLinks.js';
 import Button from 'components/CustomButtons/Button.js';
 
 import styles from 'assets/jss/material-dashboard-react/components/headerStyle.js';
@@ -19,6 +18,8 @@ import styles from 'assets/jss/material-dashboard-react/components/headerStyle.j
 const useStyles = makeStyles(styles);
 
 export default function Header(props) {
+  console.log('navbar');
+  console.log(props.state);
   const classes = useStyles();
   function makeBrand() {
     var name;
@@ -45,11 +46,7 @@ export default function Header(props) {
           </Button>
         </div>
         <Hidden smDown implementation="css">
-          {props.rtlActive ? (
-            <RTLNavbarLinks state={props.state} />
-          ) : (
-            <AdminNavbarLinks state={props.state} />
-          )}
+          <AdminNavbarLinks state={props.state} />
         </Hidden>
         <Hidden mdUp implementation="css">
           <IconButton
@@ -68,6 +65,7 @@ export default function Header(props) {
 Header.propTypes = {
   color: PropTypes.oneOf(['primary', 'info', 'success', 'warning', 'danger']),
   rtlActive: PropTypes.bool,
+  state: PropTypes.object,
   handleDrawerToggle: PropTypes.func,
   routes: PropTypes.arrayOf(PropTypes.object),
 };
