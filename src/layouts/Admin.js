@@ -77,7 +77,11 @@ export default function Admin(props) {
   // };
   function Index() {
     if (window.location.pathname === '/admin') {
-      return <p>22</p>;
+      return (
+        <div>
+          <img alt="background" src={image} style={{ width: '100%' }} />
+        </div>
+      );
     }
     return null;
   }
@@ -122,8 +126,10 @@ export default function Admin(props) {
           state={state}
         />
         <div className={classes.content}>
-          <Index />
-          <div className={classes.container}>{switchRoutes}</div>
+          <div className={classes.container}>
+            <Index />
+            {switchRoutes}
+          </div>
         </div>
         <Footer />
         <FixedPlugin

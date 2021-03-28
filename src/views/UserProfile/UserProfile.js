@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { get, post } from 'Utils/Axios.js';
 import { emailReg, phoneNumberReg } from 'Utils/Reg.js';
+
 // @material-ui/core components
 import { makeStyles } from '@material-ui/core/styles';
 // import InputLabel from "@material-ui/core/InputLabel";
@@ -124,6 +125,33 @@ export default function UserProfile() {
       <h4 className={classes.cardTitle}>
         {profilesForm ? profilesForm['nick_name'] : '未知'}
       </h4>
+    );
+  }
+
+  function Icon() {
+    console.log(profilesForm ? profilesForm['img'] || 'cxcx' : 'cxcx');
+    const upload = (info) => {
+      console.log(info);
+    };
+    return (
+      <CardAvatar profile>
+        {/* <Upload
+          name={'wenwoImage'}
+          action={'https://iask.sina.com.cn/question/ajax/fileupload'}
+          onChange={upload}
+        > */}
+        <img
+          src={
+            profilesForm
+              ? profilesForm['img'] ||
+                'https://pic.iask.cn/fimg/535142567219.jpg'
+              : 'https://pic.iask.cn/fimg/535142567219.jpg'
+          }
+          alt="icon"
+          title="20200903-PicoIsland_ZH-CN6719354511_1920x1080.jpg"
+        />
+        {/* </Upload> */}
+      </CardAvatar>
     );
   }
 
@@ -270,17 +298,18 @@ export default function UserProfile() {
         </GridItem>
         <GridItem xs={12} sm={12} md={4}>
           <Card profile>
-            <CardAvatar profile>
+            {/* <CardAvatar profile>
               <a href="#pablo" onClick={(e) => e.preventDefault()}>
                 <img
-                  src={
-                    profilesForm['img'] ||
-                    'https://cdn.sstatic.net/Img/teams/teams-illo-free-sidebar-promo.svg?v=47faa659a05e'
-                  }
-                  alt="..."
+                  src="https://pic.iask.cn/fimg/373482566503.jpg"
+                  alt="20200903-PicoIsland_ZH-CN6719354511_1920x1080.jpg"
+                  title="20200903-PicoIsland_ZH-CN6719354511_1920x1080.jpg"
+                  width="300"
+                  height="300"
                 />
               </a>
-            </CardAvatar>
+            </CardAvatar> */}
+            <Icon />
             <CardBody profile>
               <Name />
               <p className={classes.description}>
