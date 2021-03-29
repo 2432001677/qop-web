@@ -19,4 +19,14 @@ const get = async (url, validateState, auth) => {
   });
 };
 
-export { post, get };
+const getPages = async (url, page, size, validateState, auth) => {
+  return await axios.get(urlPrefix + url, {
+    params: { page, size },
+    validateState: validateState,
+    headers: {
+      Authorization: auth ? localStorage.getItem('token') : '',
+    },
+  });
+};
+
+export { post, get, getPages };

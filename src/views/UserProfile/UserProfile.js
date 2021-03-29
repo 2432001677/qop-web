@@ -2,6 +2,8 @@ import React, { useEffect, useState, useRef } from 'react';
 import { get, post } from 'Utils/Axios.js';
 import { emailReg, phoneNumberReg } from 'Utils/Reg.js';
 
+import { Avatar } from 'antd';
+
 // @material-ui/core components
 import { makeStyles } from '@material-ui/core/styles';
 // import InputLabel from "@material-ui/core/InputLabel";
@@ -84,7 +86,8 @@ export default function UserProfile() {
       let profiles = {};
       profiles['nick_name'] = nickRef.current.value;
       profiles['email'] = emailRef.current.value;
-      profiles['phone_numebr'] = phoneNumberRef.current.value;
+      profiles['phone_number'] = phoneNumberRef.current.value;
+      console.log(profiles);
       const { data } = await post(
         '/account/user/profiles',
         profiles,
@@ -130,27 +133,14 @@ export default function UserProfile() {
 
   function Icon() {
     console.log(profilesForm ? profilesForm['img'] || 'cxcx' : 'cxcx');
-    const upload = (info) => {
-      console.log(info);
-    };
     return (
       <CardAvatar profile>
-        {/* <Upload
-          name={'wenwoImage'}
-          action={'https://iask.sina.com.cn/question/ajax/fileupload'}
-          onChange={upload}
-        > */}
-        <img
-          src={
+        <Avatar  size={86} src={
             profilesForm
               ? profilesForm['img'] ||
                 'https://pic.iask.cn/fimg/535142567219.jpg'
               : 'https://pic.iask.cn/fimg/535142567219.jpg'
-          }
-          alt="icon"
-          title="20200903-PicoIsland_ZH-CN6719354511_1920x1080.jpg"
-        />
-        {/* </Upload> */}
+          }/>
       </CardAvatar>
     );
   }

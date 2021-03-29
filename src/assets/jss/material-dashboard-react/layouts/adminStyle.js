@@ -9,6 +9,7 @@ const appStyle = (theme) => ({
     position: 'relative',
     top: '0',
     height: '100vh',
+    background: '#E3F2FD',
   },
   mainPanel: {
     [theme.breakpoints.up('md')]: {
@@ -21,7 +22,7 @@ const appStyle = (theme) => ({
     maxHeight: '100%',
     width: '100%',
     overflowScrolling: 'touch',
-    background: 'rgba(33, 203, 243, .15)',
+    // background: 'rgba(33, 203, 243, .15)',
   },
   content: {
     marginTop: '70px',

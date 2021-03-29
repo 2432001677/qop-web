@@ -11,7 +11,7 @@ import AndroidIcon from '@material-ui/icons/Android';
 import DashboardPage from 'views/Dashboard/Dashboard.js';
 import UserProfile from 'views/UserProfile/UserProfile.js';
 import MyQuestionnaire from 'views/MyQuestionnaire/MyQuestionnaire.js';
-import TableList from 'views/TableList/TableList.js';
+// import TableList from 'views/TableList/TableList.js';
 import Icons from 'views/Icons/Icons.js';
 import NotificationsPage from 'views/Notifications/Notifications.js';
 // import UpgradeToPro from "views/UpgradeToPro/UpgradeToPro.js";
