@@ -72,9 +72,7 @@ export default function Admin(props) {
   const handleDrawerToggle = () => {
     setMobileOpen(!mobileOpen);
   };
-  // const getRoute = () => {
-  //   return window.location.pathname !== '/admin/maps';
-  // };
+
   function Index() {
     if (window.location.pathname === '/admin') {
       return (
