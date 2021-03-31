@@ -5,6 +5,7 @@ import { Router, Route, Switch, Redirect } from 'react-router-dom';
 
 // core components
 import Admin from 'layouts/Admin.js';
+import Edit from 'layouts/Edit.js';
 import Login from 'views/Login/Login.js';
 import Register from 'views/Register/Register.js';
 
@@ -18,6 +19,7 @@ ReactDOM.render(
       <Route path="/admin" component={Admin} />
       <Route path="/login" component={Login} />
       <Route path="/register" component={Register} />
+      <Route path="/edit" component={Edit} />
       <Redirect from="/" to="/admin/dashboard" />
     </Switch>
   </Router>,

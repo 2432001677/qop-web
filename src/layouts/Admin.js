@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Switch, Route } from 'react-router-dom';
 // creates a beautiful scrollbar
 import PerfectScrollbar from 'perfect-scrollbar';
@@ -90,7 +90,11 @@ export default function Admin(props) {
   };
   // initialize and destroy the PerfectScrollbar plugin
   React.useEffect(() => {
-    if (navigator.platform.indexOf('Win') > -1) {
+    console.log(navigator);
+    if (
+      navigator.platform.indexOf('Win') > -1 ||
+      navigator.platform.indexOf('Linux') > -1
+    ) {
       ps = new PerfectScrollbar(mainPanel.current, {
         suppressScrollX: true,
         suppressScrollY: false,
@@ -100,7 +104,10 @@ export default function Admin(props) {
     window.addEventListener('resize', resizeFunction);
     // Specify how to clean up after this effect:
     return function cleanup() {
-      if (navigator.platform.indexOf('Win') > -1) {
+      if (
+        navigator.platform.indexOf('Win') > -1 ||
+        navigator.platform.indexOf('Linux') > -1
+      ) {
         ps.destroy();
       }
       window.removeEventListener('resize', resizeFunction);

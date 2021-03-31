@@ -26,7 +26,7 @@ const useStyles = makeStyles(styles);
 
 export default function AdminNavbarLinks(props) {
   console.log('adminnavbar');
-  const state = props.state;
+  const state = props.state || { login: false };
   console.log(state);
   const classes = useStyles();
   const history = useHistory();

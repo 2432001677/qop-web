@@ -3,8 +3,8 @@ import { getPages, post } from 'Utils/Axios.js';
 
 import { hexToRgb } from 'assets/jss/material-dashboard-react.js';
 
-import { List, Skeleton, Space } from 'antd';
-import { Pagination } from 'antd';
+import { List, Skeleton, Space, Pagination } from 'antd';
+
 import {
   SmileTwoTone,
   CloseCircleTwoTone,
