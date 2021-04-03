@@ -178,8 +178,6 @@ material-dashboard-react
         │   └── TableList.js
         ├── Typography
         │   └── Typography.js
-        ├── UpgradeToPro
-        │   └── UpgradeToPro.js
         └── UserProfile
             └── UserProfile.js
 ```

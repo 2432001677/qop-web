@@ -14,7 +14,6 @@ import MyQuestionnaire from 'views/MyQuestionnaire/MyQuestionnaire.js';
 // import TableList from 'views/TableList/TableList.js';
 import Icons from 'views/Icons/Icons.js';
 import NotificationsPage from 'views/Notifications/Notifications.js';
-// import UpgradeToPro from "views/UpgradeToPro/UpgradeToPro.js";
 // import Typography from "views/Typography/Typography.js";
 import Maps from 'views/Maps/Maps.js';
 
@@ -77,14 +76,6 @@ const dashboardRoutes = [
     component: NotificationsPage,
     layout: '/admin',
   },
-  // {
-  //   path: "/upgrade-to-pro",
-  //   name: "Upgrade To PRO",
-  //   rtlName: "التطور للاحترافية",
-  //   icon: Unarchive,
-  //   component: UpgradeToPro,
-  //   layout: "/admin"
-  // }
 ];
 
 export default dashboardRoutes;
