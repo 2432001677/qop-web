@@ -139,7 +139,6 @@ material-dashboard-react
     │   ├── Navbars
     │   │   ├── AdminNavbarLinks.js
     │   │   ├── Navbar.js
-    │   │   └── RTLNavbarLinks.js
     │   ├── Sidebar
     │   │   └── Sidebar.js
     │   ├── Snackbar
@@ -158,8 +157,7 @@ material-dashboard-react
     │       ├── Success.js
     │       └── Warning.js
     ├── layouts
-    │   ├── Admin.js
-    │   └── RTL.js
+    │   └── Admin.js
     ├── variables
     │   ├── charts.js
     │   └── general.js
@@ -172,8 +170,6 @@ material-dashboard-react
         │   └── Maps.js
         ├── Notifications
         │   └── Notifications.js
-        ├── RTLPage
-        │   └── RTLPage.js
         ├── TableList
         │   └── TableList.js
         ├── Typography

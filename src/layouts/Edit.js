@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
 
 import { post } from 'Utils/Axios.js';
 
@@ -12,6 +13,7 @@ import { ClockCircleTwoTone } from '@ant-design/icons';
 export default function Edit(props) {
   console.log('edit');
   console.log(props.location.state);
+  const history = useHistory();
   const [states, setStates] = useState({
     save: false,
     loading: false,
@@ -37,7 +39,7 @@ export default function Edit(props) {
     },
     {
       qtitle: 'xxx',
-      qtype: 0,
+      qtype: 1,
       required: true,
       option_num: 1,
       options: {
@@ -57,6 +59,7 @@ export default function Edit(props) {
 
   const preserveAndRedirect = () => {
     preserve();
+    history.goBack();
   };
   const preserve = async () => {
     states.loading = true;
@@ -79,6 +82,10 @@ export default function Edit(props) {
     }
   };
 
+  const backToPrevious = () => {
+    history.goBack();
+  };
+
   return (
     <Layout>
       <EditSider {...state} />
@@ -95,6 +102,13 @@ export default function Edit(props) {
           <span>
             {states.save ? '自动保存中...' : '保存'} ({states.countDown})
           </span>
+        </Button>
+        <Button
+          type="primary"
+          onClick={backToPrevious}
+          icon={<ClockCircleTwoTone />}
+        >
+          <span>{'返回'}</span>
         </Button>
       </div>
     </Layout>

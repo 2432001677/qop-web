@@ -13,7 +13,8 @@ import Divider from '@material-ui/core/Divider';
 // @material-ui/icons
 import Person from '@material-ui/icons/Person';
 import Notifications from '@material-ui/icons/Notifications';
-import Dashboard from '@material-ui/icons/Dashboard';
+import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
+// import Dashboard from '@material-ui/icons/Dashboard';
 import Search from '@material-ui/icons/Search';
 // core components
 import CustomInput from 'components/CustomInput/CustomInput.js';
@@ -29,6 +30,7 @@ export default function AdminNavbarLinks(props) {
   const state = props.state || { login: false };
   console.log(state);
   const classes = useStyles();
+  console.log(classes.icons);
   const history = useHistory();
   const [openNotification, setOpenNotification] = React.useState(null);
   const [openProfile, setOpenProfile] = React.useState(null);
@@ -62,7 +64,7 @@ export default function AdminNavbarLinks(props) {
     state.change(false);
   };
 
-  function LoginOrLogout() {
+  const LoginOrLogout = () => {
     return (
       <MenuItem
         onClick={state.login ? handleLogout : handleLogin}
@@ -71,7 +73,11 @@ export default function AdminNavbarLinks(props) {
         {state.login ? '退出' : '登录'}
       </MenuItem>
     );
-  }
+  };
+
+  const createQuestionnaire = () => {
+    history.push('/edit');
+  };
 
   return (
     <div>
@@ -95,12 +101,13 @@ export default function AdminNavbarLinks(props) {
         color={window.innerWidth > 959 ? 'transparent' : 'white'}
         justIcon={window.innerWidth > 959}
         simple={!(window.innerWidth > 959)}
-        aria-label="Dashboard"
+        aria-label="NEW QUESTIONNAIRE"
         className={classes.buttonLink}
+        onClick={createQuestionnaire}
       >
-        <Dashboard className={classes.icons} />
+        <AddCircleOutlineIcon className={classes.icons} />
         <Hidden mdUp implementation="css">
-          <p className={classes.linkText}>专栏</p>
+          <p className={classes.linkText}>新建问卷</p>
         </Hidden>
       </Button>
       <div className={classes.manager}>

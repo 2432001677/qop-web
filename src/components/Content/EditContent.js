@@ -7,6 +7,8 @@ import {
   PoweroffOutlined,
   DeleteOutlined,
   PlusSquareFilled,
+  DeleteFilled,
+  HeartOutlined,
 } from '@ant-design/icons';
 import {
   Layout,
@@ -29,31 +31,33 @@ export default function EditContent(props) {
   const classes = useStyles();
   const { questionnaire, setQuestionnaire, questions, setQuestions } = props;
 
+  // 删除单个选项按钮
+  const DeleteSingleOptionButton = ({ questionIndex, optionIndex }) => {
+    const question = questions[questionIndex];
+    // 删除选项点击事件
+    const deleteOneOption = () => {
+      if (question['options']['list'].length <= 1 || optionIndex < 0) {
+        return;
+      }
+      const optionNum = question['options']['list'].length - 1;
+      question['options']['list'].splice(optionIndex, 1);
+      question['option_num'] = optionNum;
+      setQuestions(questions.slice());
+    };
+    return (
+      <Button
+        className={classes.optionDelete}
+        shape="circle"
+        size="small"
+        icon={<DeleteOutlined />}
+        onClick={deleteOneOption}
+      />
+    );
+  };
+
   // 单个选项
   const SingleOption = ({ questionIndex, optionIndex, value }) => {
     const question = questions[questionIndex];
-    // 删除单个选项按钮
-    const DeleteSingleOptionButton = () => {
-      // 删除选项点击事件
-      const deleteOneOption = () => {
-        if (question['options']['list'].length <= 1 || optionIndex < 0) {
-          return;
-        }
-        const optionNum = question['options']['list'].length - 1;
-        question['options']['list'].splice(optionIndex, 1);
-        question['option_num'] = optionNum;
-        setQuestions(questions.slice());
-      };
-      return (
-        <Button
-          className={classes.optionDelete}
-          shape="circle"
-          size="small"
-          icon={<DeleteOutlined />}
-          onClick={deleteOneOption}
-        />
-      );
-    };
     return (
       <div className={classes.optionDiv}>
         <div style={{ display: 'flex', width: '50%' }}>
@@ -68,7 +72,28 @@ export default function EditContent(props) {
             onBlur={() => setQuestions(questions.slice())}
           />
         </div>
-        <DeleteSingleOptionButton />
+        <DeleteSingleOptionButton {...{ questionIndex, optionIndex, value }} />
+      </div>
+    );
+  };
+  const MultiOption = ({ questionIndex, optionIndex, value }) => {
+    const question = questions[questionIndex];
+    return (
+      <div className={classes.optionDiv}>
+        <div style={{ display: 'flex', width: '50%' }}>
+          <Checkbox className={classes.optionMulti} key="option" />
+          <Input
+            style={{ marginLeft: '5px' }}
+            maxLength={50}
+            placeholder="输入单个选项"
+            defaultValue={value}
+            onChange={(e) =>
+              (question['options']['list'][optionIndex] = e.target.value)
+            }
+            onBlur={() => console.log('blur')}
+          />
+        </div>
+        <DeleteSingleOptionButton {...{ questionIndex, optionIndex }} />
       </div>
     );
   };
@@ -127,6 +152,16 @@ export default function EditContent(props) {
           </div>
           <DeleteSingleOptionButton {...props} />
         </div> */}
+        {props.options.list.map((prop, key) => {
+          return (
+            <MultiOption
+              key={`options-${key}`}
+              value={prop}
+              questionIndex={props.index}
+              optionIndex={key}
+            />
+          );
+        })}
         <AddSingleOptionButton index={props.index} />
       </div>
     );
@@ -181,9 +216,21 @@ export default function EditContent(props) {
     const blurQuestionTitle = () => {
       setQuestions(questions.slice());
     };
-    const requireQuestion=()=>{}
-    const moveUpQuestionCard = () => {};
-    const moveDownQuestionCard = () => { };
+    const requireQuestion = () => {
+      questions[index].required = !questions[index].required;
+      setQuestions(questions.slice());
+    };
+    const moveQuestionCard = (offset) => {
+      const swapIndex = index + offset;
+      return () => {
+        const now = questions[index];
+        const swap = questions[swapIndex];
+        questions[index] = swap;
+        questions[swapIndex] = now;
+        setQuestions(questions.slice());
+      };
+    };
+
     const deleteQuestion = () => {
       questions.splice(index, 1);
       setQuestions(questions.slice());
@@ -192,8 +239,9 @@ export default function EditContent(props) {
       return (
         <div className={classes.operationBtns}>
           <Button
+            danger={required}
             size="small"
-            icon={<PoweroffOutlined />}
+            icon={<HeartOutlined twoToneColor="#eb2f96" />}
             onClick={requireQuestion}
           />
           <Button
@@ -201,19 +249,19 @@ export default function EditContent(props) {
             type="primary"
             size="small"
             icon={<PoweroffOutlined />}
-            onClick={moveUpQuestionCard}
+            onClick={moveQuestionCard(-1)}
           />
           <Button
             disabled={index === questions.length - 1}
             type="primary"
             size="small"
             icon={<PoweroffOutlined />}
-            onClick={moveDownQuestionCard}
+            onClick={moveQuestionCard(1)}
           />
           <Button
             danger
             size="small"
-            icon={<PoweroffOutlined />}
+            icon={<DeleteFilled twoToneColor="#eb2f96" />}
             onClick={deleteQuestion}
           />
         </div>
@@ -222,6 +270,7 @@ export default function EditContent(props) {
     return (
       <div className={classes.questionCard}>
         <div className={classes.questionTitle}>
+          <span className={classes.questionSortNum}>{required ? '*' : ''}</span>
           <span className={classes.questionSortNum}>{rest.index + 1}</span>
           <Input
             className={classes.questionTitleText}

@@ -25,7 +25,7 @@ export default function Header(props) {
     var name;
     props.routes.map((prop) => {
       if (window.location.href.indexOf(prop.layout + prop.path) !== -1) {
-        name = props.rtlActive ? prop.rtlName : prop.name;
+        name = prop.name;
       }
       return null;
     });
@@ -64,7 +64,6 @@ export default function Header(props) {
 
 Header.propTypes = {
   color: PropTypes.oneOf(['primary', 'info', 'success', 'warning', 'danger']),
-  rtlActive: PropTypes.bool,
   state: PropTypes.object,
   handleDrawerToggle: PropTypes.func,
   routes: PropTypes.arrayOf(PropTypes.object),
