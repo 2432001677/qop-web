@@ -44,9 +44,7 @@ const styles = {
     width: '60vw',
     overflow: 'hidden',
     '&:hover': {
-      boxShadow: '0px 0px 1px 1px #2b85e4',
-      paddingLeft: '1%',
-      display: 'inline-block',
+      boxShadow: '0px 0px 2px 3px #2b85e4',
     },
   },
   questionTitle: {
