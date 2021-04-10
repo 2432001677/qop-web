@@ -1,6 +1,7 @@
 const styles = {
   content: {
     minHeight: '100vh',
+    marginLeft: '320px'
   },
   titleCard: {
     padding: '10px',
@@ -96,16 +97,13 @@ const styles = {
     display: 'flex',
     alignItems: 'center',
   },
-  optionDelete: {
-    // display: 'none',
-  },
   newOptionAdd: {
-    marginLeft: '3%',
+    marginLeft: '5%',
     marginTop: '15px',
   },
   blankText: {
-    width: '94%',
-    marginLeft: '3%',
+    width: '77%',
+    marginLeft: '5%',
     marginTop: '10px',
     marginBottom: '10px',
   },

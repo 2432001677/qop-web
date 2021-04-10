@@ -85,7 +85,7 @@ export default function Sidebar(props) {
       <Hidden mdUp implementation="css">
         <Drawer
           variant="temporary"
-          anchor={ 'right'}
+          anchor={'right'}
           open={props.open}
           classes={{
             paper: classNames(classes.drawerPaper),

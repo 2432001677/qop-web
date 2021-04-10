@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useState } from "react";
 
-import { makeStyles } from '@material-ui/core/styles';
-import styles from 'assets/jss/material-dashboard-react/components/EditContentStyle.js';
+import { makeStyles } from "@material-ui/core/styles";
+import styles from "assets/jss/material-dashboard-react/components/EditContentStyle.js";
 
 import {
   PoweroffOutlined,
@@ -9,19 +9,19 @@ import {
   PlusSquareFilled,
   DeleteFilled,
   HeartOutlined,
-} from '@ant-design/icons';
+  DownOutlined,
+} from "@ant-design/icons";
 import {
   Layout,
   Radio,
   Input,
   Button,
   Checkbox,
-  Col,
   Rate,
   Cascader,
   Slider,
   Upload,
-} from 'antd';
+} from "antd";
 const { Content } = Layout;
 const { TextArea } = Input;
 const useStyles = makeStyles(styles);
@@ -36,12 +36,12 @@ export default function EditContent(props) {
     const question = questions[questionIndex];
     // 删除选项点击事件
     const deleteOneOption = () => {
-      if (question['options']['list'].length <= 1 || optionIndex < 0) {
+      if (question["options"].length <= 1 || optionIndex < 0) {
         return;
       }
-      const optionNum = question['options']['list'].length - 1;
-      question['options']['list'].splice(optionIndex, 1);
-      question['option_num'] = optionNum;
+      const optionNum = question["options"].length - 1;
+      question["options"].splice(optionIndex, 1);
+      question["option_num"] = optionNum;
       setQuestions(questions.slice());
     };
     return (
@@ -60,19 +60,19 @@ export default function EditContent(props) {
     const question = questions[questionIndex];
     return (
       <div className={classes.optionDiv}>
-        <div style={{ display: 'flex', width: '50%' }}>
+        <div style={{ display: "flex", width: "50%" }}>
           <Radio className={classes.optionRadio} key="option" />
           <Input
             maxLength={50}
             placeholder="输入单个选项"
             defaultValue={value}
             onChange={(e) =>
-              (question['options']['list'][optionIndex] = e.target.value)
+              (question["options"][optionIndex] = e.target.value)
             }
             onBlur={() => setQuestions(questions.slice())}
           />
         </div>
-        <DeleteSingleOptionButton {...{ questionIndex, optionIndex, value }} />
+        <DeleteSingleOptionButton {...{ questionIndex, optionIndex }} />
       </div>
     );
   };
@@ -80,20 +80,58 @@ export default function EditContent(props) {
     const question = questions[questionIndex];
     return (
       <div className={classes.optionDiv}>
-        <div style={{ display: 'flex', width: '50%' }}>
+        <div style={{ display: "flex", width: "50%" }}>
           <Checkbox className={classes.optionMulti} key="option" />
           <Input
-            style={{ marginLeft: '5px' }}
+            style={{ marginLeft: "5px" }}
             maxLength={50}
             placeholder="输入单个选项"
             defaultValue={value}
             onChange={(e) =>
-              (question['options']['list'][optionIndex] = e.target.value)
+              (question["options"][optionIndex] = e.target.value)
             }
-            onBlur={() => console.log('blur')}
+            onBlur={() => setQuestions(questions.slice())}
           />
         </div>
         <DeleteSingleOptionButton {...{ questionIndex, optionIndex }} />
+      </div>
+    );
+  };
+  const DropdownOption = ({ questionIndex, optionIndex, value }) => {
+    const question = questions[questionIndex];
+    return (
+      <div className={classes.optionDiv}>
+        <Input
+          style={{ width: "44%", marginLeft: "6%" }}
+          maxLength={50}
+          placeholder="输入单个选项"
+          defaultValue={value}
+          prefix={<DownOutlined />}
+          onChange={(e) => (question["options"][optionIndex] = e.target.value)}
+          onBlur={() => setQuestions(questions.slice())}
+        />
+        <DeleteSingleOptionButton {...{ questionIndex, optionIndex }} />
+      </div>
+    );
+  };
+  const WeightOption = ({ questionIndex, optionIndex, value }) => {
+    const question = questions[questionIndex];
+    return (
+      <div className={classes.weightDiv}>
+        <div className={classes.optionDiv}>
+          <Input
+            style={{ width: "44%", marginLeft: "6%" }}
+            maxLength={50}
+            placeholder="请输入权重描述"
+            defaultValue={value}
+            onChange={(e) =>
+              (question["options"][optionIndex] = e.target.value)
+            }
+            onBlur={() => setQuestions(questions.slice())}
+          />
+          <DeleteSingleOptionButton {...{ questionIndex, optionIndex }} />
+        </div>
+        <Slider className={classes.slider} />
       </div>
     );
   };
@@ -102,9 +140,9 @@ export default function EditContent(props) {
     // 添加选项点击事件
     const addNewOneOption = () => {
       const question = questions[index];
-      const optionNum = question['options']['list'].length + 1;
-      question['options']['list'].push(`选项${optionNum}`);
-      question['option_num'] = optionNum;
+      const optionNum = question["options"].length + 1;
+      question["options"].push(`选项${optionNum}`);
+      question["option_num"] = optionNum;
       setQuestions(questions.slice());
     };
     return (
@@ -114,7 +152,7 @@ export default function EditContent(props) {
         onClick={addNewOneOption}
       >
         <PlusSquareFilled />
-        {'添加单个选项'}
+        {"添加单个选项"}
       </Button>
     );
   };
@@ -123,7 +161,7 @@ export default function EditContent(props) {
   const SingleSelect = (props) => {
     return (
       <div>
-        {props.options.list.map((prop, key) => {
+        {props.options.map((prop, key) => {
           return (
             <SingleOption
               key={`options-${key}`}
@@ -140,19 +178,7 @@ export default function EditContent(props) {
   const MultiSelect = (props) => {
     return (
       <div>
-        {/* <div className={classes.optionDiv}>
-          <div style={{ display: 'flex', width: '50%' }}>
-            <Checkbox className={classes.optionMulti} />
-            <Input
-              // style="margin-left: 5px"
-              maxLength={50}
-              autosize={{ minRows: 1, maxRows: 1 }}
-              placeholder="输入单个选项"
-            />
-          </div>
-          <DeleteSingleOptionButton {...props} />
-        </div> */}
-        {props.options.list.map((prop, key) => {
+        {props.options.map((prop, key) => {
           return (
             <MultiOption
               key={`options-${key}`}
@@ -167,10 +193,91 @@ export default function EditContent(props) {
     );
   };
 
-  const Blank = () => {};
-  const TrueOrFalse = () => {};
-  const Cascade = () => {};
+  const Blank = (props) => {
+    return (
+      <TextArea
+        className={classes.blankText}
+        showCount
+        autosize={{ minRows: 6, maxRows: 10 }}
+        maxLength={500}
+        placeholder="输入文字"
+      />
+    );
+  };
+  const Rates = (props) => {
+    const toolTips = ["很差", "较差", "中等", "较好", "完美"];
+    const [value, setValue] = useState(3);
+    return (
+      <span>
+        <Rate
+          tooltips={toolTips}
+          value={value}
+          style={{ marginLeft: "5%", marginTop: "20px" }}
+          onChange={(value) => setValue(value)}
+        />
+        {value ? (
+          <span className="ant-rate-text">{toolTips[value - 1]}</span>
+        ) : (
+          ""
+        )}
+      </span>
+    );
+  };
+  const Cascade = (props) => {
+    return (
+      <Cascader
+        data="question['data']"
+        style={{ marginTop: "10px", marginLeft: "5%", width: "77%" }}
+      />
+    );
+  };
+  const DropdownSelect = (props) => {
+    return (
+      <div>
+        {props.options.map((prop, key) => {
+          return (
+            <DropdownOption
+              key={`options-${key}`}
+              value={prop}
+              questionIndex={props.index}
+              optionIndex={key}
+            />
+          );
+        })}
+        <AddSingleOptionButton index={props.index} />
+      </div>
+    );
+  };
+  const WeightsAssign = (props) => {
+    return (
+      <div>
+        <span
+          style={{
+            display: "inline-block",
+            marginTop: "10px",
+            marginLeft: "3%",
+          }}
+        >
+          {"最大比重总和：100"}
+        </span>
+        {props.options.map((prop, key) => {
+          return (
+            <WeightOption
+              key={`options-${key}`}
+              value={prop}
+              questionIndex={props.index}
+              optionIndex={key}
+            />
+          );
+        })}
+        <AddSingleOptionButton index={props.index} />
+      </div>
+    );
+  };
 
+  const UploadFile = (props) => {
+    return <div></div>;
+  };
   // 问题
   const Question = ({ qtype, ...rest }) => {
     if (qtype === 0) {
@@ -180,9 +287,15 @@ export default function EditContent(props) {
     } else if (qtype === 2) {
       return <Blank {...rest} />;
     } else if (qtype === 3) {
-      return <TrueOrFalse {...rest} />;
+      return <Rates {...rest} />;
     } else if (qtype === 4) {
       return <Cascade {...rest} />;
+    } else if (qtype === 5) {
+      return <DropdownSelect {...rest} />;
+    } else if (qtype === 6) {
+      return <WeightsAssign {...rest} />;
+    } else if (qtype === 7) {
+      return <UploadFile {...rest} />;
     }
   };
   // 问题标题
@@ -210,12 +323,6 @@ export default function EditContent(props) {
   // 问题卡片
   const QuestionCard = ({ required, qtitle, ...rest }) => {
     const index = rest.index;
-    const changeQuestionTitle = (e) => {
-      questions[index].qtitle = e.target.value;
-    };
-    const blurQuestionTitle = () => {
-      setQuestions(questions.slice());
-    };
     const requireQuestion = () => {
       questions[index].required = !questions[index].required;
       setQuestions(questions.slice());
@@ -230,7 +337,6 @@ export default function EditContent(props) {
         setQuestions(questions.slice());
       };
     };
-
     const deleteQuestion = () => {
       questions.splice(index, 1);
       setQuestions(questions.slice());
@@ -270,14 +376,14 @@ export default function EditContent(props) {
     return (
       <div className={classes.questionCard}>
         <div className={classes.questionTitle}>
-          <span className={classes.questionSortNum}>{required ? '*' : ''}</span>
+          <span className={classes.questionSortNum}>{required ? "*" : ""}</span>
           <span className={classes.questionSortNum}>{rest.index + 1}</span>
           <Input
             className={classes.questionTitleText}
             placeholder="请输入"
             defaultValue={qtitle}
-            onChange={changeQuestionTitle}
-            onBlur={blurQuestionTitle}
+            onChange={(e) => (questions[index].qtitle = e.target.value)}
+            onBlur={() => setQuestions(questions.slice())}
           />
           <OperationBtns />
         </div>

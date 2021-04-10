@@ -1,7 +1,7 @@
-import React from 'react';
+import React from "react";
 
-import { makeStyles } from '@material-ui/core/styles';
-import styles from 'assets/jss/material-dashboard-react/components/EditSiderStyle.js';
+import { makeStyles } from "@material-ui/core/styles";
+import styles from "assets/jss/material-dashboard-react/components/EditSiderStyle.js";
 
 import {
   SmileTwoTone,
@@ -12,8 +12,8 @@ import {
   EditTwoTone,
   CheckCircleTwoTone,
   SaveFilled,
-} from '@ant-design/icons';
-import { Layout, Button } from 'antd';
+} from "@ant-design/icons";
+import { Layout, Button } from "antd";
 const { Sider } = Layout;
 const useStyles = makeStyles(styles);
 
@@ -22,22 +22,36 @@ export default function EditSider(props) {
   const { questions, setQuestions } = props;
   const addNewOneQuestion = (qtype) => {
     let question = {
-      qtitle: '',
+      qtitle: "",
       qtype: qtype,
       required: true,
       option_num: 1,
       options: {},
     };
-    if (qtype === 0 || qtype === 1) {
-      question.qtitle = '单选题';
-      question.options.list = ['选项一'];
+    if (qtype === 0) {
+      question.qtitle = "单选题";
+      question.options = ["选项一"];
+    } else if (qtype === 1) {
+      question.qtitle = "多选题";
+      question.options = ["选项一"];
     } else if (qtype === 2) {
+      question.qtitle = "填空题";
     } else if (qtype === 3) {
+      question.qtitle = "评分题";
     } else if (qtype === 4) {
+      question.qtitle = "级联题";
+    } else if (qtype === 5) {
+      question.qtitle = "下拉题";
+      question.options = ["选项一"];
+    } else if (qtype === 6) {
+      question.qtitle = "比重题";
+    } else if (qtype === 7) {
+      question.qtitle = "附件题";
     }
     return () => {
       questions.push(question);
       setQuestions(questions.slice());
+      return data
     };
   };
   const buttonMatrix = [
@@ -45,48 +59,48 @@ export default function EditSider(props) {
       {
         icon: <CheckCircleTwoTone />,
         onClick: addNewOneQuestion(0),
-        children: '单选题',
+        children: "单选题",
       },
       {
         icon: <CheckSquareTwoTone />,
         onClick: addNewOneQuestion(1),
-        children: '多选题',
+        children: "多选题",
       },
     ],
     [
       {
         icon: <EditTwoTone />,
         onClick: addNewOneQuestion(2),
-        children: '填空题',
+        children: "填空题",
       },
       {
         icon: <SmileTwoTone />,
         onClick: addNewOneQuestion(3),
-        children: '评分题',
+        children: "评分题",
       },
     ],
     [
       {
         icon: <SignalFilled />,
         onClick: addNewOneQuestion(4),
-        children: '级联题',
+        children: "级联题",
       },
       {
         icon: <ProjectFilled />,
         onClick: addNewOneQuestion(5),
-        children: '下拉题',
+        children: "下拉题",
       },
     ],
     [
       {
         icon: <PieChartFilled />,
         onClick: addNewOneQuestion(6),
-        children: '比重题',
+        children: "比重题",
       },
       {
         icon: <SaveFilled />,
         onClick: addNewOneQuestion(7),
-        children: '附件题',
+        children: "附件题",
       },
     ],
   ];
@@ -110,7 +124,14 @@ export default function EditSider(props) {
   );
 
   return (
-    <Sider width={300} collapsedWidth={120}>
+    <Sider
+      width={300}
+      collapsedWidth={120}
+      style={{
+        position: "fixed",
+        minHeight: "100vh",
+      }}
+    >
       <ButtonBar />
     </Sider>
   );

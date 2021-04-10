@@ -66,7 +66,7 @@ export default function Login() {
       console.log(res);
       if (res.status === 200) {
         localStorage.setItem('token', res.headers.authorization);
-        history.push({ pathname: '/admin/dashboard', state: true  });
+        history.push({ pathname: '/dashboard', state: true  });
       } else {
         alert(res.data.msg);
       }

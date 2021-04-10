@@ -8,6 +8,7 @@ import Admin from 'layouts/Admin.js';
 import Edit from 'layouts/Edit.js';
 import Login from 'views/Login/Login.js';
 import Register from 'views/Register/Register.js';
+import Questionnaire from 'views/Questionnaire/Questionnaire.js';
 
 import 'assets/css/material-dashboard-react.css?v=1.9.0';
 
@@ -20,6 +21,7 @@ ReactDOM.render(
       <Route path="/login" component={Login} />
       <Route path="/register" component={Register} />
       <Route path="/edit" component={Edit} />
+      <Route path="/questionnaire/:id" component={Questionnaire} />
       <Redirect from="/" to="/admin/dashboard" />
     </Switch>
   </Router>,
