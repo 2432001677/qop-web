@@ -45,7 +45,6 @@ export default function Questionnaire(props) {
         answers.description = questionnaire.description;
         answers.answered_questions = questionnaire.questions;
         console.log(data);
-        console.log(answers);
         setAnswers({ ...answers });
       } catch (error) {
         console.log(error);
@@ -59,7 +58,7 @@ export default function Questionnaire(props) {
     answers.answered_questions.forEach((question) => console.log(question));
     try {
       const { data } = await post(
-        "/questionnaire/answer/" + id,
+        "/questionnaire/answer",
         answers,
         false,
         true
