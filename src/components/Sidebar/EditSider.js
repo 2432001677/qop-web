@@ -51,7 +51,6 @@ export default function EditSider(props) {
     return () => {
       questions.push(question);
       setQuestions(questions.slice());
-      return data
     };
   };
   const buttonMatrix = [

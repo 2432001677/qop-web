@@ -97,7 +97,7 @@ export default function EditContent(props) {
       </div>
     );
   };
-  const DropdownOption = ({ questionIndex, optionIndex, value }) => {
+  const DropdownOption = ({ questionIndex, optionIndex, raw }) => {
     const question = questions[questionIndex];
     return (
       <div className={classes.optionDiv}>
@@ -105,9 +105,11 @@ export default function EditContent(props) {
           style={{ width: "44%", marginLeft: "6%" }}
           maxLength={50}
           placeholder="输入单个选项"
-          defaultValue={value}
+          defaultValue={raw.label}
           prefix={<DownOutlined />}
-          onChange={(e) => (question["options"][optionIndex] = e.target.value)}
+          onChange={(e) =>
+            (question["options"][optionIndex].label = e.target.value)
+          }
           onBlur={() => setQuestions(questions.slice())}
         />
         <DeleteSingleOptionButton {...{ questionIndex, optionIndex }} />
@@ -143,6 +145,31 @@ export default function EditContent(props) {
       const optionNum = question["options"].length + 1;
       question["options"].push(`选项${optionNum}`);
       question["option_num"] = optionNum;
+      setQuestions(questions.slice());
+    };
+    return (
+      <Button
+        className={classes.newOptionAdd}
+        type="primary"
+        onClick={addNewOneOption}
+      >
+        <PlusSquareFilled />
+        {"添加单个选项"}
+      </Button>
+    );
+  };
+
+  // 添加下拉选项按钮
+  const AddDropDownOptionButton = ({ index }) => {
+    // 添加选项点击事件
+    const addNewOneOption = () => {
+      const question = questions[index];
+      const optionNum = question["options"].length;
+      question["options"].push({
+        value: optionNum,
+        label: `选项${optionNum + 1}`,
+      });
+      question["option_num"] = optionNum + 1;
       setQuestions(questions.slice());
     };
     return (
@@ -235,16 +262,17 @@ export default function EditContent(props) {
     return (
       <div>
         {props.options.map((prop, key) => {
+          console.log(prop);
           return (
             <DropdownOption
               key={`options-${key}`}
-              value={prop}
+              raw={prop}
               questionIndex={props.index}
               optionIndex={key}
             />
           );
         })}
-        <AddSingleOptionButton index={props.index} />
+        <AddDropDownOptionButton index={props.index} />
       </div>
     );
   };

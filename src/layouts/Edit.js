@@ -41,7 +41,10 @@ export default function Edit(props) {
       qtype: 5,
       required: true,
       option_num: 1,
-      options: ["xxx"],
+      options: [
+        { value: 0, label: "xxx" },
+        { value: 1, label: "abc" },
+      ],
     },
     {
       qtitle: "级联题",

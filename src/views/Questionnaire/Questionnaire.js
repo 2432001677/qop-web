@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { get } from "Utils/Axios.js";
+import { get, post } from "Utils/Axios.js";
 
 import styles from "assets/jss/material-dashboard-react/components/QuestionnaireStyle.js";
 
@@ -22,95 +22,69 @@ import {
 
 const useStyles = makeStyles(styles);
 export default function Questionnaire(props) {
-  const id = props.match.params.id;
   const classes = useStyles();
-  const [questionnaire, setQuestionnaire] = useState({
+  const id = props.match.params.id;
+  const [answers, setAnswers] = useState({
+    questionnaire_id: "",
     title: "",
-    answer_num: 0,
-    status: 1,
     description: "",
-    questions: [
-      // {
-      //   qtitle: "比重题",
-      //   qtype: 6,
-      //   required: true,
-      //   option_num: 1,
-      //   options: ["aaa", "bbb"],
-      // },
-      // {
-      //   qtitle: "下拉题",
-      //   qtype: 5,
-      //   required: true,
-      //   option_num: 1,
-      //   options: [
-      //     { value: 0, label: "xxx" },
-      //     { value: 1, label: "aaa" },
-      //   ],
-      // },
-      // {
-      //   qtitle: "级联题",
-      //   qtype: 4,
-      //   required: true,
-      //   option_num: 1,
-      //   options: [],
-      // },
-      // {
-      //   qtitle: "评分题",
-      //   qtype: 3,
-      //   required: true,
-      //   option_num: 5,
-      //   options: [],
-      // },
-      // {
-      //   qtitle: "填空题",
-      //   qtype: 2,
-      //   required: true,
-      //   option_num: 1,
-      //   options: [],
-      // },
-      // {
-      //   qtitle: "多选题",
-      //   qtype: 1,
-      //   required: false,
-      //   option_num: 1,
-      //   options: ["xxx", "vcxvcx"],
-      // },
-      // {
-      //   qtitle: "单选题一",
-      //   qtype: 0,
-      //   required: true,
-      //   option_num: 2,
-      //   options: ["xxx", "aaa"],
-      // },
-    ],
+    answered_questions: [],
   });
-  const getQuestionnaireById = async () => {
+
+  useEffect(() => {
+    const getQuestionnaireById = async () => {
+      try {
+        const { data } = await get(
+          "/questionnaire/questionnaire/" + id,
+          false,
+          true
+        );
+        const questionnaire = data.data;
+        answers.questionnaire_id = questionnaire.id;
+        answers.title = questionnaire.title;
+        answers.description = questionnaire.description;
+        answers.answered_questions = questionnaire.questions;
+        console.log(data);
+        console.log(answers);
+        setAnswers({ ...answers });
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getQuestionnaireById();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const submitAnswers = async () => {
+    answers.answered_questions.forEach((question) => console.log(question));
     try {
-      const { data } = await get(
-        "/questionnaire/questionnaire/" + id,
+      const { data } = await post(
+        "/questionnaire/answer/" + id,
+        answers,
         false,
         true
       );
-      console.log(data.data);
-      setQuestionnaire(data.data);
+      console.log(data);
     } catch (error) {
       console.log(error);
     }
   };
 
-  useEffect(() => {
-    getQuestionnaireById();
-  }, []);
-
   // 具体问题
-  const SingleSelect = (props) => {
+  const SingleSelect = ({ index, ...rest }) => {
+    const question = answers.answered_questions[index];
     const changeOption = (e) => {
-      console.log(e);
+      question.selected = [e.target.value];
+      setAnswers({ ...answers });
     };
     return (
-      <Radio.Group style={{ width: "100%" }} onChange={changeOption}>
+      <Radio.Group
+        style={{ width: "100%" }}
+        onChange={changeOption}
+        value={question.selected ? question.selected[0] : ""}
+      >
         <div>
-          {props.options.map((prop, key) => {
+          {rest.options.map((prop, key) => {
             return (
               <Radio
                 className={classes.option}
@@ -125,13 +99,19 @@ export default function Questionnaire(props) {
       </Radio.Group>
     );
   };
-  const MultiSelect = (props) => {
+  const MultiSelect = ({ index, ...rest }) => {
+    const question = answers.answered_questions[index];
     const changeOption = (e) => {
-      console.log(e);
+      question.selected = e;
+      setAnswers({ ...answers });
     };
     return (
-      <Checkbox.Group style={{ marginLeft: "22px" }} onChange={changeOption}>
-        {props.options.map((prop, key) => {
+      <Checkbox.Group
+        style={{ marginLeft: "22px" }}
+        onChange={changeOption}
+        value={question.selected}
+      >
+        {rest.options.map((prop, key) => {
           return (
             <div key={`option-${key}`}>
               <Checkbox key={`option-${key}`} value={prop}>
@@ -145,7 +125,8 @@ export default function Questionnaire(props) {
     );
   };
 
-  const Blank = (props) => {
+  const Blank = ({ index }) => {
+    const question = answers.answered_questions[index];
     return (
       <Input.TextArea
         showCount
@@ -153,21 +134,32 @@ export default function Questionnaire(props) {
         maxLength={500}
         autosize={{ minRows: 6, maxRows: 10 }}
         placeholder="输入文字"
+        onChange={(e) => (question.content = e.target.value)}
+        onBlur={() => {
+          setAnswers({ ...answers });
+        }}
+        value={question.content}
       />
     );
   };
-  const Rates = (props) => {
+  const Rates = ({ index, ...rest }) => {
+    const question = answers.answered_questions[index];
     const toolTips = ["很差", "较差", "中等", "较好", "完美"];
-    const [value, setValue] = useState(3);
+    const changeRate = (value) => {
+      question.selected = [value];
+      setAnswers({ ...answers });
+    };
     return (
       <div>
         <Rate
           tooltips={toolTips}
-          value={value}
-          onChange={(value) => setValue(value)}
+          value={question.selected ? question.selected[0] : 0}
+          onChange={changeRate}
         />{" "}
-        {value ? (
-          <span className="ant-rate-text">{toolTips[value - 1]}</span>
+        {question.selected ? (
+          <span className="ant-rate-text">
+            {toolTips[question.selected[0] - 1]}
+          </span>
         ) : (
           ""
         )}
@@ -179,28 +171,50 @@ export default function Questionnaire(props) {
       <Cascader
         data="question['data']"
         style={{
-          width: "400px",
           marginTop: "10px",
           marginLeft: "25px",
-          width: "60%",
+          width: "40%",
         }}
       />
     );
   };
-  const DropdownSelect = (props) => {
+
+  // value可能会重复问题
+  const DropdownSelect = ({ index }) => {
+    const question = answers.answered_questions[index];
     const changeValue = (index) => {
-      console.log(index);
+      question.selected = [index];
+      setAnswers({ ...answers });
     };
     return (
       <div style={{ marginLeft: "24px" }}>
-        <Cascader options={props.options.list} onChange={changeValue} />
+        <Cascader
+          width="500px"
+          options={question.options}
+          onChange={changeValue}
+          value={question.selected ? question.selected[0] : ""}
+        />
       </div>
     );
   };
-  const WeightsAssign = (props) => {
-    const onChange = (value) => {
-      console.log(value);
+  const WeightsAssign = ({ index, ...rest }) => {
+    const question = answers.answered_questions[index];
+    if (!question.selected) {
+      question.selected = question.options.map(() => 0);
+    }
+    const changeWeight = (index) => {
+      return (value) => {
+        question.selected[index] = value;
+      };
     };
+
+    const clickStep = (index) => {
+      return (value) => {
+        question.selected[index] = value;
+        setAnswers({ ...answers });
+      };
+    };
+
     return (
       <div>
         <span
@@ -213,7 +227,7 @@ export default function Questionnaire(props) {
           {"最大比重总和：100"}
         </span>
         <div className={classes.weightDiv}>
-          {props.options.map((prop, key) => {
+          {rest.options.map((prop, key) => {
             return (
               <div
                 key={`weight-${key}`}
@@ -222,15 +236,21 @@ export default function Questionnaire(props) {
                 <span>{prop}</span>
                 <Row>
                   <Col span={15}>
-                    <Slider />
+                    <Slider
+                      value={question.selected[key]}
+                      onChange={changeWeight(key)}
+                      onAfterChange={() => setAnswers({ ...answers })}
+                    />
                   </Col>
                   <Col span={1}>
                     <InputNumber
-                      min={1}
-                      max={10}
+                      min={0}
+                      max={100}
                       style={{ margin: "0 36px" }}
-                      value={8}
-                      onChange={onChange}
+                      value={question.selected[key]}
+                      onChange={changeWeight(key)}
+                      onBlur={() => setAnswers({ ...answers })}
+                      onStep={clickStep(key)}
                     />
                   </Col>
                 </Row>
@@ -261,8 +281,6 @@ export default function Questionnaire(props) {
 
   // 问题
   const Question = ({ qtype, ...rest }) => {
-    console.log(qtype);
-    console.log(rest);
     if (qtype === 0) {
       return <SingleSelect {...rest} />;
     } else if (qtype === 1) {
@@ -282,13 +300,13 @@ export default function Questionnaire(props) {
     }
   };
 
-  console.log(questionnaire);
+  // console.log(answers);
   return (
     <div className={classes.questionnairePreview}>
       <title></title>
       <div className={classes.questionnaireView}>
-        <h1 style={{ textAlign: "center" }}>{questionnaire.title}</h1>
-        <h3>{questionnaire.description}</h3>
+        <h1 style={{ textAlign: "center" }}>{answers.title}</h1>
+        <h3>{answers.description}</h3>
         <div
           style={{
             background: "#1890ff",
@@ -297,7 +315,7 @@ export default function Questionnaire(props) {
             marginBottom: "10px",
           }}
         />
-        {questionnaire.questions.map((prop, key) => {
+        {answers.answered_questions.map((prop, key) => {
           const { qtitle, required } = prop;
           return (
             <div key={`question-${key}`} style={{ marginBottom: "30px" }}>
@@ -310,7 +328,7 @@ export default function Questionnaire(props) {
                   <span>{qtitle}</span>
                 </div>
                 <div>
-                  <Question key={`question-${key}`} {...prop} />
+                  <Question key={`question-${key}`} index={key} {...prop} />
                   <div
                     style={{
                       borderTop: "#eaeaea 2px solid",
@@ -342,7 +360,7 @@ export default function Questionnaire(props) {
           type="primary"
           size="large"
           style={{ margin: "40px auto" }}
-          // onClick="submitAnswers"
+          onClick={submitAnswers}
           loading={false}
         >
           提交
