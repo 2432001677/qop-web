@@ -26,14 +26,14 @@ export default function EditSider(props) {
       qtype: qtype,
       required: true,
       option_num: 1,
-      options: {},
+      options: [],
     };
     if (qtype === 0) {
       question.qtitle = "单选题";
-      question.options = ["选项一"];
+      question.options = ["选项1"];
     } else if (qtype === 1) {
       question.qtitle = "多选题";
-      question.options = ["选项一"];
+      question.options = ["选项1"];
     } else if (qtype === 2) {
       question.qtitle = "填空题";
     } else if (qtype === 3) {
@@ -42,9 +42,15 @@ export default function EditSider(props) {
       question.qtitle = "级联题";
     } else if (qtype === 5) {
       question.qtitle = "下拉题";
-      question.options = ["选项一"];
+      question.options = [
+        {
+          value: 0,
+          label: "选项1",
+        },
+      ];
     } else if (qtype === 6) {
       question.qtitle = "比重题";
+      question.options = ["选项1"];
     } else if (qtype === 7) {
       question.qtitle = "附件题";
     }

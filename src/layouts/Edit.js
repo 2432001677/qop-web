@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 
 import { post } from "Utils/Axios.js";
@@ -28,60 +28,7 @@ export default function Edit(props) {
     description: "des",
     questions: [],
   });
-  const [questions, setQuestions] = useState([
-    {
-      qtitle: "比重题",
-      qtype: 6,
-      required: true,
-      option_num: 1,
-      options: ["aaa", "bbb"],
-    },
-    {
-      qtitle: "下拉题",
-      qtype: 5,
-      required: true,
-      option_num: 1,
-      options: [
-        { value: 0, label: "xxx" },
-        { value: 1, label: "abc" },
-      ],
-    },
-    {
-      qtitle: "级联题",
-      qtype: 4,
-      required: true,
-      option_num: 1,
-      options: [],
-    },
-    {
-      qtitle: "评分题",
-      qtype: 3,
-      required: true,
-      option_num: 5,
-      options: [],
-    },
-    {
-      qtitle: "填空题",
-      qtype: 2,
-      required: true,
-      option_num: 1,
-      options: [],
-    },
-    {
-      qtitle: "多选题",
-      qtype: 1,
-      required: true,
-      option_num: 1,
-      options: ["xxx"],
-    },
-    {
-      qtitle: "单选题一",
-      qtype: 0,
-      required: true,
-      option_num: 2,
-      options: ["xxx", "aaa"],
-    },
-  ]);
+  const [questions, setQuestions] = useState([]);
 
   const state = {
     login: login,

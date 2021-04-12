@@ -20,7 +20,6 @@ import {
   Rate,
   Cascader,
   Slider,
-  Upload,
 } from "antd";
 const { Content } = Layout;
 const { TextArea } = Input;
@@ -99,6 +98,7 @@ export default function EditContent(props) {
   };
   const DropdownOption = ({ questionIndex, optionIndex, raw }) => {
     const question = questions[questionIndex];
+    console.log(question);
     return (
       <div className={classes.optionDiv}>
         <Input
@@ -262,7 +262,6 @@ export default function EditContent(props) {
     return (
       <div>
         {props.options.map((prop, key) => {
-          console.log(prop);
           return (
             <DropdownOption
               key={`options-${key}`}
