@@ -22,7 +22,6 @@ const appStyle = (theme) => ({
     maxHeight: '100%',
     width: '100%',
     overflowScrolling: 'touch',
-    // background: 'rgba(33, 203, 243, .15)',
   },
   content: {
     marginTop: '70px',

@@ -1,6 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { get, post } from "Utils/Axios.js";
 
+import PerfectScrollbar from "perfect-scrollbar";
+import "perfect-scrollbar/css/perfect-scrollbar.css";
+
 import styles from "assets/jss/material-dashboard-react/components/QuestionnaireStyle.js";
 
 import { makeStyles } from "@material-ui/core/styles";
@@ -20,16 +23,39 @@ import {
   InputNumber,
 } from "antd";
 
+let ps;
 const useStyles = makeStyles(styles);
 export default function Questionnaire(props) {
-  const classes = useStyles();
   const id = props.match.params.id;
+  const classes = useStyles();
+  const mainPanel = React.createRef();
   const [answers, setAnswers] = useState({
     questionnaire_id: "",
     title: "",
     description: "",
     answered_questions: [],
   });
+
+  useEffect(() => {
+    if (
+      navigator.platform.indexOf("Win") > -1 ||
+      navigator.platform.indexOf("Linux") > -1
+    ) {
+      ps = new PerfectScrollbar(mainPanel.current, {
+        suppressScrollX: true,
+        suppressScrollY: false,
+      });
+      document.body.style.overflow = "hidden";
+    }
+    return function cleanup() {
+      if (
+        navigator.platform.indexOf("Win") > -1 ||
+        navigator.platform.indexOf("Linux") > -1
+      ) {
+        ps.destroy();
+      }
+    };
+  }, [mainPanel]);
 
   useEffect(() => {
     const getQuestionnaireById = async () => {
@@ -301,7 +327,7 @@ export default function Questionnaire(props) {
 
   // console.log(answers);
   return (
-    <div className={classes.questionnairePreview}>
+    <div className={classes.questionnairePreview} ref={mainPanel}>
       <title></title>
       <div className={classes.questionnaireView}>
         <h1 style={{ textAlign: "center" }}>{answers.title}</h1>
