@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState,useRef } from "react";
 import { get, post } from "Utils/Axios.js";
 
 import PerfectScrollbar from "perfect-scrollbar";
@@ -28,7 +28,7 @@ const useStyles = makeStyles(styles);
 export default function Questionnaire(props) {
   const id = props.match.params.id;
   const classes = useStyles();
-  const mainPanel = React.createRef();
+  const mainPanel = useRef();
   const [answers, setAnswers] = useState({
     questionnaire_id: "",
     title: "",
@@ -70,7 +70,6 @@ export default function Questionnaire(props) {
         answers.title = questionnaire.title;
         answers.description = questionnaire.description;
         answers.answered_questions = questionnaire.questions;
-        console.log(data);
         setAnswers({ ...answers });
       } catch (error) {
         console.log(error);
