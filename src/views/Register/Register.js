@@ -54,7 +54,6 @@ export default function LoginIn() {
         false,
         false
       );
-      console.log(data);
       if (status === 200) {
         setOpenDialog(true);
       }

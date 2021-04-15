@@ -28,9 +28,7 @@ const useStyles = makeStyles(styles);
 export default function AdminNavbarLinks(props) {
   console.log('adminnavbar');
   const state = props.state || { login: false };
-  console.log(state);
   const classes = useStyles();
-  console.log(classes.icons);
   const history = useHistory();
   const [openNotification, setOpenNotification] = React.useState(null);
   const [openProfile, setOpenProfile] = React.useState(null);

@@ -19,7 +19,6 @@ const useStyles = makeStyles(styles);
 
 export default function Header(props) {
   console.log('navbar');
-  console.log(props.state);
   const classes = useStyles();
   function makeBrand() {
     var name;

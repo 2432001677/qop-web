@@ -26,7 +26,6 @@ const { TextArea } = Input;
 const useStyles = makeStyles(styles);
 
 export default function EditContent(props) {
-  // console.log(props);
   const classes = useStyles();
   const { questionnaire, setQuestionnaire, questions, setQuestions } = props;
 
@@ -98,7 +97,6 @@ export default function EditContent(props) {
   };
   const DropdownOption = ({ questionIndex, optionIndex, raw }) => {
     const question = questions[questionIndex];
-    console.log(question);
     return (
       <div className={classes.optionDiv}>
         <Input

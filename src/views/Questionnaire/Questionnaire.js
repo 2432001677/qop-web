@@ -1,4 +1,4 @@
-import React, { useEffect, useState,useRef } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { get, post } from "Utils/Axios.js";
 
 import PerfectScrollbar from "perfect-scrollbar";
@@ -29,6 +29,7 @@ export default function Questionnaire(props) {
   const id = props.match.params.id;
   const classes = useStyles();
   const mainPanel = useRef();
+  const [mobileOpen, setMobileOpen] = useState(false);
   const [answers, setAnswers] = useState({
     questionnaire_id: "",
     title: "",
@@ -88,7 +89,6 @@ export default function Questionnaire(props) {
         false,
         true
       );
-      console.log(data);
     } catch (error) {
       console.log(error);
     }
@@ -323,73 +323,101 @@ export default function Questionnaire(props) {
       return <UploadFile {...rest} />;
     }
   };
-
-  // console.log(answers);
-  return (
-    <div className={classes.questionnairePreview} ref={mainPanel}>
-      <title></title>
-      <div className={classes.questionnaireView}>
-        <h1 style={{ textAlign: "center" }}>{answers.title}</h1>
-        <h3>{answers.description}</h3>
-        <div
-          style={{
-            background: "#1890ff",
-            width: "100%",
-            height: "3px",
-            marginBottom: "10px",
-          }}
-        />
-        {answers.answered_questions.map((prop, key) => {
-          const { qtitle, required } = prop;
-          return (
-            <div key={`question-${key}`} style={{ marginBottom: "30px" }}>
-              <Space direction="vertical" style={{ width: "680px" }}>
-                <div className={classes.questionTitle}>
-                  <span style={{ color: "red" }}>{required ? "*" : ""}</span>
-                  <span style={{ marginLeft: required ? "5px" : "16px" }}>{`${
-                    key + 1
-                  }.`}</span>
-                  <span>{qtitle}</span>
-                </div>
-                <div>
-                  <Question key={`question-${key}`} index={key} {...prop} />
-                  <div
-                    style={{
-                      borderTop: "#eaeaea 2px solid",
-                      marginTop: "20px",
-                    }}
-                  >
+  const resizeFunction = () => {
+    if (window.innerWidth >= 960) {
+      setMobileOpen(false);
+    }
+  };
+  React.useEffect(() => {
+    if (
+      navigator.platform.indexOf("Win") > -1 ||
+      navigator.platform.indexOf("Linux") > -1
+    ) {
+      ps = new PerfectScrollbar(mainPanel.current, {
+        suppressScrollX: true,
+        suppressScrollY: false,
+      });
+      document.body.style.overflow = "hidden";
+    }
+    window.addEventListener("resize", resizeFunction);
+    // Specify how to clean up after this effect:
+    return function cleanup() {
+      if (
+        navigator.platform.indexOf("Win") > -1 ||
+        navigator.platform.indexOf("Linux") > -1
+      ) {
+        ps.destroy();
+      }
+      window.removeEventListener("resize", resizeFunction);
+    };
+  }, [mainPanel]);
+  const Panel = () => {
+    return (
+      <div className={classes.questionnairePreview} ref={mainPanel}>
+        <div className={classes.questionnaireView}>
+          <h1 style={{ textAlign: "center" }}>{answers.title}</h1>
+          <h3>{answers.description}</h3>
+          <div
+            style={{
+              background: "#1890ff",
+              width: "100%",
+              height: "3px",
+              marginBottom: "10px",
+            }}
+          />
+          {answers.answered_questions.map((prop, key) => {
+            const { qtitle, required } = prop;
+            return (
+              <div key={`question-${key}`} style={{ marginBottom: "30px" }}>
+                <Space direction="vertical" style={{ width: "680px" }}>
+                  <div className={classes.questionTitle}>
+                    <span style={{ color: "red" }}>{required ? "*" : ""}</span>
+                    <span style={{ marginLeft: required ? "5px" : "16px" }}>{`${
+                      key + 1
+                    }.`}</span>
+                    <span>{qtitle}</span>
+                  </div>
+                  <div>
+                    <Question key={`question-${key}`} index={key} {...prop} />
                     <div
-                      // ref="['warning'+index]"
-                      style={{ display: "none", color: "red" }}
+                      style={{
+                        borderTop: "#eaeaea 2px solid",
+                        marginTop: "20px",
+                      }}
                     >
-                      请完成该问题
+                      <div
+                        style={{ display: "none", color: "red" }}
+                      >
+                        请完成该问题
+                      </div>
                     </div>
                   </div>
-                </div>
-              </Space>
-            </div>
-          );
-        })}
-      </div>
-      <div
-        style={{
-          width: "100%",
-          display: "flex",
-          justifyContent: "center",
-          borderBottom: "#cac6c6 2px solid",
-        }}
-      >
-        <Button
-          type="primary"
-          size="large"
-          style={{ margin: "40px auto" }}
-          onClick={submitAnswers}
-          loading={false}
+                </Space>
+              </div>
+            );
+          })}
+        </div>
+        <div
+          style={{
+            width: "100%",
+            display: "flex",
+            justifyContent: "center",
+            borderBottom: "#cac6c6 2px solid",
+          }}
         >
-          提交
-        </Button>
+          <Button
+            type="primary"
+            size="large"
+            style={{ margin: "40px auto" }}
+            onClick={submitAnswers}
+            loading={false}
+          >
+            提交
+          </Button>
+        </div>
       </div>
-    </div>
-  );
+    );
+  };
+
+  return <Panel />;
 }

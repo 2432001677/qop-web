@@ -5,15 +5,24 @@ import { post } from "Utils/Axios.js";
 
 import EditSider from "components/Sidebar/EditSider.js";
 import EditContent from "components/Content/EditContent.js";
+import PerfectScrollbar from "perfect-scrollbar";
 import "perfect-scrollbar/css/perfect-scrollbar.css";
+
+import { makeStyles } from "@material-ui/core/styles";
+
+import styles from "assets/jss/material-dashboard-react/layouts/adminStyle.js";
 
 import { Layout, Button, Space } from "antd";
 import { ClockCircleTwoTone } from "@ant-design/icons";
 
+let ps;
+
+const useStyles = makeStyles(styles);
 export default function Edit(props) {
   console.log("edit");
-  console.log(props.location.state);
+  const classes = useStyles();
   const history = useHistory();
+  const mainPanel = React.createRef();
   const [states, setStates] = useState({
     save: false,
     loading: false,
@@ -30,6 +39,13 @@ export default function Edit(props) {
   });
   const [questions, setQuestions] = useState([]);
 
+  const [mobileOpen, setMobileOpen] = useState(false);
+
+  const resizeFunction = () => {
+    if (window.innerWidth >= 960) {
+      setMobileOpen(false);
+    }
+  };
   const state = {
     login: login,
     change: setLogin,
@@ -47,7 +63,6 @@ export default function Edit(props) {
     states.loading = true;
     setStates(states);
     questionnaire.questions = questions;
-    console.log(questionnaire);
     try {
       const res = await post(
         "/questionnaire/questionnaire",
@@ -55,7 +70,6 @@ export default function Edit(props) {
         false,
         true
       );
-      console.log(res);
     } catch (error) {
       console.log(error);
     } finally {
@@ -72,33 +86,58 @@ export default function Edit(props) {
     }
   };
 
+  React.useEffect(() => {
+    if (
+      navigator.platform.indexOf("Win") > -1 ||
+      navigator.platform.indexOf("Linux") > -1
+    ) {
+      ps = new PerfectScrollbar(mainPanel.current, {
+        suppressScrollX: true,
+        suppressScrollY: false,
+      });
+      document.body.style.overflow = "hidden";
+    }
+    window.addEventListener("resize", resizeFunction);
+    // Specify how to clean up after this effect:
+    return function cleanup() {
+      if (
+        navigator.platform.indexOf("Win") > -1 ||
+        navigator.platform.indexOf("Linux") > -1
+      ) {
+        ps.destroy();
+      }
+      window.removeEventListener("resize", resizeFunction);
+    };
+  }, [mainPanel]);
   return (
-    <Layout>
-      <EditSider {...state} />
-      <EditContent {...state} />
-      <div style={{ position: "fixed", right: "5%" }}>
-        <Space size={3}>
-          <Button
-            loading={states.loading}
-            type="primary"
-            onClick={preserveAndRedirect}
-          >
-            {"完成编辑"}
-          </Button>
-          <Button
-            type="primary"
-            onClick={preserve}
-            icon={<ClockCircleTwoTone />}
-          >
-            <span>
-              {states.save ? "自动保存中..." : "保存"} ({states.countDown})
-            </span>
-          </Button>
-          <Button type="primary" onClick={backToPrevious}>
-            <span>{"返回"}</span>
-          </Button>
-        </Space>
-      </div>
-    </Layout>
+      <Layout>
+        <EditSider {...state} />
+    <div ref={mainPanel}>
+        <EditContent id="content" {...state} />
+    </div>
+        <div style={{ position: "fixed", right: "5%" }}>
+          <Space size={3}>
+            <Button
+              loading={states.loading}
+              type="primary"
+              onClick={preserveAndRedirect}
+            >
+              {"完成编辑"}
+            </Button>
+            <Button
+              type="primary"
+              onClick={preserve}
+              icon={<ClockCircleTwoTone />}
+            >
+              <span>
+                {states.save ? "自动保存中..." : "保存"} ({states.countDown})
+              </span>
+            </Button>
+            <Button type="primary" onClick={backToPrevious}>
+              <span>{"返回"}</span>
+            </Button>
+          </Space>
+        </div>
+      </Layout>
   );
 }

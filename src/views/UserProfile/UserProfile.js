@@ -60,7 +60,6 @@ export default function UserProfile() {
     const getUserProfiles = async () => {
       try {
         const { data } = await get('/account/user/profiles', false, true);
-        console.log(data);
         setProfilesForm(data.data);
         nickRef.current.value = data.data['nick_name'];
         emailRef.current.value = data.data['email'];
@@ -87,7 +86,6 @@ export default function UserProfile() {
       profiles['nick_name'] = nickRef.current.value;
       profiles['email'] = emailRef.current.value;
       profiles['phone_number'] = phoneNumberRef.current.value;
-      console.log(profiles);
       const { data } = await post(
         '/account/user/profiles',
         profiles,
@@ -132,7 +130,6 @@ export default function UserProfile() {
   }
 
   function Icon() {
-    console.log(profilesForm ? profilesForm['img'] || 'cxcx' : 'cxcx');
     return (
       <CardAvatar profile>
         <Avatar  size={86} src={
@@ -163,24 +160,6 @@ export default function UserProfile() {
             </CardHeader>
             <CardBody>
               <GridContainer>
-                {/* <p className={useStyles.cardCategory}>ID</p> */}
-                {/* <CustomInput
-                    labelText="ID : 1"
-                    id="company-disabled"
-                    formControlProps={{
-                      fullWidth: true,
-                    }}
-                    inputProps={{
-                      disabled: true,
-                    }}
-                  /> */}
-                {/* <CustomInput
-                  labelText="昵称"
-                  id="username"
-                  formControlProps={{
-                    fullWidth: true,
-                  }}
-                /> */}
                 <GridItem xs={12} sm={6} md={4}>
                   <TextField
                     error={nicknameErrorInput}

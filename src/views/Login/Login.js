@@ -56,7 +56,6 @@ export default function Login() {
   };
 
   const clickLogin = async () => {
-    console.log(loginForm);
     try {
       const res = await axios.post(
         urlPrefix + '/account/user/login',
