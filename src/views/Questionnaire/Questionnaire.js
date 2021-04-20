@@ -360,7 +360,6 @@ export default function Questionnaire(props) {
           <div
             style={{
               background: "#1890ff",
-              width: "100%",
               height: "3px",
               marginBottom: "10px",
             }}
@@ -397,14 +396,14 @@ export default function Questionnaire(props) {
             );
           })}
         </div>
-        {/* <div
+        <div
           style={{
             width: "100%",
             display: "flex",
             justifyContent: "center",
             borderBottom: "#cac6c6 2px solid",
           }}
-        > */}
+        > 
           <Button
             type="primary"
             size="large"
@@ -414,7 +413,7 @@ export default function Questionnaire(props) {
           >
             提交
           </Button>
-        {/* </div> */}
+        </div> 
       </div>
     );
   };
