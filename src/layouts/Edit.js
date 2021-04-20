@@ -10,9 +10,9 @@ import "perfect-scrollbar/css/perfect-scrollbar.css";
 
 import { makeStyles } from "@material-ui/core/styles";
 
-import styles from "assets/jss/material-dashboard-react/layouts/adminStyle.js";
+import styles from "assets/jss/material-dashboard-react/layouts/editStyle.js";
 
-import { Layout, Button, Space } from "antd";
+import { Button, Space } from "antd";
 import { ClockCircleTwoTone } from "@ant-design/icons";
 
 let ps;
@@ -110,34 +110,34 @@ export default function Edit(props) {
     };
   }, [mainPanel]);
   return (
-      <Layout>
-        <EditSider {...state} />
-    <div ref={mainPanel}>
-        <EditContent id="content" {...state} />
+    <div className={classes.wrapper}>
+      <EditSider {...state} />
+      <div style={{ maxHeight: "100%" }} ref={mainPanel}>
+        <EditContent {...state} />
+      </div>
+      <div style={{ position: "absolute", right: "20px", top: "5px" }}>
+        <Space size={3}>
+          <Button
+            loading={states.loading}
+            type="primary"
+            onClick={preserveAndRedirect}
+          >
+            {"完成编辑"}
+          </Button>
+          <Button
+            type="primary"
+            onClick={preserve}
+            icon={<ClockCircleTwoTone />}
+          >
+            <span>
+              {states.save ? "自动保存中..." : "保存"} ({states.countDown})
+            </span>
+          </Button>
+          <Button type="primary" onClick={backToPrevious}>
+            <span>{"返回"}</span>
+          </Button>
+        </Space>
+      </div>
     </div>
-        <div style={{ position: "fixed", right: "5%" }}>
-          <Space size={3}>
-            <Button
-              loading={states.loading}
-              type="primary"
-              onClick={preserveAndRedirect}
-            >
-              {"完成编辑"}
-            </Button>
-            <Button
-              type="primary"
-              onClick={preserve}
-              icon={<ClockCircleTwoTone />}
-            >
-              <span>
-                {states.save ? "自动保存中..." : "保存"} ({states.countDown})
-              </span>
-            </Button>
-            <Button type="primary" onClick={backToPrevious}>
-              <span>{"返回"}</span>
-            </Button>
-          </Space>
-        </div>
-      </Layout>
   );
 }

@@ -353,8 +353,8 @@ export default function Questionnaire(props) {
   }, [mainPanel]);
   const Panel = () => {
     return (
-      <div className={classes.questionnairePreview} ref={mainPanel}>
-        <div className={classes.questionnaireView}>
+      <div className={classes.questionnairePreview} >
+        <div className={classes.questionnaireView} ref={mainPanel}>
           <h1 style={{ textAlign: "center" }}>{answers.title}</h1>
           <h3>{answers.description}</h3>
           <div
@@ -397,14 +397,14 @@ export default function Questionnaire(props) {
             );
           })}
         </div>
-        <div
+        {/* <div
           style={{
             width: "100%",
             display: "flex",
             justifyContent: "center",
             borderBottom: "#cac6c6 2px solid",
           }}
-        >
+        > */}
           <Button
             type="primary"
             size="large"
@@ -414,7 +414,7 @@ export default function Questionnaire(props) {
           >
             提交
           </Button>
-        </div>
+        {/* </div> */}
       </div>
     );
   };

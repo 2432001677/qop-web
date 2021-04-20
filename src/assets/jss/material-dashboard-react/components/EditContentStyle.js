@@ -43,7 +43,6 @@ const styles = {
     boxShadow: '0px 0px 5px 6px #dcdee2',
     height: 'auto',
     width: '60vw',
-    overflow: 'hidden',
     '&:hover': {
       boxShadow: '0px 0px 2px 3px #2b85e4',
     },

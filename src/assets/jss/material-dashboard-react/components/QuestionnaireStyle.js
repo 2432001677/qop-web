@@ -3,7 +3,6 @@ import { transition } from "assets/jss/material-dashboard-react.js";
 const styles = {
   questionnairePreview: {
     background: " #f4f4f4f4",
-    minHeight: "100%",
     padding: "80px 0",
     // backgroundImage: url('../assets/bacg.jpg'),
     backgroundSize: "cover",
@@ -11,7 +10,8 @@ const styles = {
     position: "relative",
     float: "right",
     ...transition,
-    maxHeight: "100%",
+    minHeight: "100%",
+    height: "100vh",
     width: "100%",
     overflowScrolling: "touch",
   },
@@ -20,6 +20,8 @@ const styles = {
     margin: "0 auto",
     background: "white",
     padding: "30px 50px",
+    maxHeight: "100%",
+    minHeight: "100%",
   },
   questionTitle: {
     fontSize: "20px",
