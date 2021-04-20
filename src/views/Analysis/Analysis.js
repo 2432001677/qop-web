@@ -3,6 +3,7 @@ import React, { useEffect, useState, useRef } from "react";
 import * as echarts from "echarts";
 
 import classnames from "classnames";
+import { questionTypeList } from "variables/questions.js";
 import { get, post } from "Utils/Axios.js";
 
 import PerfectScrollbar from "perfect-scrollbar";
@@ -24,7 +25,7 @@ export default function Analysis(props) {
     answerCount: 55,
     analysisFormList: [
       {
-        qtitle: "单选题",
+        qtitle: "你当前的心情",
         qtype: 0,
         answerCount: 22,
         options: [
@@ -34,7 +35,7 @@ export default function Analysis(props) {
         ],
       },
       {
-        qtitle: "填空题",
+        qtitle: "随便说",
         qtype: 2,
         answerCount: 22,
         options: [
@@ -48,6 +49,16 @@ export default function Analysis(props) {
           { text: "xczcxz" },
         ],
       },
+      {
+        qtitle: "我全都要",
+        qtype: 1,
+        answerCount: 42,
+        options: [
+          { selectedCount: 30, text: "苹果🍎" },
+          { selectedCount: 51, text: "香蕉🍌" },
+          { selectedCount: 49, text: "西瓜🍉" },
+        ],
+      },
     ],
   };
 
@@ -57,7 +68,7 @@ export default function Analysis(props) {
       let myChart = echarts.init(refDom.current[index]);
       let optionData = [];
       let optionCount = [];
-      let options = this.statistic.analysisFormList[index].options;
+      let options = statistic.analysisFormList[index].options;
       for (let i = 0; i < options.length; i++) {
         optionData.push(options[i].text);
         optionCount.push(options[i].selectedCount);
@@ -65,8 +76,7 @@ export default function Analysis(props) {
       // 绘制图表
       myChart.setOption({
         title: {
-          text:
-            "答题人数：" + this.statistic.analysisFormList[index].answerCount,
+          text: "答题人数：" + statistic.analysisFormList[index].answerCount,
           left: "center",
         },
         tooltip: {},
@@ -90,7 +100,6 @@ export default function Analysis(props) {
       });
     };
     const chartFn = (index) => {
-      console.log(refDom.current[index]);
       let pieChart = echarts.init(refDom.current[index]);
       let optionData = [];
       let optionCount = [];
@@ -145,9 +154,9 @@ export default function Analysis(props) {
     };
     const analyze = () => {
       for (let i = 0; i < statistic.analysisFormList.length; i++) {
-        if (statistic.analysisFormList[i].qtype === 2) {
-          continue;
-        } else {
+        if (statistic.analysisFormList[i].qtype === 1) {
+          drawLine(i);
+        } else if (statistic.analysisFormList[i].qtype !== 2) {
           chartFn(i);
         }
       }
@@ -165,13 +174,13 @@ export default function Analysis(props) {
             [classes.titleSize]: true,
           })}
         >
-          回答数：{props.answerCount}
+          {`回答数：${props.answerCount}`}
         </span>
         <div className={classes.blankScroll}>
-          {props.options.map((prop) => {
+          {props.options.map((prop, key) => {
             return (
               <div
-                key={prop.text}
+                key={`text-${key}`}
                 className={classnames({
                   [classes.analysisQuestionTitle]: true,
                   [classes.blankAnswers]: true,
@@ -216,7 +225,7 @@ export default function Analysis(props) {
       </div>
       <button
         className={classes.floatButton}
-        // onClick={"backToTop()"}
+        onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
       >
         <img src={top} aria-hidden="true" />
         {"Top"}
@@ -226,7 +235,7 @@ export default function Analysis(props) {
           <div className={classes.analysisQuestionDiv} key={`title-${key}`}>
             <div className={classes.analysisQuestions}>
               <div className={classes.analysisQuestionTitle}>
-                {`Q${key + 1}: ${prop.qtitle} ${prop.qtype}`}
+                {`Q${key + 1}: ${prop.qtitle} ${questionTypeList[prop.qtype]}`}
               </div>
               <Statistic index={key} {...prop} />
             </div>
