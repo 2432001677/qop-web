@@ -21,6 +21,7 @@ const styles = {
 
   analysisQuestionnaireTitle: {
     fontSize: "20px",
+    color: "#000",
     fontWeight: "600",
   },
 
@@ -62,15 +63,10 @@ const styles = {
     justifyContent: "center",
     alignItems: "center",
   },
-
-  blankPage: {
-    display: "flex",
-    justifyContent: "space-between",
-  },
   floatButton: {
     position: "fixed",
     cursor: "pointer",
-    width: "40px",
+    width: "60px",
     bottom: "50px",
     fontSize: "12px",
     right: "50px",

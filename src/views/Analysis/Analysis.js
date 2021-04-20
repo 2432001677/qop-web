@@ -1,4 +1,8 @@
 import React, { useEffect, useState, useRef } from "react";
+
+import * as echarts from "echarts";
+
+import classnames from "classnames";
 import { get, post } from "Utils/Axios.js";
 
 import PerfectScrollbar from "perfect-scrollbar";
@@ -8,51 +12,200 @@ import styles from "assets/jss/material-dashboard-react/views/analysisStyle.js";
 
 import { makeStyles } from "@material-ui/core/styles";
 
+import top from "assets/img/top.svg";
+
 const useStyles = makeStyles(styles);
 
 export default function Analysis(props) {
   const classes = useStyles();
+  const refDom = useRef([]);
   const statistic = {
-    title:'title',
+    title: "问卷",
     answerCount: 55,
     analysisFormList: [
       {
-        qtitle: '单选题',
-        qtype:0
-      }
+        qtitle: "单选题",
+        qtype: 0,
+        answerCount: 22,
+        options: [
+          { selectedCount: 30, text: "开心" },
+          { selectedCount: 51, text: "一般" },
+          { selectedCount: 29, text: "痛苦" },
+        ],
+      },
+      {
+        qtitle: "填空题",
+        qtype: 2,
+        answerCount: 22,
+        options: [
+          { text: "xczcxz" },
+          { text: "xczcxz" },
+          { text: "xczcxz" },
+          { text: "xczcxz" },
+          { text: "xczcxz" },
+          { text: "xczcxz" },
+          { text: "xczcxz" },
+          { text: "xczcxz" },
+        ],
+      },
     ],
   };
-  const Statistic = () => {
+
+  useEffect(() => {
+    const drawLine = (index) => {
+      console.log(refDom.current[index]);
+      let myChart = echarts.init(refDom.current[index]);
+      let optionData = [];
+      let optionCount = [];
+      let options = this.statistic.analysisFormList[index].options;
+      for (let i = 0; i < options.length; i++) {
+        optionData.push(options[i].text);
+        optionCount.push(options[i].selectedCount);
+      }
+      // 绘制图表
+      myChart.setOption({
+        title: {
+          text:
+            "答题人数：" + this.statistic.analysisFormList[index].answerCount,
+          left: "center",
+        },
+        tooltip: {},
+        xAxis: {
+          data: optionData,
+        },
+        yAxis: {},
+        series: [
+          {
+            type: "bar",
+            data: optionCount,
+            itemStyle: {
+              color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
+                { offset: 0, color: "#83bff6" },
+                { offset: 0.5, color: "#188df0" },
+                { offset: 1, color: "#188df0" },
+              ]),
+            },
+          },
+        ],
+      });
+    };
+    const chartFn = (index) => {
+      console.log(refDom.current[index]);
+      let pieChart = echarts.init(refDom.current[index]);
+      let optionData = [];
+      let optionCount = [];
+      let options = statistic.analysisFormList[index].options;
+      for (let i = 0; i < options.length; i++) {
+        optionData.push(options[i].text);
+        optionCount[i] = {};
+        optionCount[i]["value"] = options[i].selectedCount;
+        optionCount[i]["name"] = options[i].text;
+      }
+
+      // if (this.statistic.analysisFormList[index].qtype === "比重") {
+      // }
+      pieChart.setOption({
+        title: {
+          text: "答题人数：" + statistic.analysisFormList[index].answerCount,
+          left: "center",
+        },
+        tooltip: {
+          trigger: "item",
+          formatter: "{a} <br/>{b} : {c} ({d}%)",
+        },
+        legend: {
+          orient: "vertical",
+          left: "left",
+          data: optionData,
+        },
+        series: [
+          {
+            name: "选项",
+            type: "pie",
+            radius: ["50%", "70%"],
+            avoidLabelOverlap: false,
+            label: {
+              show: false,
+              position: "center",
+            },
+            emphasis: {
+              label: {
+                show: true,
+                fontSize: "30",
+                fontWeight: "bold",
+              },
+            },
+            labelLine: {
+              show: false,
+            },
+            data: optionCount,
+          },
+        ],
+      });
+    };
+    const analyze = () => {
+      for (let i = 0; i < statistic.analysisFormList.length; i++) {
+        if (statistic.analysisFormList[i].qtype === 2) {
+          continue;
+        } else {
+          chartFn(i);
+        }
+      }
+    };
+    analyze();
+  }, []);
+
+  const BlankStatistic = (props) => {
     return (
       <div>
-        <template v-if="analysis.qtype==='填空'">
-          <span className={classes.analysisQuestionTitle}>
-            回答数：{"analysis.answerCount"}
-          </span>
-          <div className={classes.blankScroll}>
-            <div
-              className={classes.analysisQuestionTitlex}
-              // v-for="(option,index) in analysis.options"
-            >
-              {"option.text"}
-            </div>
-          </div>
-        </template>
-        <template v-else>
-          <div className={classes.analysisQuestion}>
-            <div className={classes.questionTitle}>{"analysis.qtitle"}</div>
-            <div
-              // :ref="['analysis-'+index]"
-              style={{ width: "80%", height: "390px", margin: "0 auto" }}
-            />
-          </div>
-        </template>
+        <span
+          className={classnames({
+            [classes.analysisQuestionTitle]: true,
+            [classes.blankAnswers]: true,
+            [classes.titleSize]: true,
+          })}
+        >
+          回答数：{props.answerCount}
+        </span>
+        <div className={classes.blankScroll}>
+          {props.options.map((prop) => {
+            return (
+              <div
+                key={prop.text}
+                className={classnames({
+                  [classes.analysisQuestionTitle]: true,
+                  [classes.blankAnswers]: true,
+                })}
+              >
+                {prop.text}
+              </div>
+            );
+          })}
+        </div>
       </div>
     );
   };
+  const NormalStatistic = (props) => {
+    return (
+      <div className={classes.analysisQuestion}>
+        <div className={classes.questionTitle}>{props.qtitle}</div>
+        <div
+          style={{ width: "80%", height: "390px", margin: "0 auto" }}
+          ref={(node) => (refDom.current[props.index] = node)}
+        />
+      </div>
+    );
+  };
+  const Statistic = ({ qtype, ...rest }) => {
+    console.log(props);
+    if (qtype === 2) {
+      return <BlankStatistic {...rest} />;
+    } else {
+      return <NormalStatistic {...rest} />;
+    }
+  };
   return (
     <div className={classes.analysis}>
-      <div dataTitle="统计报表" />
       <div className={classes.analysisQuestionnaireTitleDiv}>
         <span className={classes.analysisQuestionnaireTitle}>
           {statistic.title}
@@ -65,7 +218,7 @@ export default function Analysis(props) {
         className={classes.floatButton}
         // onClick={"backToTop()"}
       >
-        {/* <img src="/assets/top.svg" aria-hidden="true" /> */}
+        <img src={top} aria-hidden="true" />
         {"Top"}
       </button>
       {statistic.analysisFormList.map((prop, key) => {
@@ -75,21 +228,11 @@ export default function Analysis(props) {
               <div className={classes.analysisQuestionTitle}>
                 {`Q${key + 1}: ${prop.qtitle} ${prop.qtype}`}
               </div>
+              <Statistic index={key} {...prop} />
             </div>
           </div>
         );
       })}
-      {/* <div
-        className={classes.analysisQuestionDiv}
-        // v-for="(analysis,index) in statistic.analysisFormList"
-        key="analysis.qtitle"
-      >
-        <div className={classes.analysisQuestions}>
-          <div className={classes.analysisQuestionTitle}>
-            Q{"index+1"}: {"analysis.qtitle"} ({"analysis.qtype"})
-          </div>
-        </div>
-      </div> */}
     </div>
   );
 }
