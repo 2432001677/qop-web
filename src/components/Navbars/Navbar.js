@@ -1,19 +1,19 @@
-import React from 'react';
-import classNames from 'classnames';
-import PropTypes from 'prop-types';
+import React from "react";
+import classNames from "classnames";
+import PropTypes from "prop-types";
 // @material-ui/core components
-import { makeStyles } from '@material-ui/core/styles';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import IconButton from '@material-ui/core/IconButton';
-import Hidden from '@material-ui/core/Hidden';
+import { makeStyles } from "@material-ui/core/styles";
+import AppBar from "@material-ui/core/AppBar";
+import Toolbar from "@material-ui/core/Toolbar";
+import IconButton from "@material-ui/core/IconButton";
+import Hidden from "@material-ui/core/Hidden";
 // @material-ui/icons
-import Menu from '@material-ui/icons/Menu';
+import Menu from "@material-ui/icons/Menu";
 // core components
-import AdminNavbarLinks from './AdminNavbarLinks.js';
-import Button from 'components/CustomButtons/Button.js';
+import AdminNavbarLinks from "./AdminNavbarLinks.js";
+import Button from "components/CustomButtons/Button.js";
 
-import styles from 'assets/jss/material-dashboard-react/components/headerStyle.js';
+import styles from "assets/jss/material-dashboard-react/components/headerStyle.js";
 
 const useStyles = makeStyles(styles);
 
@@ -31,7 +31,7 @@ export default function Header(props) {
   }
   const { color } = props;
   const appBarClasses = classNames({
-    [' ' + classes[color]]: color,
+    [" " + classes[color]]: color,
   });
 
   return (
@@ -44,7 +44,7 @@ export default function Header(props) {
           </Button>
         </div>
         <Hidden smDown implementation="css">
-          <AdminNavbarLinks state={props.state} />
+          <AdminNavbarLinks />
         </Hidden>
         <Hidden mdUp implementation="css">
           <IconButton
@@ -61,7 +61,7 @@ export default function Header(props) {
 }
 
 Header.propTypes = {
-  color: PropTypes.oneOf(['primary', 'info', 'success', 'warning', 'danger']),
+  color: PropTypes.oneOf(["primary", "info", "success", "warning", "danger"]),
   state: PropTypes.object,
   handleDrawerToggle: PropTypes.func,
   routes: PropTypes.arrayOf(PropTypes.object),

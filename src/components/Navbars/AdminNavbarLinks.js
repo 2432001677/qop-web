@@ -1,32 +1,31 @@
-import React from 'react';
-import classNames from 'classnames';
+import React from "react";
+import classNames from "classnames";
 // @material-ui/core components
-import { makeStyles } from '@material-ui/core/styles';
-import MenuItem from '@material-ui/core/MenuItem';
-import MenuList from '@material-ui/core/MenuList';
-import Grow from '@material-ui/core/Grow';
-import Paper from '@material-ui/core/Paper';
-import ClickAwayListener from '@material-ui/core/ClickAwayListener';
-import Hidden from '@material-ui/core/Hidden';
-import Poppers from '@material-ui/core/Popper';
-import Divider from '@material-ui/core/Divider';
+import { makeStyles } from "@material-ui/core/styles";
+import MenuItem from "@material-ui/core/MenuItem";
+import MenuList from "@material-ui/core/MenuList";
+import Grow from "@material-ui/core/Grow";
+import Paper from "@material-ui/core/Paper";
+import ClickAwayListener from "@material-ui/core/ClickAwayListener";
+import Hidden from "@material-ui/core/Hidden";
+import Poppers from "@material-ui/core/Popper";
+import Divider from "@material-ui/core/Divider";
 // @material-ui/icons
-import Person from '@material-ui/icons/Person';
-import Notifications from '@material-ui/icons/Notifications';
-import AddCircleOutlineIcon from '@material-ui/icons/AddCircleOutline';
+import Person from "@material-ui/icons/Person";
+import Notifications from "@material-ui/icons/Notifications";
+import AddCircleOutlineIcon from "@material-ui/icons/AddCircleOutline";
 // import Dashboard from '@material-ui/icons/Dashboard';
-import Search from '@material-ui/icons/Search';
+import Search from "@material-ui/icons/Search";
 // core components
-import CustomInput from 'components/CustomInput/CustomInput.js';
-import Button from 'components/CustomButtons/Button.js';
+import CustomInput from "components/CustomInput/CustomInput.js";
+import Button from "components/CustomButtons/Button.js";
 
-import styles from 'assets/jss/material-dashboard-react/components/headerLinksStyle.js';
-import { useHistory, Link } from 'react-router-dom';
+import styles from "assets/jss/material-dashboard-react/components/headerLinksStyle.js";
+import { useHistory, Link } from "react-router-dom";
 
 const useStyles = makeStyles(styles);
 
-export default function AdminNavbarLinks(props) {
-  const state = props.state || { login: false };
+export default function AdminNavbarLinks() {
   const classes = useStyles();
   const history = useHistory();
   const [openNotification, setOpenNotification] = React.useState(null);
@@ -53,27 +52,29 @@ export default function AdminNavbarLinks(props) {
   };
 
   const handleLogin = () => {
-    history.push('/login');
+    history.push("/login");
   };
 
   const handleLogout = () => {
-    localStorage.setItem('token', '');
-    state.change(false);
+    localStorage.setItem("token", "");
+    localStorage.setItem("state", "UNKNOW");
   };
 
   const LoginOrLogout = () => {
     return (
       <MenuItem
-        onClick={state.login ? handleLogout : handleLogin}
+        onClick={
+          localStorage.getItem("state") === "LOGIN" ? handleLogout : handleLogin
+        }
         className={classes.dropdownItem}
       >
-        {state.login ? '退出' : '登录'}
+        {localStorage.getItem("state") === "LOGIN" ? "退出" : "登录"}
       </MenuItem>
     );
   };
 
   const createQuestionnaire = () => {
-    history.push('/edit');
+    history.push("/edit");
   };
 
   return (
@@ -81,12 +82,12 @@ export default function AdminNavbarLinks(props) {
       <div className={classes.searchWrapper}>
         <CustomInput
           formControlProps={{
-            className: classes.margin + ' ' + classes.search,
+            className: classes.margin + " " + classes.search,
           }}
           inputProps={{
-            placeholder: '搜索',
+            placeholder: "搜索",
             inputProps: {
-              'aria-label': 'Search',
+              "aria-label": "Search",
             },
           }}
         />
@@ -95,7 +96,7 @@ export default function AdminNavbarLinks(props) {
         </Button>
       </div>
       <Button
-        color={window.innerWidth > 959 ? 'transparent' : 'white'}
+        color={window.innerWidth > 959 ? "transparent" : "white"}
         justIcon={window.innerWidth > 959}
         simple={!(window.innerWidth > 959)}
         aria-label="NEW QUESTIONNAIRE"
@@ -109,10 +110,10 @@ export default function AdminNavbarLinks(props) {
       </Button>
       <div className={classes.manager}>
         <Button
-          color={window.innerWidth > 959 ? 'transparent' : 'white'}
+          color={window.innerWidth > 959 ? "transparent" : "white"}
           justIcon={window.innerWidth > 959}
           simple={!(window.innerWidth > 959)}
-          aria-owns={openNotification ? 'notification-menu-list-grow' : null}
+          aria-owns={openNotification ? "notification-menu-list-grow" : null}
           aria-haspopup="true"
           onClick={handleClickNotification}
           className={classes.buttonLink}
@@ -132,7 +133,7 @@ export default function AdminNavbarLinks(props) {
           disablePortal
           className={
             classNames({ [classes.popperClose]: !openNotification }) +
-            ' ' +
+            " " +
             classes.popperNav
           }
         >
@@ -142,7 +143,7 @@ export default function AdminNavbarLinks(props) {
               id="notification-menu-list-grow"
               style={{
                 transformOrigin:
-                  placement === 'bottom' ? 'center top' : 'center bottom',
+                  placement === "bottom" ? "center top" : "center bottom",
               }}
             >
               <Paper>
@@ -187,10 +188,10 @@ export default function AdminNavbarLinks(props) {
       </div>
       <div className={classes.manager}>
         <Button
-          color={window.innerWidth > 959 ? 'transparent' : 'white'}
+          color={window.innerWidth > 959 ? "transparent" : "white"}
           justIcon={window.innerWidth > 959}
           simple={!(window.innerWidth > 959)}
-          aria-owns={openProfile ? 'profile-menu-list-grow' : null}
+          aria-owns={openProfile ? "profile-menu-list-grow" : null}
           aria-haspopup="true"
           onClick={handleClickProfile}
           className={classes.buttonLink}
@@ -207,7 +208,7 @@ export default function AdminNavbarLinks(props) {
           disablePortal
           className={
             classNames({ [classes.popperClose]: !openProfile }) +
-            ' ' +
+            " " +
             classes.popperNav
           }
         >
@@ -217,7 +218,7 @@ export default function AdminNavbarLinks(props) {
               id="profile-menu-list-grow"
               style={{
                 transformOrigin:
-                  placement === 'bottom' ? 'center top' : 'center bottom',
+                  placement === "bottom" ? "center top" : "center bottom",
               }}
             >
               <Paper>

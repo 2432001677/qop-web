@@ -1,28 +1,28 @@
-import React, { useState } from 'react';
-import { Link, useHistory } from 'react-router-dom';
-import axios from 'axios';
+import React, { useState } from "react";
+import { Link, useHistory } from "react-router-dom";
+import axios from "axios";
 
-import { urlPrefix } from 'Config/Config.js';
-import { emailReg, phoneNumberReg } from 'Utils/Reg.js';
-import Copyright from 'components/Copyright/Copyright.js';
+import { urlPrefix } from "Config/Config.js";
+import { emailReg, phoneNumberReg } from "Utils/Reg.js";
+import Copyright from "components/Copyright/Copyright.js";
 
-import Avatar from '@material-ui/core/Avatar';
-import Button from '@material-ui/core/Button';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import TextField from '@material-ui/core/TextField';
-import Grid from '@material-ui/core/Grid';
-import Box from '@material-ui/core/Box';
-import AccountCircle from '@material-ui/icons/AccountCircle';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
-import Container from '@material-ui/core/Container';
+import Avatar from "@material-ui/core/Avatar";
+import Button from "@material-ui/core/Button";
+import CssBaseline from "@material-ui/core/CssBaseline";
+import TextField from "@material-ui/core/TextField";
+import Grid from "@material-ui/core/Grid";
+import Box from "@material-ui/core/Box";
+import AccountCircle from "@material-ui/icons/AccountCircle";
+import Typography from "@material-ui/core/Typography";
+import { makeStyles } from "@material-ui/core/styles";
+import Container from "@material-ui/core/Container";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
     marginTop: theme.spacing(8),
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
   },
   avatar: {
     margin: theme.spacing(1),
@@ -43,14 +43,14 @@ export default function Login() {
   const changeUserName = (e) => {
     const input = (e.target.value = e.target.value.trim());
     const isValid = emailReg(input) || phoneNumberReg(input);
-    loginForm['user_name'] = isValid ? input : '';
+    loginForm["user_name"] = isValid ? input : "";
     setUsernameErrorInput(!isValid);
     setLoginForm(loginForm);
   };
 
   const changePassword = (e) => {
     const input = (e.target.value = e.target.value.trim());
-    loginForm['password'] = input || '';
+    loginForm["password"] = input || "";
     setPasswordErrorInput(!input);
     setLoginForm(loginForm);
   };
@@ -58,13 +58,14 @@ export default function Login() {
   const clickLogin = async () => {
     try {
       const res = await axios.post(
-        urlPrefix + '/account/user/login',
+        urlPrefix + "/account/user/login",
         loginForm,
         { validateStatus: false }
       );
       if (res.status === 200) {
-        localStorage.setItem('token', res.headers.authorization);
-        history.push({ pathname: '/admin', state: true  });
+        localStorage.setItem("token", res.headers.authorization);
+        localStorage.setItem("state", "LOGIN");
+        history.push("/admin/questionnaire");
       } else {
         alert(res.data.msg);
       }
@@ -95,7 +96,7 @@ export default function Login() {
           name="email"
           autoComplete="email"
           autoFocus
-          helperText={usernameErrorInput ? '请输入正确的账号' : ''}
+          helperText={usernameErrorInput ? "请输入正确的账号" : ""}
         />
         <TextField
           error={passwordErrorInput}
@@ -109,7 +110,7 @@ export default function Login() {
           type="password"
           id="password"
           autoComplete="current-password"
-          helperText={passwordErrorInput ? '请输入正确的密码' : ''}
+          helperText={passwordErrorInput ? "请输入正确的密码" : ""}
         />
         <Button
           fullWidth

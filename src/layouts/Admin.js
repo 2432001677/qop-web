@@ -22,14 +22,7 @@ let ps;
 
 const useStyles = makeStyles(styles);
 
-export default function Admin(props) {
-  console.log(props);
-  const success = props.location.state === true ? true : false;
-  const [login, setLogin] = useState(success);
-  const state = {
-    login: login,
-    change: setLogin,
-  };
+export default function Admin() {
   const switchRoutes = (
     <Switch>
       {routes.map((prop, key) => {
@@ -126,7 +119,6 @@ export default function Admin(props) {
         <Navbar
           routes={routes}
           handleDrawerToggle={handleDrawerToggle}
-          state={state}
         />
         <div className={classes.content}>
           <div className={classes.container}>
