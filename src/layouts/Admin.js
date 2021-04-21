@@ -23,6 +23,7 @@ let ps;
 const useStyles = makeStyles(styles);
 
 export default function Admin(props) {
+  console.log(props);
   const success = props.location.state === true ? true : false;
   const [login, setLogin] = useState(success);
   const state = {
@@ -88,7 +89,6 @@ export default function Admin(props) {
   };
   // initialize and destroy the PerfectScrollbar plugin
   React.useEffect(() => {
-      console.log(`${mainPanel.current}dsad`);
     if (
       navigator.platform.indexOf("Win") > -1 ||
       navigator.platform.indexOf("Linux") > -1
@@ -135,14 +135,14 @@ export default function Admin(props) {
           </div>
         </div>
         <Footer />
-        <FixedPlugin
+        {/* <FixedPlugin
           handleImageClick={handleImageClick}
           handleColorClick={handleColorClick}
           bgColor={color}
           bgImage={image}
           handleFixedClick={handleFixedClick}
           fixedClasses={fixedClasses}
-        />
+        /> */}
       </div>
     </div>
   );

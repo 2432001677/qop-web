@@ -1,5 +1,3 @@
-import { transition } from "assets/jss/material-dashboard-react.js";
-
 const styles = {
   questionnairePreview: {
     background: " #f4f4f4f4",

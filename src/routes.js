@@ -19,11 +19,18 @@ import NotificationsPage from 'views/Notifications/Notifications.js';
 import Maps from 'views/Maps/Maps.js';
 
 const dashboardRoutes = [
+  // {
+  //   path: '/dashboard',
+  //   name: '问卷中心',
+  //   icon: Dashboard,
+  //   component: DashboardPage,
+  //   layout: '/admin',
+  // },
   {
-    path: '/dashboard',
-    name: '问卷中心',
-    icon: Dashboard,
-    component: DashboardPage,
+    path: '/questionnaire',
+    name: '我的问卷',
+    icon: 'content_paste',
+    component: MyQuestionnaire,
     layout: '/admin',
   },
   {
@@ -31,13 +38,6 @@ const dashboardRoutes = [
     name: '个人资料',
     icon: Person,
     component: UserProfile,
-    layout: '/admin',
-  },
-  {
-    path: '/questionnaire',
-    name: '我的问卷',
-    icon: 'content_paste',
-    component: MyQuestionnaire,
     layout: '/admin',
   },
   // {
@@ -72,7 +72,7 @@ const dashboardRoutes = [
   },
   {
     path: '/notifications',
-    name: 'Notifications',
+    name: '通知管理',
     icon: Notifications,
     component: NotificationsPage,
     layout: '/admin',

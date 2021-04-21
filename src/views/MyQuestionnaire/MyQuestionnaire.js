@@ -102,7 +102,6 @@ export default function MyQuestionnaire() {
     setSize(size);
     setLoading(true);
     try {
-      console.log(`current:${current},size:${size}`);
       const { data } = await getPages(
         "/account/user/my-questionnaire",
         current,
@@ -198,6 +197,9 @@ export default function MyQuestionnaire() {
                 </Button>
                 <Button onClick={clickEdit} color="default">
                   编辑
+                </Button>
+                <Button onClick={clickEdit} color="inherit">
+                  结果
                 </Button>
                 <Button onClick={clickDelete(item.id)}>删除</Button>
               </ButtonGroup>,

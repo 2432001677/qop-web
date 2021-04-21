@@ -26,7 +26,6 @@ import { useHistory, Link } from 'react-router-dom';
 const useStyles = makeStyles(styles);
 
 export default function AdminNavbarLinks(props) {
-  console.log('adminnavbar');
   const state = props.state || { login: false };
   const classes = useStyles();
   const history = useHistory();
@@ -85,7 +84,7 @@ export default function AdminNavbarLinks(props) {
             className: classes.margin + ' ' + classes.search,
           }}
           inputProps={{
-            placeholder: 'Search',
+            placeholder: '搜索',
             inputProps: {
               'aria-label': 'Search',
             },

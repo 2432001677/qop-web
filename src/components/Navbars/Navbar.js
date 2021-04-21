@@ -18,7 +18,6 @@ import styles from 'assets/jss/material-dashboard-react/components/headerStyle.j
 const useStyles = makeStyles(styles);
 
 export default function Header(props) {
-  console.log('navbar');
   const classes = useStyles();
   function makeBrand() {
     var name;

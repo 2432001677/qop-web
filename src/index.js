@@ -24,7 +24,7 @@ ReactDOM.render(
       <Route path="/edit" component={Edit} />
       <Route path="/questionnaire/:id" component={Questionnaire} />
       <Route path="/analysis/:id" component={Analysis} />
-      <Redirect from="/" to="/admin/dashboard" />
+      <Redirect from="/" to="/admin/questionnaire" />
     </Switch>
   </Router>,
   document.getElementById("root")

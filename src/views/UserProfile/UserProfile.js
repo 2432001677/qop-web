@@ -1,45 +1,45 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { get, post } from 'Utils/Axios.js';
-import { emailReg, phoneNumberReg } from 'Utils/Reg.js';
+import React, { useEffect, useState, useRef } from "react";
+import { get, post } from "Utils/Axios.js";
+import { emailReg, phoneNumberReg } from "Utils/Reg.js";
 
-import { Avatar } from 'antd';
+import { Avatar } from "antd";
 
 // @material-ui/core components
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles } from "@material-ui/core/styles";
 // import InputLabel from "@material-ui/core/InputLabel";
 // core components
-import GridItem from 'components/Grid/GridItem.js';
-import GridContainer from 'components/Grid/GridContainer.js';
-import Button from 'components/CustomButtons/Button.js';
-import Card from 'components/Card/Card.js';
-import CardHeader from 'components/Card/CardHeader.js';
-import CardAvatar from 'components/Card/CardAvatar.js';
-import CardBody from 'components/Card/CardBody.js';
-import CardFooter from 'components/Card/CardFooter.js';
+import GridItem from "components/Grid/GridItem.js";
+import GridContainer from "components/Grid/GridContainer.js";
+import Button from "components/CustomButtons/Button.js";
+import Card from "components/Card/Card.js";
+import CardHeader from "components/Card/CardHeader.js";
+import CardAvatar from "components/Card/CardAvatar.js";
+import CardBody from "components/Card/CardBody.js";
+import CardFooter from "components/Card/CardFooter.js";
 
-import TextField from '@material-ui/core/TextField';
-import AccountCircle from '@material-ui/icons/AccountCircle';
-import InputAdornment from '@material-ui/core/InputAdornment';
-import MailIcon from '@material-ui/icons/Mail';
-import PhoneIcon from '@material-ui/icons/Phone';
-import Snackbar from '@material-ui/core/Snackbar';
-import Fade from '@material-ui/core/Fade';
-import Slide from '@material-ui/core/Slide';
+import TextField from "@material-ui/core/TextField";
+import AccountCircle from "@material-ui/icons/AccountCircle";
+import InputAdornment from "@material-ui/core/InputAdornment";
+import MailIcon from "@material-ui/icons/Mail";
+import PhoneIcon from "@material-ui/icons/Phone";
+import Snackbar from "@material-ui/core/Snackbar";
+import Fade from "@material-ui/core/Fade";
+import Slide from "@material-ui/core/Slide";
 
-import styles from 'assets/jss/material-dashboard-react/views/dashboardStyle.js';
+import styles from "assets/jss/material-dashboard-react/views/dashboardStyle.js";
 
 const useStyles = makeStyles(styles);
 
 export default function UserProfile() {
   const classes = useStyles();
   const [profilesForm, setProfilesForm] = useState({});
-  const [msg, setMsg] = useState('未登录');
+  const [msg, setMsg] = useState("未登录");
   const [nicknameErrorInput, setNicknameErrorInput] = useState(false);
   const [emailErrorInput, setEmailErrorInput] = useState(false);
   const [phoneNumberErrorInput, setPhoneNumberErrorInput] = useState(false);
-  const nickRef = useRef('');
-  const emailRef = useRef('');
-  const phoneNumberRef = useRef('');
+  const nickRef = useRef("");
+  const emailRef = useRef("");
+  const phoneNumberRef = useRef("");
   const [state, setState] = React.useState({
     open: false,
     Transition: Fade,
@@ -59,11 +59,11 @@ export default function UserProfile() {
   useEffect(() => {
     const getUserProfiles = async () => {
       try {
-        const { data } = await get('/account/user/profiles', false, true);
+        const { data } = await get("/account/user/profiles", false, true);
         setProfilesForm(data.data);
-        nickRef.current.value = data.data['nick_name'];
-        emailRef.current.value = data.data['email'];
-        phoneNumberRef.current.value = data.data['phone_number'];
+        nickRef.current.value = data.data["nick_name"];
+        emailRef.current.value = data.data["email"];
+        phoneNumberRef.current.value = data.data["phone_number"];
       } catch (error) {
         console.log(error);
       }
@@ -77,17 +77,17 @@ export default function UserProfile() {
       Transition,
     });
     if (nicknameErrorInput || emailErrorInput || phoneNumberErrorInput) {
-      setMsg('输入格式错误');
+      setMsg("输入格式错误");
       return;
     }
 
     try {
       let profiles = {};
-      profiles['nick_name'] = nickRef.current.value;
-      profiles['email'] = emailRef.current.value;
-      profiles['phone_number'] = phoneNumberRef.current.value;
+      profiles["nick_name"] = nickRef.current.value;
+      profiles["email"] = emailRef.current.value;
+      profiles["phone_number"] = phoneNumberRef.current.value;
       const { data } = await post(
-        '/account/user/profiles',
+        "/account/user/profiles",
         profiles,
         false,
         true
@@ -101,7 +101,7 @@ export default function UserProfile() {
   const changeText = (dataType) => {
     return (e) => {
       const input = (e.target.value = e.target.value.trim());
-      profilesForm[dataType] = input || '';
+      profilesForm[dataType] = input || "";
       setProfilesForm(profilesForm);
       setNicknameErrorInput(!input);
     };
@@ -109,14 +109,14 @@ export default function UserProfile() {
 
   const changeEmail = (e) => {
     const input = (e.target.value = e.target.value.trim());
-    profilesForm['email'] = emailReg(input) ? input : '';
+    profilesForm["email"] = emailReg(input) ? input : "";
     setProfilesForm(profilesForm);
     setEmailErrorInput(!emailReg(input));
   };
 
   const changePhoneNumber = (e) => {
     const input = (e.target.value = e.target.value.trim());
-    profilesForm['phone_number'] = phoneNumberReg(input) ? input : '';
+    profilesForm["phone_number"] = phoneNumberReg(input) ? input : "";
     setProfilesForm(profilesForm);
     setPhoneNumberErrorInput(!phoneNumberReg(input));
   };
@@ -124,7 +124,7 @@ export default function UserProfile() {
   function Name() {
     return (
       <h4 className={classes.cardTitle}>
-        {profilesForm ? profilesForm['nick_name'] : '未知'}
+        {profilesForm ? profilesForm["nick_name"] : "未知"}
       </h4>
     );
   }
@@ -132,12 +132,15 @@ export default function UserProfile() {
   function Icon() {
     return (
       <CardAvatar profile>
-        <Avatar  size={86} src={
+        <Avatar
+          size={86}
+          src={
             profilesForm
-              ? profilesForm['img'] ||
-                'https://pic.iask.cn/fimg/535142567219.jpg'
-              : 'https://pic.iask.cn/fimg/535142567219.jpg'
-          }/>
+              ? profilesForm["img"] ||
+                "https://pic.iask.cn/fimg/535142567219.jpg"
+              : "https://pic.iask.cn/fimg/535142567219.jpg"
+          }
+        />
       </CardAvatar>
     );
   }
@@ -166,7 +169,7 @@ export default function UserProfile() {
                     label="昵称"
                     id="nick-name"
                     variant="outlined"
-                    onChange={changeText('nick_name')}
+                    onChange={changeText("nick_name")}
                     inputRef={nickRef}
                     InputProps={{
                       startAdornment: (
@@ -282,9 +285,7 @@ export default function UserProfile() {
             <CardBody profile>
               <Name />
               <p className={classes.description}>
-                Don{"'"}t be scared of the truth because we need to restart the
-                human foundation in truth And I love you like Kanye loves Kanye
-                I love Rick Owens’ bed design but the back is...
+                我们坚持一件事情，并不是因为这样做了会有效果，而是坚信，这样做是对的
               </p>
             </CardBody>
           </Card>
