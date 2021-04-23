@@ -56,6 +56,15 @@ export default function Login() {
   };
 
   const clickLogin = async () => {
+    const { user_name, password } = loginForm;
+    if (!emailReg(user_name) && !phoneNumberReg(user_name)) {
+      setUsernameErrorInput(true);
+      return;
+    }
+    if (password === undefined || password === null || password === "") {
+      setPasswordErrorInput(true);
+      return;
+    }
     try {
       const res = await axios.post(
         urlPrefix + "/account/user/login",
@@ -74,6 +83,11 @@ export default function Login() {
     }
   };
 
+  const enterEnter = (e) => {
+    if (e.nativeEvent.keyCode === 13) {
+      clickLogin();
+    }
+  };
   return (
     <Container component="main" maxWidth="xs">
       <CssBaseline />
@@ -101,6 +115,7 @@ export default function Login() {
         <TextField
           error={passwordErrorInput}
           onChange={changePassword}
+          onKeyPress={enterEnter}
           variant="outlined"
           margin="normal"
           required

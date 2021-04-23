@@ -48,7 +48,7 @@ export default function LoginIn() {
 
   const clickRegister = async () => {
     try {
-      const { data, status } = await post(
+      const { status } = await post(
         '/account/user/register',
         registerForm,
         false,

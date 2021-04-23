@@ -18,18 +18,17 @@ import { ClockCircleTwoTone } from "@ant-design/icons";
 let ps;
 
 const useStyles = makeStyles(styles);
-export default function Edit(props) {
+export default function Edit() {
   console.log("edit");
   const classes = useStyles();
   const history = useHistory();
   const mainPanel = React.createRef();
+  const [scoring, setScoring] = useState(false);
   const [states, setStates] = useState({
     save: false,
     loading: false,
     countDown: 10,
   });
-  const success = props.location.state === true ? true : false;
-  const [login, setLogin] = useState(success);
   const [questionnaire, setQuestionnaire] = useState({
     title: "title",
     answer_num: 0,
@@ -39,22 +38,17 @@ export default function Edit(props) {
   });
   const [questions, setQuestions] = useState([]);
 
-  const [mobileOpen, setMobileOpen] = useState(false);
-
-  const resizeFunction = () => {
-    if (window.innerWidth >= 960) {
-      setMobileOpen(false);
-    }
-  };
   const state = {
-    login: login,
-    change: setLogin,
+    scoring,
     questionnaire,
     setQuestionnaire,
     questions,
     setQuestions,
   };
 
+  const switchScoringMode = () => {
+    setScoring(!scoring);
+  };
   const preserveAndRedirect = () => {
     preserve();
     history.goBack();
@@ -63,6 +57,7 @@ export default function Edit(props) {
     states.loading = true;
     setStates(states);
     questionnaire.questions = questions;
+    questionnaire.scoringMode = scoring;
     try {
       const res = await post(
         "/questionnaire/questionnaire",
@@ -70,6 +65,7 @@ export default function Edit(props) {
         false,
         true
       );
+      console.log(res);
     } catch (error) {
       console.log(error);
     } finally {
@@ -97,7 +93,6 @@ export default function Edit(props) {
       });
       document.body.style.overflow = "hidden";
     }
-    window.addEventListener("resize", resizeFunction);
     // Specify how to clean up after this effect:
     return function cleanup() {
       if (
@@ -106,7 +101,6 @@ export default function Edit(props) {
       ) {
         ps.destroy();
       }
-      window.removeEventListener("resize", resizeFunction);
     };
   }, [mainPanel]);
   return (
@@ -117,6 +111,9 @@ export default function Edit(props) {
       </div>
       <div style={{ position: "absolute", right: "20px", top: "5px" }}>
         <Space size={3}>
+          <Button type="primary" onClick={switchScoringMode}>
+            {"计分模式"}
+          </Button>
           <Button
             loading={states.loading}
             type="primary"

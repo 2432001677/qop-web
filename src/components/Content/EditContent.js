@@ -20,6 +20,7 @@ import {
   Rate,
   Cascader,
   Slider,
+  InputNumber,
 } from "antd";
 const { Content } = Layout;
 const { TextArea } = Input;
@@ -27,7 +28,13 @@ const useStyles = makeStyles(styles);
 
 export default function EditContent(props) {
   const classes = useStyles();
-  const { questionnaire, setQuestionnaire, questions, setQuestions } = props;
+  const {
+    scoring,
+    questionnaire,
+    setQuestionnaire,
+    questions,
+    setQuestions,
+  } = props;
 
   // 删除单个选项按钮
   const DeleteSingleOptionButton = ({ questionIndex, optionIndex }) => {
@@ -63,11 +70,23 @@ export default function EditContent(props) {
           <Input
             maxLength={50}
             placeholder="输入单个选项"
-            defaultValue={value}
+            defaultValue={value.text}
             onChange={(e) =>
-              (question["options"][optionIndex] = e.target.value)
+              (question["options"][optionIndex].text = e.target.value)
             }
             onBlur={() => setQuestions(questions.slice())}
+          />
+          <InputNumber
+            style={{
+              display: scoring ? "inline" : "none",
+            }}
+            min={0}
+            max={100}
+            onChange={(value) =>
+              (question["options"][optionIndex].score = value)
+            }
+            onBlur={() => setQuestions(questions.slice())}
+            defaultValue={value.score}
           />
         </div>
         <DeleteSingleOptionButton {...{ questionIndex, optionIndex }} />
@@ -84,11 +103,23 @@ export default function EditContent(props) {
             style={{ marginLeft: "5px" }}
             maxLength={50}
             placeholder="输入单个选项"
-            defaultValue={value}
+            defaultValue={value.text}
             onChange={(e) =>
-              (question["options"][optionIndex] = e.target.value)
+              (question["options"][optionIndex].text = e.target.value)
             }
             onBlur={() => setQuestions(questions.slice())}
+          />
+          <InputNumber
+            style={{
+              display: scoring ? "inline" : "none",
+            }}
+            min={0}
+            max={100}
+            onChange={(value) =>
+              (question["options"][optionIndex].score = value)
+            }
+            onBlur={() => setQuestions(questions.slice())}
+            defaultValue={value.score}
           />
         </div>
         <DeleteSingleOptionButton {...{ questionIndex, optionIndex }} />
@@ -109,6 +140,16 @@ export default function EditContent(props) {
             (question["options"][optionIndex].label = e.target.value)
           }
           onBlur={() => setQuestions(questions.slice())}
+        />
+        <InputNumber
+          style={{
+            display: scoring ? "inline" : "none",
+          }}
+          min={0}
+          max={100}
+          onChange={(value) => (question["options"][optionIndex].score = value)}
+          onBlur={() => setQuestions(questions.slice())}
+          defaultValue={raw.score}
         />
         <DeleteSingleOptionButton {...{ questionIndex, optionIndex }} />
       </div>
@@ -141,7 +182,7 @@ export default function EditContent(props) {
     const addNewOneOption = () => {
       const question = questions[index];
       const optionNum = question["options"].length + 1;
-      question["options"].push(`选项${optionNum}`);
+      question["options"].push({ text: `选项${optionNum}`, score: 0 });
       question["option_num"] = optionNum;
       setQuestions(questions.slice());
     };
@@ -166,8 +207,31 @@ export default function EditContent(props) {
       question["options"].push({
         value: optionNum,
         label: `选项${optionNum + 1}`,
+        score: 0,
       });
       question["option_num"] = optionNum + 1;
+      setQuestions(questions.slice());
+    };
+    return (
+      <Button
+        className={classes.newOptionAdd}
+        type="primary"
+        onClick={addNewOneOption}
+      >
+        <PlusSquareFilled />
+        {"添加单个选项"}
+      </Button>
+    );
+  };
+
+  // 添加单个选项按钮
+  const AddWeightOptionButton = ({ index }) => {
+    // 添加选项点击事件
+    const addNewOneOption = () => {
+      const question = questions[index];
+      const optionNum = question["options"].length + 1;
+      question["options"].push(`选项${optionNum}`);
+      question["option_num"] = optionNum;
       setQuestions(questions.slice());
     };
     return (
@@ -278,12 +342,19 @@ export default function EditContent(props) {
       <div>
         <span
           style={{
-            display: "inline-block",
+            display: scoring ? "inline-block" : "none",
             marginTop: "10px",
-            marginLeft: "3%",
+            marginLeft: "5%",
           }}
         >
-          {"最大比重总和：100"}
+          {"比重总分"}
+          <InputNumber
+            min={0}
+            max={100}
+            onChange={(value) => (questions[props.index].score = value)}
+            onBlur={() => setQuestions(questions.slice())}
+            defaultValue={questions[props.index].score}
+          />
         </span>
         {props.options.map((prop, key) => {
           return (
@@ -295,7 +366,7 @@ export default function EditContent(props) {
             />
           );
         })}
-        <AddSingleOptionButton index={props.index} />
+        <AddWeightOptionButton index={props.index} />
       </div>
     );
   };

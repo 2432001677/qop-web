@@ -14,7 +14,10 @@ import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
+import ButtonGroup from "@material-ui/core/ButtonGroup";
+
 import DeleteIcon from "@material-ui/icons/Delete";
+import AddCircleIcon from "@material-ui/icons/AddCircle";
 
 // core components
 import GridItem from "components/Grid/GridItem.js";
@@ -70,6 +73,9 @@ export default function Groups() {
 
   const leaveGroup = () => {
     console.log("leave" + groupsInfo[groupIndex].group_name);
+  };
+  const invite = () => {
+    console.log("invite");
   };
   useEffect(() => {
     const getJoinedGroups = async () => {
@@ -144,7 +150,7 @@ export default function Groups() {
         <Card plain>
           <CardHeader plain>
             <Row>
-              <Col span={22}>
+              <Col span={20}>
                 <FormControl className={classes.formControl}>
                   <InputLabel id="demo-simple-select-label">小组</InputLabel>
                   <Select
@@ -163,16 +169,27 @@ export default function Groups() {
                   </Select>
                 </FormControl>
               </Col>
-              <Col span={2}>
-                <Button
-                  variant="contained"
-                  color="primary"
-                  startIcon={<DeleteIcon />}
-                  style={{ margin: "30" }}
-                  onClick={leaveGroup}
-                >
-                  退出
-                </Button>
+              <Col span={4}>
+                <ButtonGroup>
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    startIcon={<AddCircleIcon />}
+                    style={{ margin: "30" }}
+                    onClick={invite}
+                  >
+                    邀请
+                  </Button>
+                  <Button
+                    variant="contained"
+                    color="secondary"
+                    startIcon={<DeleteIcon />}
+                    style={{ margin: "30" }}
+                    onClick={leaveGroup}
+                  >
+                    退出
+                  </Button>
+                </ButtonGroup>
               </Col>
             </Row>
           </CardHeader>

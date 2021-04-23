@@ -30,10 +30,10 @@ export default function EditSider(props) {
     };
     if (qtype === 0) {
       question.qtitle = "单选题";
-      question.options = ["选项1"];
+      question.options = [{ text: "选项1", score: 0 }];
     } else if (qtype === 1) {
       question.qtitle = "多选题";
-      question.options = ["选项1"];
+      question.options = [{ text: "选项1", score: 0 }];
     } else if (qtype === 2) {
       question.qtitle = "填空题";
     } else if (qtype === 3) {
@@ -46,10 +46,12 @@ export default function EditSider(props) {
         {
           value: 0,
           label: "选项1",
+          score: 0,
         },
       ];
     } else if (qtype === 6) {
       question.qtitle = "比重题";
+      question.score = 0;
       question.options = ["选项1"];
     } else if (qtype === 7) {
       question.qtitle = "附件题";
@@ -106,6 +108,18 @@ export default function EditSider(props) {
         icon: <SaveFilled />,
         onClick: addNewOneQuestion(7),
         children: "附件题",
+      },
+    ],
+    [
+      {
+        icon: <PieChartFilled />,
+        onClick: addNewOneQuestion(6),
+        children: "听力题",
+      },
+      {
+        icon: <SaveFilled />,
+        onClick: addNewOneQuestion(7),
+        children: "排序题",
       },
     ],
   ];

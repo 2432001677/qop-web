@@ -29,7 +29,6 @@ export default function Questionnaire(props) {
   const id = props.match.params.id;
   const classes = useStyles();
   const mainPanel = useRef();
-  const [mobileOpen, setMobileOpen] = useState(false);
   const [answers, setAnswers] = useState({
     questionnaire_id: "",
     title: "",
@@ -89,6 +88,7 @@ export default function Questionnaire(props) {
         false,
         true
       );
+      console.log(data);
     } catch (error) {
       console.log(error);
     }
@@ -115,7 +115,7 @@ export default function Questionnaire(props) {
                 key={`option-${key}`}
                 value={key}
               >
-                {prop}
+                {prop.text}
               </Radio>
             );
           })}
@@ -138,8 +138,8 @@ export default function Questionnaire(props) {
         {rest.options.map((prop, key) => {
           return (
             <div key={`option-${key}`}>
-              <Checkbox key={`option-${key}`} value={prop}>
-                {prop}
+              <Checkbox key={`option-${key}`} value={prop.text}>
+                {prop.text}
               </Checkbox>
               <br />
             </div>
@@ -323,11 +323,7 @@ export default function Questionnaire(props) {
       return <UploadFile {...rest} />;
     }
   };
-  const resizeFunction = () => {
-    if (window.innerWidth >= 960) {
-      setMobileOpen(false);
-    }
-  };
+
   React.useEffect(() => {
     if (
       navigator.platform.indexOf("Win") > -1 ||
@@ -339,7 +335,6 @@ export default function Questionnaire(props) {
       });
       document.body.style.overflow = "hidden";
     }
-    window.addEventListener("resize", resizeFunction);
     // Specify how to clean up after this effect:
     return function cleanup() {
       if (
@@ -348,12 +343,11 @@ export default function Questionnaire(props) {
       ) {
         ps.destroy();
       }
-      window.removeEventListener("resize", resizeFunction);
     };
   }, [mainPanel]);
   const Panel = () => {
     return (
-      <div className={classes.questionnairePreview} >
+      <div className={classes.questionnairePreview}>
         <div className={classes.questionnaireView} ref={mainPanel}>
           <h1 style={{ textAlign: "center" }}>{answers.title}</h1>
           <h3>{answers.description}</h3>
@@ -384,9 +378,7 @@ export default function Questionnaire(props) {
                         marginTop: "20px",
                       }}
                     >
-                      <div
-                        style={{ display: "none", color: "red" }}
-                      >
+                      <div style={{ display: "none", color: "red" }}>
                         请完成该问题
                       </div>
                     </div>
@@ -403,7 +395,7 @@ export default function Questionnaire(props) {
             justifyContent: "center",
             borderBottom: "#cac6c6 2px solid",
           }}
-        > 
+        >
           <Button
             type="primary"
             size="large"
@@ -413,7 +405,7 @@ export default function Questionnaire(props) {
           >
             提交
           </Button>
-        </div> 
+        </div>
       </div>
     );
   };
