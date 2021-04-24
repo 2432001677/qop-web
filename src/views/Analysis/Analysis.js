@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 
 import * as echarts from "echarts";
 
-import classnames from "classnames";
+import classNames from "classnames";
 import { questionTypeList } from "variables/questions.js";
 import { get, post } from "Utils/Axios.js";
 
@@ -20,9 +20,11 @@ const useStyles = makeStyles(styles);
 export default function Analysis(props) {
   const classes = useStyles();
   const refDom = useRef([]);
+  
   const statistic = {
     title: "问卷",
     answerCount: 55,
+
     analysisFormList: [
       {
         qtitle: "你当前的心情",
@@ -168,7 +170,7 @@ export default function Analysis(props) {
     return (
       <div>
         <span
-          className={classnames({
+          className={classNames({
             [classes.analysisQuestionTitle]: true,
             [classes.blankAnswers]: true,
             [classes.titleSize]: true,
@@ -181,7 +183,7 @@ export default function Analysis(props) {
             return (
               <div
                 key={`text-${key}`}
-                className={classnames({
+                className={classNames({
                   [classes.analysisQuestionTitle]: true,
                   [classes.blankAnswers]: true,
                 })}

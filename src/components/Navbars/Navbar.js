@@ -22,7 +22,11 @@ export default function Header(props) {
   function makeBrand() {
     var name;
     props.routes.map((prop) => {
-      if (window.location.href.indexOf(prop.layout + prop.path) !== -1) {
+      if (
+        window.location.href.indexOf(
+          prop.layout + (prop.path === undefined ? "" : prop.path)
+        ) !== -1
+      ) {
         name = prop.name;
       }
       return null;

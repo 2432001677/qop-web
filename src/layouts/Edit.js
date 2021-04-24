@@ -19,11 +19,10 @@ let ps;
 
 const useStyles = makeStyles(styles);
 export default function Edit() {
-  console.log("edit");
   const classes = useStyles();
   const history = useHistory();
   const mainPanel = React.createRef();
-  const [scoring, setScoring] = useState(false);
+  const [scoringModeOpen, setScoringModeOpen] = useState(false);
   const [states, setStates] = useState({
     save: false,
     loading: false,
@@ -34,12 +33,13 @@ export default function Edit() {
     answer_num: 0,
     status: 1,
     description: "des",
+    scoring_mode: false,
     questions: [],
   });
   const [questions, setQuestions] = useState([]);
 
   const state = {
-    scoring,
+    scoringModeOpen,
     questionnaire,
     setQuestionnaire,
     questions,
@@ -47,7 +47,7 @@ export default function Edit() {
   };
 
   const switchScoringMode = () => {
-    setScoring(!scoring);
+    setScoringModeOpen(!scoringModeOpen);
   };
   const preserveAndRedirect = () => {
     preserve();
@@ -57,7 +57,7 @@ export default function Edit() {
     states.loading = true;
     setStates(states);
     questionnaire.questions = questions;
-    questionnaire.scoringMode = scoring;
+    questionnaire.pass_mode = scoringModeOpen;
     try {
       const res = await post(
         "/questionnaire/questionnaire",
@@ -112,14 +112,14 @@ export default function Edit() {
       <div style={{ position: "absolute", right: "20px", top: "5px" }}>
         <Space size={3}>
           <Button type="primary" onClick={switchScoringMode}>
-            {"计分模式"}
+            {"PASS模式"}
           </Button>
           <Button
             loading={states.loading}
             type="primary"
             onClick={preserveAndRedirect}
           >
-            {"完成编辑"}
+            {"完成"}
           </Button>
           <Button
             type="primary"

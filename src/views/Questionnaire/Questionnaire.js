@@ -1,5 +1,8 @@
 import React, { useEffect, useState, useRef } from "react";
+import Navbar from "components/Navbars/Navbar.js";
 import { get, post } from "Utils/Axios.js";
+import routes from "routes.js";
+import * as R from "ramda";
 
 import PerfectScrollbar from "perfect-scrollbar";
 import "perfect-scrollbar/css/perfect-scrollbar.css";
@@ -29,12 +32,26 @@ export default function Questionnaire(props) {
   const id = props.match.params.id;
   const classes = useStyles();
   const mainPanel = useRef();
+  const [scoringModeOpen, setScoringModeOpen] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
   const [answers, setAnswers] = useState({
     questionnaire_id: "",
     title: "",
     description: "",
+    scoring_mode: false,
     answered_questions: [],
   });
+
+  const updateAnswers = () => setAnswers({ ...answers });
+  const handleDrawerToggle = () => {
+    setMobileOpen(!mobileOpen);
+  };
+
+  const resizeFunction = () => {
+    if (window.innerWidth >= 960) {
+      setMobileOpen(false);
+    }
+  };
 
   useEffect(() => {
     if (
@@ -47,13 +64,15 @@ export default function Questionnaire(props) {
       });
       document.body.style.overflow = "hidden";
     }
-    return function cleanup() {
+    window.addEventListener("resize", resizeFunction);
+    return () => {
       if (
         navigator.platform.indexOf("Win") > -1 ||
         navigator.platform.indexOf("Linux") > -1
       ) {
         ps.destroy();
       }
+      window.removeEventListener("resize", resizeFunction);
     };
   }, [mainPanel]);
 
@@ -66,6 +85,7 @@ export default function Questionnaire(props) {
           true
         );
         const questionnaire = data.data;
+        setScoringModeOpen(questionnaire.scoring_mode);
         answers.questionnaire_id = questionnaire.id;
         answers.title = questionnaire.title;
         answers.description = questionnaire.description;
@@ -98,14 +118,17 @@ export default function Questionnaire(props) {
   const SingleSelect = ({ index, ...rest }) => {
     const question = answers.answered_questions[index];
     const changeOption = (e) => {
-      question.selected = [e.target.value];
-      setAnswers({ ...answers });
+      const optionIndex = e.target.value;
+      question.answer = [{ option_index: optionIndex }];
+      if (scoringModeOpen) {
+        question.answer[0].score = question.options[optionIndex].score;
+      }
     };
     return (
       <Radio.Group
         style={{ width: "100%" }}
-        onChange={changeOption}
-        value={question.selected ? question.selected[0] : ""}
+        onChange={R.compose(updateAnswers, changeOption)}
+        value={question.answer ? question.answer[0].option_index : ""}
       >
         <div>
           {rest.options.map((prop, key) => {
@@ -125,20 +148,21 @@ export default function Questionnaire(props) {
   };
   const MultiSelect = ({ index, ...rest }) => {
     const question = answers.answered_questions[index];
-    const changeOption = (e) => {
-      question.selected = e;
-      setAnswers({ ...answers });
+    const changeOption = (optionIndex) => {
+      question.answer = optionIndex;
+      question.score = 0;
+      optionIndex.forEach((i) => (question.score += question.options[i].score));
     };
     return (
       <Checkbox.Group
         style={{ marginLeft: "22px" }}
-        onChange={changeOption}
-        value={question.selected}
+        onChange={R.compose(updateAnswers, changeOption)}
+        value={question.answer}
       >
         {rest.options.map((prop, key) => {
           return (
             <div key={`option-${key}`}>
-              <Checkbox key={`option-${key}`} value={prop.text}>
+              <Checkbox key={`option-${key}`} value={key}>
                 {prop.text}
               </Checkbox>
               <br />
@@ -159,9 +183,7 @@ export default function Questionnaire(props) {
         autosize={{ minRows: 6, maxRows: 10 }}
         placeholder="输入文字"
         onChange={(e) => (question.content = e.target.value)}
-        onBlur={() => {
-          setAnswers({ ...answers });
-        }}
+        onBlur={updateAnswers}
         value={question.content}
       />
     );
@@ -170,19 +192,18 @@ export default function Questionnaire(props) {
     const question = answers.answered_questions[index];
     const toolTips = ["很差", "较差", "中等", "较好", "完美"];
     const changeRate = (value) => {
-      question.selected = [value];
-      setAnswers({ ...answers });
+      question.answer = [value];
     };
     return (
       <div>
         <Rate
           tooltips={toolTips}
-          value={question.selected ? question.selected[0] : 0}
-          onChange={changeRate}
+          value={question.answer ? question.answer[0] : 0}
+          onChange={R.compose(updateAnswers, changeRate)}
         />{" "}
-        {question.selected ? (
+        {question.answer ? (
           <span className="ant-rate-text">
-            {toolTips[question.selected[0] - 1]}
+            {toolTips[question.answer[0] - 1]}
           </span>
         ) : (
           ""
@@ -206,37 +227,39 @@ export default function Questionnaire(props) {
   // value可能会重复问题
   const DropdownSelect = ({ index }) => {
     const question = answers.answered_questions[index];
-    const changeValue = (index) => {
-      question.selected = [index];
-      setAnswers({ ...answers });
+    const changeValue = (optionIndex) => {
+      question.answer = [{ option_index: optionIndex[0] }];
+      if (scoringModeOpen) {
+        question.answer[0].score = question.options[optionIndex].score;
+      }
     };
     return (
       <div style={{ marginLeft: "24px" }}>
         <Cascader
           width="500px"
           options={question.options}
-          onChange={changeValue}
-          value={question.selected ? question.selected[0] : ""}
+          onChange={R.compose(updateAnswers, changeValue)}
+          value={question.answer ? [question.answer[0].option_index] : []}
         />
       </div>
     );
   };
   const WeightsAssign = ({ index, ...rest }) => {
     const question = answers.answered_questions[index];
-    if (!question.selected) {
-      question.selected = question.options.map(() => 0);
+    if (!question.answer) {
+      question.answer = question.options.map(() => 0);
     }
     const changeWeight = (index) => {
       return (value) => {
-        question.selected[index] = value;
+        question.answer[index] = value;
       };
     };
 
     const clickStep = (index) => {
-      return (value) => {
-        question.selected[index] = value;
-        setAnswers({ ...answers });
-      };
+      return R.compose(
+        updateAnswers,
+        (value) => (question.answer[index] = value)
+      );
     };
 
     return (
@@ -248,7 +271,7 @@ export default function Questionnaire(props) {
             marginLeft: "3%",
           }}
         >
-          {"最大比重总和：100"}
+          {`最大比重总和：${rest.score}`}
         </span>
         <div className={classes.weightDiv}>
           {rest.options.map((prop, key) => {
@@ -261,9 +284,9 @@ export default function Questionnaire(props) {
                 <Row>
                   <Col span={15}>
                     <Slider
-                      value={question.selected[key]}
+                      value={question.answer[key]}
                       onChange={changeWeight(key)}
-                      onAfterChange={() => setAnswers({ ...answers })}
+                      onAfterChange={updateAnswers}
                     />
                   </Col>
                   <Col span={1}>
@@ -271,9 +294,9 @@ export default function Questionnaire(props) {
                       min={0}
                       max={100}
                       style={{ margin: "0 36px" }}
-                      value={question.selected[key]}
+                      value={question.answer[key]}
                       onChange={changeWeight(key)}
-                      onBlur={() => setAnswers({ ...answers })}
+                      onBlur={updateAnswers}
                       onStep={clickStep(key)}
                     />
                   </Col>
@@ -324,27 +347,6 @@ export default function Questionnaire(props) {
     }
   };
 
-  React.useEffect(() => {
-    if (
-      navigator.platform.indexOf("Win") > -1 ||
-      navigator.platform.indexOf("Linux") > -1
-    ) {
-      ps = new PerfectScrollbar(mainPanel.current, {
-        suppressScrollX: true,
-        suppressScrollY: false,
-      });
-      document.body.style.overflow = "hidden";
-    }
-    // Specify how to clean up after this effect:
-    return function cleanup() {
-      if (
-        navigator.platform.indexOf("Win") > -1 ||
-        navigator.platform.indexOf("Linux") > -1
-      ) {
-        ps.destroy();
-      }
-    };
-  }, [mainPanel]);
   const Panel = () => {
     return (
       <div className={classes.questionnairePreview}>
@@ -410,5 +412,10 @@ export default function Questionnaire(props) {
     );
   };
 
-  return <Panel />;
+  return (
+    <div className={classes.mainPanel} ref={mainPanel}>
+      <Navbar routes={routes} handleDrawerToggle={handleDrawerToggle} />
+      <Panel />
+    </div>
+  );
 }

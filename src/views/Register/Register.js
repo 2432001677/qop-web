@@ -1,35 +1,35 @@
-import React, { useState } from 'react';
-import { Link, useHistory } from 'react-router-dom';
-import { post } from 'Utils/Axios.js';
+import React, { useState } from "react";
+import { Link, useHistory } from "react-router-dom";
+import { post } from "Utils/Axios.js";
 
-import Avatar from '@material-ui/core/Avatar';
-import Button from '@material-ui/core/Button';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import TextField from '@material-ui/core/TextField';
-import Grid from '@material-ui/core/Grid';
-import Box from '@material-ui/core/Box';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
-import Container from '@material-ui/core/Container';
+import Avatar from "@material-ui/core/Avatar";
+import Button from "@material-ui/core/Button";
+import CssBaseline from "@material-ui/core/CssBaseline";
+import TextField from "@material-ui/core/TextField";
+import Grid from "@material-ui/core/Grid";
+import Box from "@material-ui/core/Box";
+import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
+import Typography from "@material-ui/core/Typography";
+import { makeStyles } from "@material-ui/core/styles";
+import Container from "@material-ui/core/Container";
 
-import Copyright from 'components/Copyright/Copyright.js';
-import { emailReg, phoneNumberReg } from 'Utils/Reg.js';
-import ResponsiveDialog from 'components/Dialog/ResponsiveDialog.js';
+import Copyright from "components/Copyright/Copyright.js";
+import { emailReg, phoneNumberReg } from "Utils/Reg.js";
+import ResponsiveDialog from "components/Dialog/ResponsiveDialog.js";
 
 const useStyles = makeStyles((theme) => ({
   paper: {
     marginTop: theme.spacing(8),
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
   },
   avatar: {
     margin: theme.spacing(1),
     backgroundColor: theme.palette.secondary.main,
   },
   form: {
-    width: '100%', // Fix IE 11 issue.
+    width: "100%", // Fix IE 11 issue.
     marginTop: theme.spacing(1),
   },
   submit: {
@@ -47,9 +47,22 @@ export default function LoginIn() {
   const [passwordErrorInput, setPasswordErrorInput] = useState(false);
 
   const clickRegister = async () => {
+    const { user_name, nick_name, password } = registerForm;
+    if (!emailReg(user_name) && !phoneNumberReg(user_name)) {
+      setUsernameErrorInput(true);
+      return;
+    }
+    if (nick_name === undefined || nick_name === null || nick_name === "") {
+      nicknameErrorInput(true);
+      return;
+    }
+    if (password === undefined || password === null || password === "") {
+      setPasswordErrorInput(true);
+      return;
+    }
     try {
       const { status } = await post(
-        '/account/user/register',
+        "/account/user/register",
         registerForm,
         false,
         false
@@ -65,21 +78,21 @@ export default function LoginIn() {
   const changeUsername = (e) => {
     const input = (e.target.value = e.target.value.trim());
     const isValid = emailReg(input) || phoneNumberReg(input);
-    registerForm['user_name'] = isValid ? input : '';
+    registerForm["user_name"] = isValid ? input : "";
     setRegisterForm(registerForm);
     setUsernameErrorInput(!isValid);
   };
 
   const changeNickname = (e) => {
     const input = (e.target.value = e.target.value.trim());
-    registerForm['nick_name'] = input || '';
+    registerForm["nick_name"] = input || "";
     setRegisterForm(registerForm);
     setNicknameErrorInput(!input);
   };
 
   const changePassword = (e) => {
     const input = (e.target.value = e.target.value.trim());
-    registerForm['password'] = input || '';
+    registerForm["password"] = input || "";
     setPasswordErrorInput(!input);
   };
 
@@ -105,7 +118,7 @@ export default function LoginIn() {
           name="email/phone"
           autoComplete="email/phone"
           autoFocus
-          helperText={usernameErrorInput ? '请输入正确的账号' : ''}
+          helperText={usernameErrorInput ? "请输入正确的账号" : ""}
         />
         <TextField
           error={nicknameErrorInput}
@@ -118,7 +131,7 @@ export default function LoginIn() {
           label="昵称"
           name="nick-name"
           autoComplete="nick-name"
-          helperText={nicknameErrorInput ? '请输入正确的昵称' : ''}
+          helperText={nicknameErrorInput ? "请输入正确的昵称" : ""}
         />
         <TextField
           error={passwordErrorInput}
@@ -132,7 +145,7 @@ export default function LoginIn() {
           type="password"
           id="password"
           autoComplete="current-password"
-          helperText={passwordErrorInput ? '请输入正确的密码' : ''}
+          helperText={passwordErrorInput ? "请输入正确的密码" : ""}
         />
         <Button
           fullWidth
@@ -157,7 +170,7 @@ export default function LoginIn() {
         open={openDialog}
         onChange={setOpenDialog}
         onExit={() => {
-          history.push('/login');
+          history.push("/login");
         }}
       />
     </Container>

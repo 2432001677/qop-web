@@ -1,15 +1,30 @@
 import React, { useState } from "react";
+import * as R from "ramda";
+import classNames from "classnames";
+
+import InputLabel from "@material-ui/core/InputLabel";
+import MenuItem from "@material-ui/core/MenuItem";
+import FormControl from "@material-ui/core/FormControl";
+import Select from "@material-ui/core/Select";
 
 import { makeStyles } from "@material-ui/core/styles";
-import styles from "assets/jss/material-dashboard-react/components/EditContentStyle.js";
+import {
+  styles,
+  defaultColor,
+  planningColor,
+  attentionColor,
+  simultaneousColor,
+  successiveColor,
+} from "assets/jss/material-dashboard-react/components/EditContentStyle.js";
 
 import {
-  PoweroffOutlined,
   DeleteOutlined,
   PlusSquareFilled,
   DeleteFilled,
   HeartOutlined,
   DownOutlined,
+  CaretUpOutlined,
+  CaretDownOutlined,
 } from "@ant-design/icons";
 import {
   Layout,
@@ -29,12 +44,28 @@ const useStyles = makeStyles(styles);
 export default function EditContent(props) {
   const classes = useStyles();
   const {
-    scoring,
+    scoringModeOpen,
     questionnaire,
     setQuestionnaire,
     questions,
     setQuestions,
   } = props;
+  const colorList = [
+    defaultColor,
+    planningColor,
+    attentionColor,
+    simultaneousColor,
+    successiveColor,
+  ];
+  const hoverList = [
+    classes.defaultHover,
+    classes.planningHover,
+    classes.attentionHover,
+    classes.simultaneousHover,
+    classes.successiveHover,
+  ];
+  const updateQuestionnaire = () => setQuestionnaire(questionnaire.slice());
+  const updateQuestions = () => setQuestions(questions.slice());
 
   // 删除单个选项按钮
   const DeleteSingleOptionButton = ({ questionIndex, optionIndex }) => {
@@ -47,7 +78,6 @@ export default function EditContent(props) {
       const optionNum = question["options"].length - 1;
       question["options"].splice(optionIndex, 1);
       question["option_num"] = optionNum;
-      setQuestions(questions.slice());
     };
     return (
       <Button
@@ -55,7 +85,7 @@ export default function EditContent(props) {
         shape="circle"
         size="small"
         icon={<DeleteOutlined />}
-        onClick={deleteOneOption}
+        onClick={R.compose(updateQuestions, deleteOneOption)}
       />
     );
   };
@@ -70,22 +100,24 @@ export default function EditContent(props) {
           <Input
             maxLength={50}
             placeholder="输入单个选项"
+            className={hoverList[questions[questionIndex].pass || 0]}
             defaultValue={value.text}
             onChange={(e) =>
               (question["options"][optionIndex].text = e.target.value)
             }
-            onBlur={() => setQuestions(questions.slice())}
+            onBlur={updateQuestions}
           />
           <InputNumber
             style={{
-              display: scoring ? "inline" : "none",
+              display: scoringModeOpen ? "inline" : "none",
             }}
+            className={hoverList[questions[questionIndex].pass || 0]}
             min={0}
             max={100}
             onChange={(value) =>
               (question["options"][optionIndex].score = value)
             }
-            onBlur={() => setQuestions(questions.slice())}
+            onBlur={updateQuestions}
             defaultValue={value.score}
           />
         </div>
@@ -103,22 +135,24 @@ export default function EditContent(props) {
             style={{ marginLeft: "5px" }}
             maxLength={50}
             placeholder="输入单个选项"
+            className={hoverList[questions[questionIndex].pass || 0]}
             defaultValue={value.text}
             onChange={(e) =>
               (question["options"][optionIndex].text = e.target.value)
             }
-            onBlur={() => setQuestions(questions.slice())}
+            onBlur={updateQuestions}
           />
           <InputNumber
+            className={hoverList[questions[questionIndex].pass || 0]}
             style={{
-              display: scoring ? "inline" : "none",
+              display: scoringModeOpen ? "inline" : "none",
             }}
             min={0}
             max={100}
             onChange={(value) =>
               (question["options"][optionIndex].score = value)
             }
-            onBlur={() => setQuestions(questions.slice())}
+            onBlur={updateQuestions}
             defaultValue={value.score}
           />
         </div>
@@ -130,27 +164,33 @@ export default function EditContent(props) {
     const question = questions[questionIndex];
     return (
       <div className={classes.optionDiv}>
-        <Input
-          style={{ width: "44%", marginLeft: "6%" }}
-          maxLength={50}
-          placeholder="输入单个选项"
-          defaultValue={raw.label}
-          prefix={<DownOutlined />}
-          onChange={(e) =>
-            (question["options"][optionIndex].label = e.target.value)
-          }
-          onBlur={() => setQuestions(questions.slice())}
-        />
-        <InputNumber
-          style={{
-            display: scoring ? "inline" : "none",
-          }}
-          min={0}
-          max={100}
-          onChange={(value) => (question["options"][optionIndex].score = value)}
-          onBlur={() => setQuestions(questions.slice())}
-          defaultValue={raw.score}
-        />
+        <div style={{ display: "flex", width: "50%" }}>
+          <Input
+            style={{ marginLeft: "14%" }}
+            maxLength={50}
+            placeholder="输入单个选项"
+            className={hoverList[questions[questionIndex].pass || 0]}
+            defaultValue={raw.label}
+            prefix={<DownOutlined />}
+            onChange={(e) =>
+              (question["options"][optionIndex].label = e.target.value)
+            }
+            onBlur={updateQuestions}
+          />
+          <InputNumber
+            style={{
+              display: scoringModeOpen ? "inline" : "none",
+            }}
+            className={hoverList[questions[questionIndex].pass || 0]}
+            min={0}
+            max={100}
+            onChange={(value) =>
+              (question["options"][optionIndex].score = value)
+            }
+            onBlur={updateQuestions}
+            defaultValue={raw.score}
+          />
+        </div>
         <DeleteSingleOptionButton {...{ questionIndex, optionIndex }} />
       </div>
     );
@@ -161,6 +201,7 @@ export default function EditContent(props) {
       <div className={classes.weightDiv}>
         <div className={classes.optionDiv}>
           <Input
+            className={hoverList[questions[questionIndex].pass || 0]}
             style={{ width: "44%", marginLeft: "6%" }}
             maxLength={50}
             placeholder="请输入权重描述"
@@ -168,7 +209,7 @@ export default function EditContent(props) {
             onChange={(e) =>
               (question["options"][optionIndex] = e.target.value)
             }
-            onBlur={() => setQuestions(questions.slice())}
+            onBlur={updateQuestions}
           />
           <DeleteSingleOptionButton {...{ questionIndex, optionIndex }} />
         </div>
@@ -184,13 +225,16 @@ export default function EditContent(props) {
       const optionNum = question["options"].length + 1;
       question["options"].push({ text: `选项${optionNum}`, score: 0 });
       question["option_num"] = optionNum;
-      setQuestions(questions.slice());
     };
     return (
       <Button
         className={classes.newOptionAdd}
+        style={{
+          backgroundColor: colorList[questions[index].pass || 0],
+          borderColor: colorList[questions[index].pass || 0],
+        }}
         type="primary"
-        onClick={addNewOneOption}
+        onClick={R.compose(updateQuestions, addNewOneOption)}
       >
         <PlusSquareFilled />
         {"添加单个选项"}
@@ -210,13 +254,16 @@ export default function EditContent(props) {
         score: 0,
       });
       question["option_num"] = optionNum + 1;
-      setQuestions(questions.slice());
     };
     return (
       <Button
         className={classes.newOptionAdd}
+        style={{
+          backgroundColor: colorList[questions[index].pass || 0],
+          borderColor: colorList[questions[index].pass || 0],
+        }}
         type="primary"
-        onClick={addNewOneOption}
+        onClick={R.compose(updateQuestions, addNewOneOption)}
       >
         <PlusSquareFilled />
         {"添加单个选项"}
@@ -232,13 +279,16 @@ export default function EditContent(props) {
       const optionNum = question["options"].length + 1;
       question["options"].push(`选项${optionNum}`);
       question["option_num"] = optionNum;
-      setQuestions(questions.slice());
     };
     return (
       <Button
         className={classes.newOptionAdd}
+        style={{
+          backgroundColor: colorList[questions[index].pass || 0],
+          borderColor: colorList[questions[index].pass || 0],
+        }}
         type="primary"
-        onClick={addNewOneOption}
+        onClick={R.compose(updateQuestions, addNewOneOption)}
       >
         <PlusSquareFilled />
         {"添加单个选项"}
@@ -247,45 +297,48 @@ export default function EditContent(props) {
   };
 
   // 具体问题
-  const SingleSelect = (props) => {
+  const SingleSelect = ({ index, ...rest }) => {
     return (
       <div>
-        {props.options.map((prop, key) => {
+        {rest.options.map((prop, key) => {
           return (
             <SingleOption
               key={`options-${key}`}
               value={prop}
-              questionIndex={props.index}
+              questionIndex={index}
               optionIndex={key}
             />
           );
         })}
-        <AddSingleOptionButton index={props.index} />
+        <AddSingleOptionButton index={index} />
       </div>
     );
   };
-  const MultiSelect = (props) => {
+  const MultiSelect = ({ index, ...rest }) => {
     return (
       <div>
-        {props.options.map((prop, key) => {
+        {rest.options.map((prop, key) => {
           return (
             <MultiOption
               key={`options-${key}`}
               value={prop}
-              questionIndex={props.index}
+              questionIndex={index}
               optionIndex={key}
             />
           );
         })}
-        <AddSingleOptionButton index={props.index} />
+        <AddSingleOptionButton index={index} />
       </div>
     );
   };
 
-  const Blank = (props) => {
+  const Blank = ({index}) => {
     return (
       <TextArea
-        className={classes.blankText}
+        className={classNames({
+          [classes.blankText]: true,
+          [hoverList[questions[index].pass || 0]]: true,
+        })}
         showCount
         autosize={{ minRows: 6, maxRows: 10 }}
         maxLength={500}
@@ -320,53 +373,54 @@ export default function EditContent(props) {
       />
     );
   };
-  const DropdownSelect = (props) => {
+  const DropdownSelect = ({ index, ...rest }) => {
     return (
       <div>
-        {props.options.map((prop, key) => {
+        {rest.options.map((prop, key) => {
           return (
             <DropdownOption
               key={`options-${key}`}
               raw={prop}
-              questionIndex={props.index}
+              questionIndex={index}
               optionIndex={key}
             />
           );
         })}
-        <AddDropDownOptionButton index={props.index} />
+        <AddDropDownOptionButton index={index} />
       </div>
     );
   };
-  const WeightsAssign = (props) => {
+  const WeightsAssign = ({ index, ...rest }) => {
     return (
       <div>
         <span
           style={{
-            display: scoring ? "inline-block" : "none",
+            display: scoringModeOpen ? "inline-block" : "none",
             marginTop: "10px",
             marginLeft: "5%",
           }}
         >
           {"比重总分"}
           <InputNumber
+            className={hoverList[questions[index].pass || 0]}
             min={0}
             max={100}
-            onChange={(value) => (questions[props.index].score = value)}
+            onChange={(value) => (questions[index].score = value)}
             onBlur={() => setQuestions(questions.slice())}
-            defaultValue={questions[props.index].score}
+            defaultValue={questions[index].score}
           />
         </span>
-        {props.options.map((prop, key) => {
+        {rest.options.map((prop, key) => {
           return (
             <WeightOption
               key={`options-${key}`}
               value={prop}
-              questionIndex={props.index}
+              questionIndex={index}
               optionIndex={key}
             />
           );
         })}
-        <AddWeightOptionButton index={props.index} />
+        <AddWeightOptionButton index={index} />
       </div>
     );
   };
@@ -402,7 +456,7 @@ export default function EditContent(props) {
         placeholder="请输入"
         defaultValue={questionnaire.title}
         onChange={(e) => (questionnaire.title = e.target.value)}
-        onBlur={() => setQuestionnaire(questionnaire)}
+        onBlur={updateQuestionnaire}
       />
       <TextArea
         className={classes.descriptionText}
@@ -412,74 +466,105 @@ export default function EditContent(props) {
         autoSize={{ minRows: 2, maxRows: 5 }}
         placeholder="请输入描述..."
         onChange={(e) => (questionnaire.description = e.target.value)}
-        onBlur={() => setQuestionnaire(questionnaire)}
+        onBlur={updateQuestionnaire}
       />
     </div>
   );
   // 问题卡片
   const QuestionCard = ({ required, qtitle, ...rest }) => {
     const index = rest.index;
-    const requireQuestion = () => {
-      questions[index].required = !questions[index].required;
-      setQuestions(questions.slice());
-    };
+    const requireQuestion = () =>
+      (questions[index].required = !questions[index].required);
     const moveQuestionCard = (offset) => {
       const swapIndex = index + offset;
-      return () => {
+      return R.compose(updateQuestions, () => {
         const now = questions[index];
-        const swap = questions[swapIndex];
-        questions[index] = swap;
+        questions[index] = questions[swapIndex];
         questions[swapIndex] = now;
-        setQuestions(questions.slice());
-      };
+      });
     };
-    const deleteQuestion = () => {
-      questions.splice(index, 1);
-      setQuestions(questions.slice());
-    };
+    const deleteQuestion = () => questions.splice(index, 1);
     const OperationBtns = () => {
       return (
         <div className={classes.operationBtns}>
+          <FormControl className={classes.formControl}>
+            <InputLabel id="demo-simple-select-outlined-label">PASS</InputLabel>
+            <Select
+              labelId="demo-simple-select-outlined-label"
+              id="demo-simple-select-outlined"
+              value={questions[index].pass || 0}
+              onChange={R.compose(
+                updateQuestions,
+                (e) => (questions[index].pass = e.target.value)
+              )}
+              label="PASS"
+            >
+              <MenuItem value={0}>
+                <em>无</em>
+              </MenuItem>
+              <MenuItem value={1}>
+                <div style={{ color: planningColor }}>{"计划"}</div>
+              </MenuItem>
+              <MenuItem value={2}>
+                <div style={{ color: attentionColor }}>{"注意"}</div>
+              </MenuItem>
+              <MenuItem value={3}>
+                <div style={{ color: simultaneousColor }}>{"同时性加工"}</div>
+              </MenuItem>
+              <MenuItem value={4}>
+                <div style={{ color: successiveColor }}>{"继时性加工"}</div>
+              </MenuItem>
+            </Select>
+          </FormControl>
           <Button
+            style={{ marginTop: 20 }}
             danger={required}
-            size="small"
+            size="middle"
             icon={<HeartOutlined twoToneColor="#eb2f96" />}
-            onClick={requireQuestion}
+            onClick={R.compose(updateQuestions, requireQuestion)}
           />
           <Button
             disabled={index === 0}
             type="primary"
-            size="small"
-            icon={<PoweroffOutlined />}
+            size="middle"
+            icon={<CaretUpOutlined />}
             onClick={moveQuestionCard(-1)}
           />
           <Button
             disabled={index === questions.length - 1}
             type="primary"
-            size="small"
-            icon={<PoweroffOutlined />}
+            size="middle"
+            icon={<CaretDownOutlined />}
             onClick={moveQuestionCard(1)}
           />
           <Button
             danger
-            size="small"
+            size="middle"
             icon={<DeleteFilled twoToneColor="#eb2f96" />}
-            onClick={deleteQuestion}
+            onClick={R.compose(updateQuestions, deleteQuestion)}
           />
         </div>
       );
     };
     return (
-      <div className={classes.questionCard}>
+      <div
+        className={classNames({
+          [classes.questionCard]: true,
+          [hoverList[questions[index].pass || 0]]: true,
+        })}
+      >
         <div className={classes.questionTitle}>
           <span className={classes.questionSortNum}>{required ? "*" : ""}</span>
           <span className={classes.questionSortNum}>{rest.index + 1}</span>
           <Input
-            className={classes.questionTitleText}
+            className={classNames({
+              [classes.questionTitleText]: true,
+              [hoverList[questions[index].pass || 0]]: true,
+            })}
             placeholder="请输入"
             defaultValue={qtitle}
             onChange={(e) => (questions[index].qtitle = e.target.value)}
-            onBlur={() => setQuestions(questions.slice())}
+            onBlur={updateQuestions}
           />
           <OperationBtns />
         </div>

@@ -1,11 +1,19 @@
+import { transition } from "assets/jss/material-dashboard-react.js";
 const styles = {
+  mainPanel: {
+    overflow: "auto",
+    position: "relative",
+    float: "right",
+    ...transition,
+    maxHeight: "100%",
+    width: "100%",
+    overflowScrolling: "touch",
+  },
   questionnairePreview: {
     background: " #f4f4f4f4",
     padding: "80px 0",
     // backgroundImage: url('../assets/bacg.jpg'),
     backgroundSize: "cover",
-    overflow: "auto",
-    position: "relative",
     height: "100vh",
     top: "0",
   },
