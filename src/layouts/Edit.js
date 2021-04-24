@@ -58,10 +58,10 @@ export default function Edit(props) {
     states.loading = true;
     setStates(states);
     questionnaire.questions = questions;
-    questionnaire.pass_mode = scoringModeOpen;
+    questionnaire.scoring_mode = scoringModeOpen;
     try {
       const res = await post(
-        "/questionnaire/questionnaire" + id ? "/questions" : "",
+        "/questionnaire/questionnaire" + (id ? "/questions" : ""),
         questionnaire,
         false,
         true
@@ -113,6 +113,7 @@ export default function Edit(props) {
           true
         );
         const questionnaire = data.data;
+        console.log(questionnaire);
         setScoringModeOpen(questionnaire.scoring_mode);
         setQuestionnaire(questionnaire);
         setQuestions(questionnaire.questions);
