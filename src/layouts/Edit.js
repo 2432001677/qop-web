@@ -112,7 +112,7 @@ export default function Edit() {
       <div style={{ position: "absolute", right: "20px", top: "5px" }}>
         <Space size={3}>
           <Button type="primary" onClick={switchScoringMode}>
-            {"PASS模式"}
+            {"计分模式"}
           </Button>
           <Button
             loading={states.loading}

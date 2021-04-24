@@ -1,5 +1,6 @@
 import React from "react";
 import classNames from "classnames";
+import * as R from "ramda";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 import MenuItem from "@material-ui/core/MenuItem";
@@ -51,7 +52,7 @@ export default function AdminNavbarLinks() {
     setOpenProfile(null);
   };
 
-  const handleLogin = () => {
+  const toLogin = () => {
     history.push("/login");
   };
 
@@ -64,7 +65,9 @@ export default function AdminNavbarLinks() {
     return (
       <MenuItem
         onClick={
-          localStorage.getItem("state") === "LOGIN" ? handleLogout : handleLogin
+          localStorage.getItem("state") === "LOGIN"
+            ? R.compose(toLogin, handleLogout)
+            : toLogin
         }
         className={classes.dropdownItem}
       >

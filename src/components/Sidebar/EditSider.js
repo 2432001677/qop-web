@@ -1,5 +1,5 @@
 import React from "react";
-
+import * as R from "ramda";
 import { makeStyles } from "@material-ui/core/styles";
 import styles from "assets/jss/material-dashboard-react/components/EditSiderStyle.js";
 
@@ -17,9 +17,9 @@ import { Layout, Button } from "antd";
 const { Sider } = Layout;
 const useStyles = makeStyles(styles);
 
-export default function EditSider(props) {
+export default function EditSider({ questions, setQuestions }) {
   const classes = useStyles();
-  const { questions, setQuestions } = props;
+  const updateQuestions = () => setQuestions(questions.slice());
   const addNewOneQuestion = (qtype) => {
     let question = {
       qtitle: "",
@@ -56,10 +56,7 @@ export default function EditSider(props) {
     } else if (qtype === 7) {
       question.qtitle = "附件题";
     }
-    return () => {
-      questions.push(question);
-      setQuestions(questions.slice());
-    };
+    return R.compose(updateQuestions, () => questions.push(question));
   };
   const buttonMatrix = [
     [
