@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 
-import { post } from "Utils/Axios.js";
+import { get, post } from "Utils/Axios.js";
 
 import EditSider from "components/Sidebar/EditSider.js";
 import EditContent from "components/Content/EditContent.js";
@@ -18,7 +18,8 @@ import { ClockCircleTwoTone } from "@ant-design/icons";
 let ps;
 
 const useStyles = makeStyles(styles);
-export default function Edit() {
+export default function Edit(props) {
+  const id = props.match.params.id;
   const classes = useStyles();
   const history = useHistory();
   const mainPanel = React.createRef();
@@ -60,12 +61,11 @@ export default function Edit() {
     questionnaire.pass_mode = scoringModeOpen;
     try {
       const res = await post(
-        "/questionnaire/questionnaire",
+        "/questionnaire/questionnaire" + id ? "/questions" : "",
         questionnaire,
         false,
         true
       );
-      console.log(res);
     } catch (error) {
       console.log(error);
     } finally {
@@ -103,6 +103,28 @@ export default function Edit() {
       }
     };
   }, [mainPanel]);
+
+  React.useEffect(() => {
+    const getQuestionnaireById = async () => {
+      try {
+        const { data } = await get(
+          "/questionnaire/questionnaire/" + id,
+          false,
+          true
+        );
+        const questionnaire = data.data;
+        setScoringModeOpen(questionnaire.scoring_mode);
+        setQuestionnaire(questionnaire);
+        setQuestions(questionnaire.questions);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    if (id) {
+      getQuestionnaireById();
+    }
+  }, [id]);
+
   return (
     <div className={classes.wrapper}>
       <EditSider {...state} />

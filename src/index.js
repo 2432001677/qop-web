@@ -21,6 +21,7 @@ ReactDOM.render(
       <Route path="/admin" component={Admin} />
       <Route path="/login" component={Login} />
       <Route path="/register" component={Register} />
+      <Route path="/edit/:id" component={Edit} />
       <Route path="/edit" component={Edit} />
       <Route path="/questionnaire/:id" component={Questionnaire} />
       <Route path="/analysis/:id" component={Analysis} />

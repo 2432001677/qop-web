@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { getPages, post } from "Utils/Axios.js";
+import { useHistory } from "react-router-dom";
 
 import { hexToRgb } from "assets/jss/material-dashboard-react.js";
 
@@ -86,6 +87,7 @@ const formatDate = (date) => {
 const useStyles = makeStyles(styles);
 
 export default function MyQuestionnaire() {
+  const history = useHistory();
   const classes = useStyles();
   const [response, setResponse] = useState({
     total_elements: 0,
@@ -120,9 +122,15 @@ export default function MyQuestionnaire() {
     getMyQuestionnaires(1, 10);
   }, []);
 
-  const clickEdit = () => {};
+  const clickEdit = (id) => {
+    return () => history.push(`/edit/${id}`);
+  };
 
-  const clickPublish = () => {};
+  const clickPublish = (id) => {};
+
+  const clickResult = (id) => {
+    return () => history.push(`/analysis/${id}`);
+  };
 
   const clickDelete = (id) => {
     return () => {
@@ -192,13 +200,13 @@ export default function MyQuestionnaire() {
                 color="secondary"
                 aria-label="contained primary button group"
               >
-                <Button onClick={clickPublish} color="primary">
+                <Button onClick={clickPublish(item.id)} color="primary">
                   发布
                 </Button>
-                <Button onClick={clickEdit} color="default">
+                <Button onClick={clickEdit(item.id)} color="default">
                   编辑
                 </Button>
-                <Button onClick={clickEdit} color="inherit">
+                <Button onClick={clickResult(item.id)} color="inherit">
                   结果
                 </Button>
                 <Button onClick={clickDelete(item.id)}>删除</Button>
