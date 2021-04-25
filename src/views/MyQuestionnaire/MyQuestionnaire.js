@@ -1,14 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { getPages, post } from "Utils/Axios.js";
+import { get, getPages, post } from "Utils/Axios.js";
+import * as R from "ramda";
 import { useHistory } from "react-router-dom";
 
 import { List, Skeleton, Space, Pagination } from "antd";
 
-import {
-  SmileTwoTone,
-  CloseCircleTwoTone,
-  CheckCircleTwoTone,
-} from "@ant-design/icons";
+import { SmileTwoTone, CloseCircleTwoTone } from "@ant-design/icons";
 
 import "antd/dist/antd.css";
 
@@ -40,7 +37,7 @@ const PublishState = ({ status }) => {
     return (
       <Space>
         <CloseCircleTwoTone />
-        {"自己可见"}
+        {"未公开"}
       </Space>
     );
   } else if (status === 2) {
@@ -75,10 +72,12 @@ export default function MyQuestionnaire() {
     total_elements: 0,
     data: [],
   });
+  const [groupsInfo, setGroupsInfo] = useState([]);
   const [publiced, setPubliced] = useState(false);
   const [publicedDialog, setPublicedDialog] = useState(false);
   const [current, setCurrent] = useState(1);
   const [selecteId, setSelecteId] = useState("");
+  const [selectedGroup, setSelectedGroup] = useState(false);
   const [deleteDialog, setDeleteDialog] = useState(false);
   const [size, setSize] = useState(10);
   const [loading, setLoading] = useState(true);
@@ -86,6 +85,9 @@ export default function MyQuestionnaire() {
   const handleOpen = (fn) => (value) => () => fn(value);
   const switchPublic = (e) => handleOpen(setPubliced)(e.target.checked)();
 
+  const switchGroup = (e) => {
+    setSelectedGroup(e.target.value);
+  };
   const getMyQuestionnaires = async (current, size) => {
     setCurrent(current);
     setSize(size);
@@ -111,8 +113,10 @@ export default function MyQuestionnaire() {
 
   const clickEdit = (id) => () => history.push(`/edit/${id}`);
 
-  const clickPublish = (id) => () => {
+  const clickPublish = (id) => async () => {
     setSelecteId(id);
+    const { data } = await get("/group/group", false, true);
+    setGroupsInfo(data.data);
     handleOpen(setPublicedDialog)(true)();
   };
 
@@ -148,7 +152,7 @@ export default function MyQuestionnaire() {
     try {
       const res = await post(
         "/questionnaire/questionnaire/publish",
-        { qid: selecteId, open: publiced },
+        { qid: selecteId, open: publiced, group_id: selectedGroup || null },
         false,
         true
       );
@@ -189,7 +193,10 @@ export default function MyQuestionnaire() {
       </Dialog>
       <Dialog
         open={publicedDialog}
-        onClose={handleOpen(setPublicedDialog)(false)}
+        onClose={R.compose(
+          handleOpen(setSelectedGroup)(false),
+          handleOpen(setPublicedDialog)(false)
+        )}
         aria-labelledby="max-width-dialog-title"
       >
         <DialogTitle id="max-width-dialog-title">修改发布状态</DialogTitle>
@@ -198,18 +205,14 @@ export default function MyQuestionnaire() {
           <form className={classes.form} noValidate>
             <FormControl className={classes.formControl}>
               <InputLabel htmlFor="max-width">小组</InputLabel>
-              <Select
-                autoFocus
-                // value={maxWidth}
-                // onChange={handleMaxWidthChange}
-                inputProps={{
-                  name: "max-width",
-                  id: "max-width",
-                }}
-              >
-                <MenuItem value={false}>false</MenuItem>
-                <MenuItem value="xs">xs</MenuItem>
-                <MenuItem value="sm">sm</MenuItem>
+              <Select autoFocus onChange={switchGroup}>
+                {groupsInfo.map((prop, key) => {
+                  return (
+                    <MenuItem key={`group-${key}`} value={prop.id}>
+                      {prop.group_name}
+                    </MenuItem>
+                  );
+                })}
               </Select>
             </FormControl>
             <FormControlLabel

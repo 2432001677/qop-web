@@ -113,7 +113,6 @@ export default function Edit(props) {
           true
         );
         const questionnaire = data.data;
-        console.log(questionnaire);
         setScoringModeOpen(questionnaire.scoring_mode);
         setQuestionnaire(questionnaire);
         setQuestions(questionnaire.questions);

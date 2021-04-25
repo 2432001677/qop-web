@@ -1,6 +1,7 @@
 /*eslint-disable*/
 import React, { useState, useEffect } from "react";
-import { getPages } from "Utils/Axios";
+import { get } from "Utils/Axios";
+import { getQuestionnaires } from "Api/Api.js";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 import Hidden from "@material-ui/core/Hidden";
@@ -32,43 +33,16 @@ import "antd/dist/antd.css";
 import { Row, Col, Result } from "antd";
 
 import image from "assets/img/cover.jpeg";
-import { get } from "Utils/Axios";
+
 const useStyles = makeStyles(styles);
 
 export default function Groups() {
   const classes = useStyles();
-  const [groupsInfo, setGroupsInfo] = useState([
-    {
-      id: 0,
-      group_name: "未知",
-      introduction: "未知",
-      img: "",
-    },
-  ]);
-  const [questionnaires, setQuestionnaires] = useState([
-    {
-      id: "id",
-      title: "未知",
-      description: "未知",
-      create_time: new Date(),
-    },
-  ]);
+  const [groupsInfo, setGroupsInfo] = useState([{ id: 0 }]);
+  const [questionnaires, setQuestionnaires] = useState([]);
   const [groupIndex, setGroupIndex] = useState(0);
   const changeGroup = (e) => {
     setGroupIndex(e.target.value);
-  };
-  const getQuestionnaires = async (groupId) => {
-    console.log(groupId);
-    try {
-      const { data } = await get(
-        `/group/group/${groupId}/questionnaires`,
-        false,
-        true
-      );
-      return data.data;
-    } catch (error) {
-      console.log(error);
-    }
   };
 
   const leaveGroup = () => {
@@ -80,10 +54,11 @@ export default function Groups() {
   useEffect(() => {
     const getJoinedGroups = async () => {
       try {
-        const { data } = await getPages("/group/group", 1, 10, false, true);
+        const { data } = await get("/group/group", false, true);
         setGroupsInfo(data.data);
         if (data.data.length !== 0) {
           const questionnaires = await getQuestionnaires(data.data[0].id);
+          console.log(questionnaires);
           setQuestionnaires(questionnaires);
         }
       } catch (error) {
