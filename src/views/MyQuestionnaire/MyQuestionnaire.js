@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { get, getPages, post } from "Utils/Axios.js";
+import { handleOpen } from "Utils/Utils.js";
+import DialogScaffod from "components/Dialog/DialogScaffod.js";
 import * as R from "ramda";
 import { useHistory } from "react-router-dom";
 
@@ -16,11 +18,7 @@ import styles from "assets/jss/material-dashboard-react/views/myQuestionnaire.js
 import Button from "@material-ui/core/Button";
 import ButtonGroup from "@material-ui/core/ButtonGroup";
 import Icon from "@material-ui/core/Icon";
-import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
-import DialogContent from "@material-ui/core/DialogContent";
-import DialogContentText from "@material-ui/core/DialogContentText";
-import DialogTitle from "@material-ui/core/DialogTitle";
 import FormControl from "@material-ui/core/FormControl";
 import FormControlLabel from "@material-ui/core/FormControlLabel";
 import InputLabel from "@material-ui/core/InputLabel";
@@ -82,12 +80,9 @@ export default function MyQuestionnaire() {
   const [size, setSize] = useState(10);
   const [loading, setLoading] = useState(true);
 
-  const handleOpen = (fn) => (value) => () => fn(value);
   const switchPublic = (e) => handleOpen(setPubliced)(e.target.checked)();
+  const switchGroup = (e) => setSelectedGroup(e.target.value);
 
-  const switchGroup = (e) => {
-    setSelectedGroup(e.target.value);
-  };
   const getMyQuestionnaires = async (current, size) => {
     setCurrent(current);
     setSize(size);
@@ -168,66 +163,65 @@ export default function MyQuestionnaire() {
     }
   };
 
+  const inviteDialog = {
+    dialogOpen: deleteDialog,
+    closeDialog: handleOpen(setDeleteDialog)(false),
+    dialogTitle: "提示",
+    dialogContentText: "确定要删除吗?",
+    dialogActions: (
+      <DialogActions>
+        <Button onClick={handleOpen(setDeleteDialog)(false)} color="primary">
+          {"取消"}
+        </Button>
+        <Button onClick={confirmDelete} color="primary" autoFocus>
+          {"确认"}
+        </Button>
+      </DialogActions>
+    ),
+  };
+
+  const publishDialog = {
+    dialogOpen: publicedDialog,
+    closeDialog: R.compose(
+      handleOpen(setSelectedGroup)(false),
+      handleOpen(setPublicedDialog)(false)
+    ),
+    dialogTitle: "修改发布状态",
+    dialogContentText: "你可以在此发布到特定的小组中",
+    dialogContent: (
+      <form className={classes.form} noValidate>
+        <FormControl className={classes.formControl}>
+          <InputLabel htmlFor="max-width">{"小组"}</InputLabel>
+          <Select autoFocus onChange={switchGroup}>
+            {groupsInfo.map((prop, key) => {
+              return (
+                <MenuItem key={`group-${key}`} value={prop.id}>
+                  {prop.group_name}
+                </MenuItem>
+              );
+            })}
+          </Select>
+        </FormControl>
+        <FormControlLabel
+          className={classes.formControlLabel}
+          control={<Switch checked={publiced} onChange={switchPublic} />}
+          label="公开发布"
+        />
+      </form>
+    ),
+    dialogActions: (
+      <DialogActions>
+        <Button onClick={updatePublish} color="primary">
+          {"更新"}
+        </Button>
+      </DialogActions>
+    ),
+  };
+
   return (
     <div>
-      <Dialog
-        open={deleteDialog}
-        onClose={handleOpen(setDeleteDialog)(false)}
-        aria-labelledby="alert-dialog-title"
-        aria-describedby="alert-dialog-description"
-      >
-        <DialogTitle id="alert-dialog-title">{"提示"}</DialogTitle>
-        <DialogContent>
-          <DialogContentText id="alert-dialog-description">
-            {"确定要删除吗?"}
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleOpen(setDeleteDialog)(false)} color="primary">
-            取消
-          </Button>
-          <Button onClick={confirmDelete} color="primary" autoFocus>
-            确认
-          </Button>
-        </DialogActions>
-      </Dialog>
-      <Dialog
-        open={publicedDialog}
-        onClose={R.compose(
-          handleOpen(setSelectedGroup)(false),
-          handleOpen(setPublicedDialog)(false)
-        )}
-        aria-labelledby="max-width-dialog-title"
-      >
-        <DialogTitle id="max-width-dialog-title">修改发布状态</DialogTitle>
-        <DialogContent>
-          <DialogContentText>你可以在此发布到特定的小组中</DialogContentText>
-          <form className={classes.form} noValidate>
-            <FormControl className={classes.formControl}>
-              <InputLabel htmlFor="max-width">小组</InputLabel>
-              <Select autoFocus onChange={switchGroup}>
-                {groupsInfo.map((prop, key) => {
-                  return (
-                    <MenuItem key={`group-${key}`} value={prop.id}>
-                      {prop.group_name}
-                    </MenuItem>
-                  );
-                })}
-              </Select>
-            </FormControl>
-            <FormControlLabel
-              className={classes.formControlLabel}
-              control={<Switch checked={publiced} onChange={switchPublic} />}
-              label="公开发布"
-            />
-          </form>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={updatePublish} color="primary">
-            更新
-          </Button>
-        </DialogActions>
-      </Dialog>
+      <DialogScaffod {...inviteDialog} />
+      <DialogScaffod {...publishDialog} />
       <List
         itemLayout="horizontal"
         dataSource={response.data}

@@ -1,4 +1,4 @@
-import { get } from "Utils/Axios";
+import { get, post } from "Utils/Axios";
 
 const getQuestionnaires = async (groupId) => {
   try {
@@ -13,4 +13,14 @@ const getQuestionnaires = async (groupId) => {
   }
 };
 
-export { getQuestionnaires };
+const inviteUser = async (req) => {
+  console.log(req);
+  try {
+    const { data } = await post("/group/group/invitation", req, false, true);
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export { getQuestionnaires, inviteUser };

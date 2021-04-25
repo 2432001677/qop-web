@@ -1,7 +1,11 @@
 /*eslint-disable*/
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
+import * as R from "ramda";
+import { handleOpen } from "Utils/Utils.js";
 import { get } from "Utils/Axios";
-import { getQuestionnaires } from "Api/Api.js";
+import { getQuestionnaires, inviteUser } from "Api/Api.js";
+import { emailReg, phoneNumberReg } from "Utils/Reg.js";
+import DialogScaffod from "components/Dialog/DialogScaffod.js";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
 import Hidden from "@material-ui/core/Hidden";
@@ -16,6 +20,8 @@ import MenuItem from "@material-ui/core/MenuItem";
 import FormControl from "@material-ui/core/FormControl";
 import Select from "@material-ui/core/Select";
 import ButtonGroup from "@material-ui/core/ButtonGroup";
+import DialogActions from "@material-ui/core/DialogActions";
+import TextField from "@material-ui/core/TextField";
 
 import DeleteIcon from "@material-ui/icons/Delete";
 import AddCircleIcon from "@material-ui/icons/AddCircle";
@@ -48,9 +54,7 @@ export default function Groups() {
   const leaveGroup = () => {
     console.log("leave" + groupsInfo[groupIndex].group_name);
   };
-  const invite = () => {
-    console.log("invite");
-  };
+
   useEffect(() => {
     const getJoinedGroups = async () => {
       try {
@@ -58,7 +62,6 @@ export default function Groups() {
         setGroupsInfo(data.data);
         if (data.data.length !== 0) {
           const questionnaires = await getQuestionnaires(data.data[0].id);
-          console.log(questionnaires);
           setQuestionnaires(questionnaires);
         }
       } catch (error) {
@@ -119,8 +122,69 @@ export default function Groups() {
       </GridItem>
     );
   };
+  const [inviteDialog, setInviteDialog] = useState(false);
+  const [inviteError, setInviteError] = useState(false);
+  const inviteText = useRef("");
+
+  const invite = async () => {
+    const userName = inviteText.current.value.trim();
+    if (!emailReg(userName) && !phoneNumberReg(userName)) {
+      setInviteError(true);
+      return;
+    }
+    setInviteError(false);
+    try {
+      inviteUser({
+        group_id: groupsInfo[groupIndex].id,
+        user_name: userName,
+      });
+      handleOpen(setInviteDialog)(false);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const invitationDialog = {
+    dialogOpen: inviteDialog,
+    closeDialog: R.compose(
+      handleOpen(setInviteDialog)(false),
+      () => (inviteText.current = "")
+    ),
+    dialogTitle: "邀请",
+    dialogContentText: "请输入你要邀请的用户的手机号或邮箱",
+    dialogContent: (
+      <TextField
+        error={inviteError}
+        autoFocus
+        margin="dense"
+        id="name"
+        label="Email/Phone Number"
+        type="email"
+        fullWidth
+        inputRef={inviteText}
+      />
+    ),
+    dialogActions: (
+      <DialogActions>
+        <Button
+          onClick={R.compose(
+            handleOpen(setInviteDialog)(false),
+            () => (inviteText.current = "")
+          )}
+          color="primary"
+        >
+          {"取消"}
+        </Button>
+        <Button onClick={invite} color="primary">
+          {"邀请"}
+        </Button>
+      </DialogActions>
+    ),
+  };
+
   return (
     <GridContainer>
+      <DialogScaffod {...invitationDialog} />
       <GridItem xs={12} sm={12} md={12}>
         <Card plain>
           <CardHeader plain>
@@ -151,7 +215,10 @@ export default function Groups() {
                     color="primary"
                     startIcon={<AddCircleIcon />}
                     style={{ margin: "30" }}
-                    onClick={invite}
+                    onClick={R.compose(
+                      handleOpen(setInviteDialog)(true),
+                      () => (inviteText.current = "")
+                    )}
                   >
                     邀请
                   </Button>
