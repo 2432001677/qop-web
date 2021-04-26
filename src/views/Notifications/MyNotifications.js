@@ -32,39 +32,20 @@ export default function Notifications() {
   return (
     <Card>
       <CardHeader color="primary">
-        <h4 className={classes.cardTitleWhite}>Notifications</h4>
+        <h4 className={classes.cardTitleWhite}>{"通知中心"}</h4>
         <p className={classes.cardCategoryWhite}>
-          Handcrafted by our friends from{" "}
-          <a
-            target="_blank"
-            href="https://material-ui-next.com/?ref=creativetime"
-          >
-            Material UI
-          </a>{" "}
-          and styled by{" "}
-          <a
-            target="_blank"
-            href="https://www.creative-tim.com/?ref=mdr-notifications-page"
-          >
-            Creative Tim
-          </a>
-          . Please checkout the{" "}
-          <a href="#pablo" target="_blank">
-            full documentation
-          </a>
-          .
+          {"在这里你将会看到你所收到的所有通知 。"}
         </p>
       </CardHeader>
       <CardBody>
         <GridContainer>
           <GridItem xs={12} sm={12} md={12}>
-            <h5>Notifications Style</h5>
             <br />
             <NotificationSnack
               message={
                 <span
                   className={classes.iconMessage}
-                >{`Bruce邀请你加入 学习`}</span>
+                >{`Bruce邀请你加入小组 学习`}</span>
               }
             />
             <NotificationSnack

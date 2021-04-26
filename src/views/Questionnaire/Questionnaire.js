@@ -7,7 +7,7 @@ import * as R from "ramda";
 import PerfectScrollbar from "perfect-scrollbar";
 import "perfect-scrollbar/css/perfect-scrollbar.css";
 
-import styles from "assets/jss/material-dashboard-react/components/QuestionnaireStyle.js";
+import styles from "assets/jss/material-dashboard-react/components/questionnaireStyle.js";
 
 import { makeStyles } from "@material-ui/core/styles";
 

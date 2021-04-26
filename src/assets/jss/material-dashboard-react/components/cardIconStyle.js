@@ -1,30 +1,38 @@
 import {
+  planningCardHeader,
+  attentionCardHeader,
+  simultaneousCardHeader,
+  successiveCardHeader,
   warningCardHeader,
   successCardHeader,
   dangerCardHeader,
   infoCardHeader,
   primaryCardHeader,
   roseCardHeader,
-  grayColor
+  grayColor,
 } from "assets/jss/material-dashboard-react.js";
 
 const cardIconStyle = {
   cardIcon: {
-    "&$warningCardHeader,&$successCardHeader,&$dangerCardHeader,&$infoCardHeader,&$primaryCardHeader,&$roseCardHeader": {
+    "&$planningCardHeader,&$attentionCardHeader,&$simultaneousCardHeader,&$successiveCardHeader,&$warningCardHeader,&$successCardHeader,&$dangerCardHeader,&$infoCardHeader,&$primaryCardHeader,&$roseCardHeader": {
       borderRadius: "3px",
       backgroundColor: grayColor[0],
       padding: "15px",
       marginTop: "-20px",
       marginRight: "15px",
-      float: "left"
-    }
+      float: "left",
+    },
   },
+  planningCardHeader,
+  attentionCardHeader,
+  simultaneousCardHeader,
+  successiveCardHeader,
   warningCardHeader,
   successCardHeader,
   dangerCardHeader,
   infoCardHeader,
   primaryCardHeader,
-  roseCardHeader
+  roseCardHeader,
 };
 
 export default cardIconStyle;

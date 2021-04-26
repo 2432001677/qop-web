@@ -164,10 +164,6 @@ material-dashboard-react
     └── views
         ├── Dashboard
         │   └── Dashboard.js
-        ├── Icons
-        │   └── Icons.js
-        ├── Maps
-        │   └── Maps.js
         ├── Notifications
         │   └── Notifications.js
         ├── TableList

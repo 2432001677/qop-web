@@ -1,7 +1,7 @@
 import React from "react";
 import * as R from "ramda";
 import { makeStyles } from "@material-ui/core/styles";
-import styles from "assets/jss/material-dashboard-react/components/EditSiderStyle.js";
+import styles from "assets/jss/material-dashboard-react/components/editSiderStyle.js";
 
 import {
   SmileTwoTone,

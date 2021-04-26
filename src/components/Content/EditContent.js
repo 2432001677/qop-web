@@ -15,7 +15,7 @@ import {
   attentionColor,
   simultaneousColor,
   successiveColor,
-} from "assets/jss/material-dashboard-react/components/EditContentStyle.js";
+} from "assets/jss/material-dashboard-react/components/editContentStyle.js";
 
 import {
   DeleteOutlined,

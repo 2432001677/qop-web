@@ -18,7 +18,7 @@ export default function CardIcon(props) {
   const cardIconClasses = classNames({
     [classes.cardIcon]: true,
     [classes[color + "CardHeader"]]: color,
-    [className]: className !== undefined
+    [className]: className !== undefined,
   });
   return (
     <div className={cardIconClasses} {...rest}>
@@ -30,12 +30,16 @@ export default function CardIcon(props) {
 CardIcon.propTypes = {
   className: PropTypes.string,
   color: PropTypes.oneOf([
+    "planning",
+    "attention",
+    "simultaneous",
+    "successive",
     "warning",
     "success",
     "danger",
     "info",
     "primary",
-    "rose"
+    "rose",
   ]),
-  children: PropTypes.node
+  children: PropTypes.node,
 };

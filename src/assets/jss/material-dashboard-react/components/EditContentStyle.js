@@ -1,8 +1,9 @@
 const defaultColor = "#2b85e4";
-const planningColor = "#ff1744";
-const attentionColor = "#aa00ff";
-const simultaneousColor = "#ffd600";
-const successiveColor = "#64dd17";
+
+const planningColor = "#ff9800";
+const attentionColor = "#4caf50";
+const simultaneousColor = "#f44336";
+const successiveColor = "#aa00ff";
 
 const styles = {
   content: {
