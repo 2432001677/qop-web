@@ -14,7 +14,8 @@ import MyQuestionnaire from "views/MyQuestionnaire/MyQuestionnaire.js";
 // import TableList from 'views/TableList/TableList.js';
 // import Icons from 'views/Icons/Icons.js';
 import Groups from "views/Group/Group.js";
-import NotificationsPage from "views/Notifications/Notifications.js";
+// import NotificationsPage from "views/Notifications/Notifications.js";
+import MyNotificationsPage from "views/Notifications/MyNotifications.js";
 // import Typography from "views/Typography/Typography.js";
 import Maps from "views/Maps/Maps.js";
 
@@ -74,7 +75,8 @@ const dashboardRoutes = [
     path: "/notifications",
     name: "通知管理",
     icon: Notifications,
-    component: NotificationsPage,
+    // component: NotificationsPage,
+    component: MyNotificationsPage,
     layout: "/admin",
   },
   {
