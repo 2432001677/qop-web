@@ -44,7 +44,7 @@ const useStyles = makeStyles(styles);
 
 export default function Groups() {
   const classes = useStyles();
-  const [groupsInfo, setGroupsInfo] = useState([{ id: 0 }]);
+  const [groupsInfo, setGroupsInfo] = useState([]);
   const [questionnaires, setQuestionnaires] = useState([]);
   const [groupIndex, setGroupIndex] = useState(0);
   const changeGroup = (e) => {
@@ -73,7 +73,9 @@ export default function Groups() {
 
   useEffect(() => {
     const getQuestionnaireByGroupId = async () => {
-      const data = await getQuestionnaires(groupsInfo[groupIndex].id);
+      const data = groupsInfo[groupIndex]
+        ? await getQuestionnaires(groupsInfo[groupIndex].id)
+        : [];
       setQuestionnaires(data);
     };
     getQuestionnaireByGroupId();
@@ -134,11 +136,13 @@ export default function Groups() {
     }
     setInviteError(false);
     try {
-      inviteUser({
+      const res = await inviteUser({
         group_id: groupsInfo[groupIndex].id,
         user_name: userName,
       });
-      handleOpen(setInviteDialog)(false);
+      if (res.code === "200") {
+        handleOpen(setInviteDialog)(false)();
+      }
     } catch (error) {
       console.log(error);
     }

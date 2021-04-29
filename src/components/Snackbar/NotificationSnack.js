@@ -10,30 +10,49 @@ import CheckIcon from "@material-ui/icons/Check";
 
 import Snack from "@material-ui/core/SnackbarContent";
 
+import { Space } from "antd";
+
 import styles from "assets/jss/material-dashboard-react/components/notificationSnackStyle.js";
+
+const plusZero = (number) => {
+  return number <= 10 ? "0" + number : number;
+};
 
 const useStyles = makeStyles(styles);
 export default function NotificationSnack(props) {
   const classes = useStyles();
 
-  const { message } = props;
+  const { message, index, time, clickAnswer, clickReject } = props;
+  const date = new Date(time);
+  const dateStr = `${plusZero(date.getHours())}:${plusZero(
+    date.getMinutes()
+  )}  ${plusZero(date.getMonth() + 1)}-${plusZero(
+    date.getDate()
+  )}-${date.getFullYear()}`;
   const action = [
-    <IconButton
-      className={classes.iconButton}
-      key="open"
-      aria-label="Open"
-      color="inherit"
-    >
-      <CheckIcon className={classes.button} />
-    </IconButton>,
-    <IconButton
-      className={classes.iconButton}
-      key="close"
-      aria-label="Close"
-      color="inherit"
-    >
-      <Close className={classes.button} />
-    </IconButton>,
+    <Space size={12} key={`space-${index}`}>
+      <span>{dateStr}</span>
+      <div>
+        <IconButton
+          className={classes.iconButton}
+          key="open"
+          aria-label="Open"
+          color="inherit"
+          onClick={clickAnswer}
+        >
+          <CheckIcon className={classes.button} />
+        </IconButton>
+        <IconButton
+          className={classes.iconButton}
+          key="close"
+          aria-label="Close"
+          color="inherit"
+          onClick={clickReject}
+        >
+          <Close className={classes.button} />
+        </IconButton>
+      </div>
+    </Space>,
   ];
 
   return (
@@ -41,7 +60,6 @@ export default function NotificationSnack(props) {
       message={
         <div>
           <AddAlert className={classes.icon} />
-          {/* <span className={classes.iconMessage}>{`AAA 已经解散`}</span> */}
           {message}
         </div>
       }

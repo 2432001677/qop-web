@@ -1,7 +1,10 @@
 /*eslint-disable*/
-import React from "react";
+import React, { useState } from "react";
+import * as R from "ramda";
 // @material-ui/core components
 import { makeStyles } from "@material-ui/core/styles";
+
+import { getMyNotifications, responseInvitation } from "Api/Api.js";
 
 // core components
 import GridItem from "components/Grid/GridItem.js";
@@ -11,22 +14,30 @@ import CardHeader from "components/Card/CardHeader.js";
 import CardBody from "components/Card/CardBody.js";
 import NotificationSnack from "components/Snackbar/NotificationSnack.js";
 
+import "antd/dist/antd.css";
+
 import styles from "assets/jss/material-dashboard-react/views/myNotificationStyle.js";
 
 const useStyles = makeStyles(styles);
 
 export default function Notifications() {
   const classes = useStyles();
+  const [notifications, setNotifications] = useState([]);
+
+  const getNotifications = async () => {
+    const data = await getMyNotifications();
+    console.log(data);
+    setNotifications(data.data);
+  };
 
   React.useEffect(() => {
-    // Specify how to clean up after this effect:
-    return function cleanup() {
-      // to stop the warning of calling setState of unmounted component
-      var id = window.setTimeout(null, 0);
-      while (id--) {
-        window.clearTimeout(id);
-      }
-    };
+    getNotifications();
+  }, []);
+
+  const clickResponse = R.curry(async (id, v) => {
+    const res = await responseInvitation({ id: id, answer: v });
+    console.log(res);
+    getNotifications();
   });
 
   return (
@@ -41,18 +52,36 @@ export default function Notifications() {
         <GridContainer>
           <GridItem xs={12} sm={12} md={12}>
             <br />
-            <NotificationSnack
-              message={
-                <span
-                  className={classes.iconMessage}
-                >{`Bruce邀请你加入小组 学习`}</span>
+            {notifications.map((prop, key) => {
+              let msg;
+              if (prop.type === 0) {
+                msg = (
+                  <span className={classes.iconMessage}>
+                    <b>{prop.info}</b>
+                    {`已经解散`}
+                  </span>
+                );
+              } else if (prop.type === 1) {
+                msg = (
+                  <span className={classes.iconMessage}>
+                    <b>{prop.info.inviter_name}</b>
+                    {"邀请你加入小组"}
+                    <b>{prop.info.group_name}</b>
+                  </span>
+                );
               }
-            />
-            <NotificationSnack
-              message={
-                <span className={classes.iconMessage}>{`AAA 已经解散`}</span>
-              }
-            />
+              const clickRes = clickResponse(prop.id);
+              const state = {
+                index: key,
+                message: msg,
+                time: prop.create_time,
+                clickAnswer: () => clickRes("Y"),
+                clickReject: () => clickRes("N"),
+              };
+              return (
+                <NotificationSnack key={`notification-${key}`} {...state} />
+              );
+            })}
           </GridItem>
         </GridContainer>
         <br />
