@@ -1,10 +1,6 @@
-import React, { useEffect, useState, useRef } from "react";
+import React from "react";
 
-import * as echarts from "echarts";
-
-import classNames from "classnames";
-import { questionTypeList } from "variables/questions.js";
-import { get, post } from "Utils/Axios.js";
+import Statistic from "components/Statistic/Statistic.js";
 
 import PerfectScrollbar from "perfect-scrollbar";
 import "perfect-scrollbar/css/perfect-scrollbar.css";
@@ -13,237 +9,86 @@ import styles from "assets/jss/material-dashboard-react/views/analysisStyle.js";
 
 import { makeStyles } from "@material-ui/core/styles";
 
-import top from "assets/img/top.svg";
-
 const useStyles = makeStyles(styles);
 
+let ps;
 export default function Analysis(props) {
+  const mainPanel = React.createRef();
   const classes = useStyles();
-  const refDom = useRef([]);
-  
   const statistic = {
     title: "问卷",
-    answerCount: 55,
-
-    analysisFormList: [
+    answer_count: 55,
+    analysis_form_list: [
       {
         qtitle: "你当前的心情",
         qtype: 0,
-        answerCount: 22,
+        answer_count: 17,
+        average_score: 16.5,
+        pass: 1,
         options: [
-          { selectedCount: 30, text: "开心" },
-          { selectedCount: 51, text: "一般" },
-          { selectedCount: 29, text: "痛苦" },
+          { selected_count: 3, text: "开心", score: 3 },
+          { selected_count: 5, text: "一般", score: 2 },
+          { selected_count: 9, text: "痛苦", score: 1 },
         ],
       },
       {
         qtitle: "随便说",
         qtype: 2,
-        answerCount: 22,
+        answer_count: 22,
+        pass: 2,
         options: [
-          { text: "Talk is cheap" },
-          { text: "Show me your code" },
-          { text: "Wat" },
-          { text: "Hello world!" },
-          { text: "Foo" },
-          { text: "Bar" },
-          { text: "Java sucks" },
-          { text: "xczcxz" },
+          { text: "Talk is cheap", score: 3 },
+          { text: "Show me your code", score: 3 },
+          { text: "Wat", score: 3 },
+          { text: "Hello world!", score: 3 },
+          { text: "Foo", score: 3 },
+          { text: "Bar", score: 3 },
+          { text: "Java sucks", score: 3 },
+          { text: "xczcxz", score: 3 },
         ],
       },
       {
         qtitle: "我全都要",
         qtype: 1,
-        answerCount: 42,
+        answer_count: 42,
+        average_score: 18.5,
+        pass: 4,
         options: [
-          { selectedCount: 30, text: "苹果🍎" },
-          { selectedCount: 51, text: "香蕉🍌" },
-          { selectedCount: 49, text: "西瓜🍉" },
+          { selected_count: 30, text: "苹果🍎", score: 3 },
+          { selected_count: 31, text: "香蕉🍌", score: 3 },
+          { selected_count: 9, text: "西瓜🍉", score: 3 },
         ],
       },
     ],
   };
 
-  useEffect(() => {
-    const drawLine = (index) => {
-      console.log(refDom.current[index]);
-      let myChart = echarts.init(refDom.current[index]);
-      let optionData = [];
-      let optionCount = [];
-      let options = statistic.analysisFormList[index].options;
-      for (let i = 0; i < options.length; i++) {
-        optionData.push(options[i].text);
-        optionCount.push(options[i].selectedCount);
-      }
-      // 绘制图表
-      myChart.setOption({
-        title: {
-          text: "答题人数：" + statistic.analysisFormList[index].answerCount,
-          left: "center",
-        },
-        tooltip: {},
-        xAxis: {
-          data: optionData,
-        },
-        yAxis: {},
-        series: [
-          {
-            type: "bar",
-            data: optionCount,
-            itemStyle: {
-              color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [
-                { offset: 0, color: "#83bff6" },
-                { offset: 0.5, color: "#188df0" },
-                { offset: 1, color: "#188df0" },
-              ]),
-            },
-          },
-        ],
+  React.useEffect(() => {
+    if (
+      navigator.platform.indexOf("Win") > -1 ||
+      navigator.platform.indexOf("Linux") > -1
+    ) {
+      ps = new PerfectScrollbar(mainPanel.current, {
+        suppressScrollX: true,
+        suppressScrollY: false,
       });
-    };
-    const chartFn = (index) => {
-      let pieChart = echarts.init(refDom.current[index]);
-      let optionData = [];
-      let optionCount = [];
-      let options = statistic.analysisFormList[index].options;
-      for (let i = 0; i < options.length; i++) {
-        optionData.push(options[i].text);
-        optionCount[i] = {};
-        optionCount[i]["value"] = options[i].selectedCount;
-        optionCount[i]["name"] = options[i].text;
-      }
-
-      // if (this.statistic.analysisFormList[index].qtype === "比重") {
-      // }
-      pieChart.setOption({
-        title: {
-          text: "答题人数：" + statistic.analysisFormList[index].answerCount,
-          left: "center",
-        },
-        tooltip: {
-          trigger: "item",
-          formatter: "{a} <br/>{b} : {c} ({d}%)",
-        },
-        legend: {
-          orient: "vertical",
-          left: "left",
-          data: optionData,
-        },
-        series: [
-          {
-            name: "选项",
-            type: "pie",
-            radius: ["50%", "70%"],
-            avoidLabelOverlap: false,
-            label: {
-              show: false,
-              position: "center",
-            },
-            emphasis: {
-              label: {
-                show: true,
-                fontSize: "30",
-                fontWeight: "bold",
-              },
-            },
-            labelLine: {
-              show: false,
-            },
-            data: optionCount,
-          },
-        ],
-      });
-    };
-    const analyze = () => {
-      for (let i = 0; i < statistic.analysisFormList.length; i++) {
-        if (statistic.analysisFormList[i].qtype === 1) {
-          drawLine(i);
-        } else if (statistic.analysisFormList[i].qtype !== 2) {
-          chartFn(i);
-        }
-      }
-    };
-    analyze();
-  }, []);
-
-  const BlankStatistic = (props) => {
-    return (
-      <div>
-        <span
-          className={classNames({
-            [classes.analysisQuestionTitle]: true,
-            [classes.blankAnswers]: true,
-            [classes.titleSize]: true,
-          })}
-        >
-          {`回答数：${props.answerCount}`}
-        </span>
-        <div className={classes.blankScroll}>
-          {props.options.map((prop, key) => {
-            return (
-              <div
-                key={`text-${key}`}
-                className={classNames({
-                  [classes.analysisQuestionTitle]: true,
-                  [classes.blankAnswers]: true,
-                })}
-              >
-                {prop.text}
-              </div>
-            );
-          })}
-        </div>
-      </div>
-    );
-  };
-  const NormalStatistic = (props) => {
-    return (
-      <div className={classes.analysisQuestion}>
-        <div className={classes.questionTitle}>{props.qtitle}</div>
-        <div
-          style={{ width: "80%", height: "390px", margin: "0 auto" }}
-          ref={(node) => (refDom.current[props.index] = node)}
-        />
-      </div>
-    );
-  };
-  const Statistic = ({ qtype, ...rest }) => {
-    console.log(props);
-    if (qtype === 2) {
-      return <BlankStatistic {...rest} />;
-    } else {
-      return <NormalStatistic {...rest} />;
+      document.body.style.overflow = "hidden";
     }
-  };
+    // Specify how to clean up after this effect:
+    return function cleanup() {
+      if (
+        navigator.platform.indexOf("Win") > -1 ||
+        navigator.platform.indexOf("Linux") > -1
+      ) {
+        ps.destroy();
+      }
+    };
+  }, [mainPanel]);
+
   return (
-    <div className={classes.analysis}>
-      <div className={classes.analysisQuestionnaireTitleDiv}>
-        <span className={classes.analysisQuestionnaireTitle}>
-          {statistic.title}
-        </span>
-        <span className={classes.analysisQuestionnaireTitle}>
-          {`收到答卷: ${statistic.answerCount}份`}
-        </span>
+    <div className={classes.wrapper}>
+      <div style={{ maxHeight: "100%" }} ref={mainPanel}>
+        <Statistic statistic={statistic} />
       </div>
-      <button
-        className={classes.floatButton}
-        onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-      >
-        <img src={top} aria-hidden="true" />
-        {"Top"}
-      </button>
-      {statistic.analysisFormList.map((prop, key) => {
-        return (
-          <div className={classes.analysisQuestionDiv} key={`title-${key}`}>
-            <div className={classes.analysisQuestions}>
-              <div className={classes.analysisQuestionTitle}>
-                {`Q${key + 1}: ${prop.qtitle} ${questionTypeList[prop.qtype]}`}
-              </div>
-              <Statistic index={key} {...prop} />
-            </div>
-          </div>
-        );
-      })}
     </div>
   );
 }

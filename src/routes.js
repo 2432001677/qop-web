@@ -5,7 +5,7 @@ import BubbleChart from "@material-ui/icons/BubbleChart";
 import Notifications from "@material-ui/icons/Notifications";
 import AndroidIcon from "@material-ui/icons/Android";
 // core components/views for Admin layout
-import PassAnalysisPage from "views/PassAnalysis/PassAnalysis.js";
+import PassAnalysisPage from "views/Analysis/PassAnalysis.js";
 import UserProfile from "views/UserProfile/UserProfile.js";
 import MyQuestionnaire from "views/MyQuestionnaire/MyQuestionnaire.js";
 // import TableList from 'views/TableList/TableList.js';
