@@ -64,7 +64,7 @@ export default function EditContent(props) {
     classes.simultaneousHover,
     classes.successiveHover,
   ];
-  const updateQuestionnaire = () => setQuestionnaire(questionnaire.slice());
+  const updateQuestionnaire = () => setQuestionnaire(questionnaire);
   const updateQuestions = () => setQuestions(questions.slice());
 
   // 删除单个选项按钮
@@ -332,7 +332,7 @@ export default function EditContent(props) {
     );
   };
 
-  const Blank = ({index}) => {
+  const Blank = ({ index }) => {
     return (
       <TextArea
         className={classNames({
@@ -430,7 +430,7 @@ export default function EditContent(props) {
   };
   // 问题
   const Question = ({ qtype, ...rest }) => {
-    if (qtype === 0) {
+    if (qtype === 0 || qtype === 8) {
       return <SingleSelect {...rest} />;
     } else if (qtype === 1) {
       return <MultiSelect {...rest} />;

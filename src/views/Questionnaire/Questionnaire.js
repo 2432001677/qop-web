@@ -85,6 +85,7 @@ export default function Questionnaire(props) {
           true
         );
         const questionnaire = data.data;
+        console.log(data.data);
         setScoringModeOpen(questionnaire.scoring_mode);
         answers.questionnaire_id = questionnaire.id;
         answers.title = questionnaire.title;
@@ -271,7 +272,7 @@ export default function Questionnaire(props) {
             marginLeft: "3%",
           }}
         >
-          {`最大比重总和：${rest.score}`}
+          {`最大比重总和：100%`}
         </span>
         <div className={classes.weightDiv}>
           {rest.options.map((prop, key) => {
@@ -326,25 +327,91 @@ export default function Questionnaire(props) {
     );
   };
 
-  // 问题
-  const Question = ({ qtype, ...rest }) => {
-    if (qtype === 0) {
-      return <SingleSelect {...rest} />;
-    } else if (qtype === 1) {
-      return <MultiSelect {...rest} />;
-    } else if (qtype === 2) {
-      return <Blank {...rest} />;
-    } else if (qtype === 3) {
-      return <Rates {...rest} />;
-    } else if (qtype === 4) {
-      return <Cascade {...rest} />;
-    } else if (qtype === 5) {
-      return <DropdownSelect {...rest} />;
-    } else if (qtype === 6) {
-      return <WeightsAssign {...rest} />;
-    } else if (qtype === 7) {
-      return <UploadFile {...rest} />;
+  const SimpleTitleBar = ({ index, required, qtitle }) => {
+    return (
+      <div className={classes.questionTitle}>
+        <span style={{ color: "red" }}>{required ? "*" : ""}</span>
+        <span style={{ marginLeft: required ? "5px" : "16px" }}>{`${
+          index + 1
+        }.`}</span>
+        <span>{qtitle}</span>
+      </div>
+    );
+  };
+
+  const AudioTitleBar = ({ index, required, qtitle }) => {
+    return (
+      <div className={classes.questionTitle}>
+        <span style={{ color: "red" }}>{required ? "*" : ""}</span>
+        <span style={{ marginLeft: required ? "5px" : "16px" }}>{`${
+          index + 1
+        }.`}</span>
+        <span>{qtitle}</span>
+      </div>
+    );
+  };
+
+  const QuestionTitleBar = ({ qtype, ...rest }) => {
+    switch (qtype) {
+      case 0:
+      case 1:
+      case 2:
+      case 3:
+      case 4:
+      case 5:
+      case 6:
+      case 7:
+        return <SimpleTitleBar {...rest} />;
+      case 8:
+        return <AudioTitleBar {...rest} />;
+      default:
+        break;
     }
+  };
+
+  // 问题选项
+  const QuestionOption = ({ qtype, ...rest }) => {
+    switch (qtype) {
+      case 0:
+      case 8:
+        return <SingleSelect {...rest} />;
+      case 1:
+        return <MultiSelect {...rest} />;
+      case 2:
+        return <Blank {...rest} />;
+      case 3:
+        return <Rates {...rest} />;
+      case 4:
+        return <Cascade {...rest} />;
+      case 5:
+        return <DropdownSelect {...rest} />;
+      case 6:
+        return <WeightsAssign {...rest} />;
+      case 7:
+        return <UploadFile {...rest} />;
+      default:
+        break;
+    }
+  };
+
+  // 问题
+  const Question = (props) => {
+    return (
+      <Space direction="vertical" style={{ width: "680px" }}>
+        <QuestionTitleBar {...props} />
+        <div>
+          <QuestionOption {...props} />
+          <div
+            style={{
+              borderTop: "#eaeaea 2px solid",
+              marginTop: "20px",
+            }}
+          >
+            <div style={{ display: "none", color: "red" }}>请完成该问题</div>
+          </div>
+        </div>
+      </Space>
+    );
   };
 
   const Panel = () => {
@@ -361,31 +428,9 @@ export default function Questionnaire(props) {
             }}
           />
           {answers.answered_questions.map((prop, key) => {
-            const { qtitle, required } = prop;
             return (
               <div key={`question-${key}`} style={{ marginBottom: "30px" }}>
-                <Space direction="vertical" style={{ width: "680px" }}>
-                  <div className={classes.questionTitle}>
-                    <span style={{ color: "red" }}>{required ? "*" : ""}</span>
-                    <span style={{ marginLeft: required ? "5px" : "16px" }}>{`${
-                      key + 1
-                    }.`}</span>
-                    <span>{qtitle}</span>
-                  </div>
-                  <div>
-                    <Question key={`question-${key}`} index={key} {...prop} />
-                    <div
-                      style={{
-                        borderTop: "#eaeaea 2px solid",
-                        marginTop: "20px",
-                      }}
-                    >
-                      <div style={{ display: "none", color: "red" }}>
-                        请完成该问题
-                      </div>
-                    </div>
-                  </div>
-                </Space>
+                <Question index={key} {...prop} />
               </div>
             );
           })}

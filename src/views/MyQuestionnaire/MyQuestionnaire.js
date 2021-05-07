@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import QRCode from "react-qr-code";
 import { get, getPages, post } from "Utils/Axios.js";
 import { handleOpen } from "Utils/Utils.js";
 import DialogScaffod from "components/Dialog/DialogScaffod.js";
@@ -13,7 +14,7 @@ import "antd/dist/antd.css";
 
 import { makeStyles } from "@material-ui/core/styles";
 
-import styles from "assets/jss/material-dashboard-react/views/myQuestionnaire.js";
+import styles from "assets/jss/material-dashboard-react/views/myQuestionnaireStyle.js";
 
 import Button from "@material-ui/core/Button";
 import ButtonGroup from "@material-ui/core/ButtonGroup";
@@ -25,6 +26,7 @@ import InputLabel from "@material-ui/core/InputLabel";
 import MenuItem from "@material-ui/core/MenuItem";
 import Select from "@material-ui/core/Select";
 import Switch from "@material-ui/core/Switch";
+import TextField from "@material-ui/core/TextField";
 
 const QuestionNum = ({ number }) => {
   return <p>{"问题数:   " + (number || "0")}</p>;
@@ -73,10 +75,13 @@ export default function MyQuestionnaire() {
   const [groupsInfo, setGroupsInfo] = useState([]);
   const [publiced, setPubliced] = useState(false);
   const [publicedDialog, setPublicedDialog] = useState(false);
+  const [shareDialogOpen, setShareDialogOpen] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const [shareLink, setShareLink] = useState("");
   const [current, setCurrent] = useState(1);
   const [selecteId, setSelecteId] = useState("");
   const [selectedGroup, setSelectedGroup] = useState(false);
-  const [deleteDialog, setDeleteDialog] = useState(false);
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [size, setSize] = useState(10);
   const [loading, setLoading] = useState(true);
 
@@ -115,17 +120,22 @@ export default function MyQuestionnaire() {
     handleOpen(setPublicedDialog)(true)();
   };
 
+  const clickShare = (id) => () => {
+    setShareLink(window.location.origin + "/questionnaire/" + id);
+    handleOpen(setShareDialogOpen)(true)();
+  };
+
   const clickResult = (id) => () => history.push(`/analysis/${id}`);
 
   const clickDelete = (id) => {
     return () => {
       setSelecteId(id);
-      setDeleteDialog(true);
+      setDeleteDialogOpen(true);
     };
   };
 
   const confirmDelete = async () => {
-    setDeleteDialog(false);
+    setDeleteDialogOpen(false);
     try {
       const res = await post(
         "/questionnaire/questionnaire/delete/" + selecteId,
@@ -161,23 +171,6 @@ export default function MyQuestionnaire() {
     } finally {
       handleOpen(setPublicedDialog)(false)();
     }
-  };
-
-  const inviteDialog = {
-    dialogOpen: deleteDialog,
-    closeDialog: handleOpen(setDeleteDialog)(false),
-    dialogTitle: "提示",
-    dialogContentText: "确定要删除吗?",
-    dialogActions: (
-      <DialogActions>
-        <Button onClick={handleOpen(setDeleteDialog)(false)} color="primary">
-          {"取消"}
-        </Button>
-        <Button onClick={confirmDelete} color="primary" autoFocus>
-          {"确认"}
-        </Button>
-      </DialogActions>
-    ),
   };
 
   const publishDialog = {
@@ -218,10 +211,76 @@ export default function MyQuestionnaire() {
     ),
   };
 
+  const shareDialog = {
+    dialogOpen: shareDialogOpen,
+    closeDialog: R.compose(
+      handleOpen(setCopied)(false),
+      handleOpen(setShareDialogOpen)(false)
+    ),
+    dialogTitle: "分享",
+    dialogContentText: "扫描二维码打开或分享链接",
+    dialogContent: (
+      <div>
+        <QRCode size={330} value={shareLink} />
+        <TextField
+          defaultValue={shareLink}
+          style={{ width: "300px" }}
+          InputProps={{
+            readOnly: true,
+          }}
+        />
+        <span slot="append">
+          <Button
+            color="primary"
+            onClick={R.compose(handleOpen(setCopied)(true), () =>
+              navigator.clipboard.writeText(shareLink)
+            )}
+          >
+            {copied ? "复制成功" : "复制"}
+          </Button>
+        </span>
+      </div>
+    ),
+    dialogActions: (
+      <DialogActions>
+        <Button
+          onClick={R.compose(
+            handleOpen(setCopied)(false),
+            handleOpen(setShareDialogOpen)(false)
+          )}
+          color="primary"
+        >
+          {"关闭"}
+        </Button>
+      </DialogActions>
+    ),
+  };
+
+  const deleteDialog = {
+    dialogOpen: deleteDialogOpen,
+    closeDialog: handleOpen(setDeleteDialogOpen)(false),
+    dialogTitle: "提示",
+    dialogContentText: "确定要删除吗?",
+    dialogActions: (
+      <DialogActions>
+        <Button
+          onClick={handleOpen(setDeleteDialogOpen)(false)}
+          color="primary"
+        >
+          {"取消"}
+        </Button>
+        <Button onClick={confirmDelete} color="primary" autoFocus>
+          {"确认"}
+        </Button>
+      </DialogActions>
+    ),
+  };
+
   return (
     <div>
-      <DialogScaffod {...inviteDialog} />
       <DialogScaffod {...publishDialog} />
+      <DialogScaffod {...shareDialog} />
+      <DialogScaffod {...deleteDialog} />
       <List
         itemLayout="horizontal"
         dataSource={response.data}
@@ -239,6 +298,9 @@ export default function MyQuestionnaire() {
               >
                 <Button onClick={clickPublish(item.id)} color="primary">
                   发布
+                </Button>
+                <Button onClick={clickShare(item.id)} color="default">
+                  分享
                 </Button>
                 <Button onClick={clickEdit(item.id)} color="default">
                   编辑

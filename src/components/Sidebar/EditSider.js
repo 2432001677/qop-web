@@ -55,6 +55,9 @@ export default function EditSider({ questions, setQuestions }) {
       question.options = ["选项1"];
     } else if (qtype === 7) {
       question.qtitle = "附件题";
+    } else if (qtype === 8) {
+      question.qtitle = "听力题";
+      question.options = [{ text: "选项1", score: 0 }];
     }
     return R.compose(updateQuestions, () => questions.push(question));
   };
@@ -110,12 +113,12 @@ export default function EditSider({ questions, setQuestions }) {
     [
       {
         icon: <PieChartFilled />,
-        onClick: addNewOneQuestion(6),
+        onClick: addNewOneQuestion(8),
         children: "听力题",
       },
       {
         icon: <SaveFilled />,
-        onClick: addNewOneQuestion(7),
+        onClick: addNewOneQuestion(9),
         children: "排序题",
       },
     ],

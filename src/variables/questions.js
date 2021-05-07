@@ -7,7 +7,7 @@ const questionTypeList = [
   "下拉",
   "权重",
   "附件",
-  "判断",
+  "听力",
 ];
 module.exports = {
   questionTypeList,
