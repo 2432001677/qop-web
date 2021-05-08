@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from "react";
 import QRCode from "react-qr-code";
-import { get, getPages, post } from "Utils/Axios.js";
+import {
+  getJoinedGroups,
+  publishQuestionnaire,
+  deleteQuestionnaireByQid,
+  getMyQuestionnairesPage,
+} from "Api/Api.js";
 import { handleOpen } from "Utils/Utils.js";
 import DialogScaffod from "components/Dialog/DialogScaffod.js";
 import * as R from "ramda";
@@ -93,13 +98,7 @@ export default function MyQuestionnaire() {
     setSize(size);
     setLoading(true);
     try {
-      const { data } = await getPages(
-        "/account/user/my-questionnaire",
-        current,
-        size,
-        false,
-        true
-      );
+      const data = await getMyQuestionnairesPage(current, size);
       setResponse(data);
       setLoading(false);
     } catch (error) {
@@ -115,7 +114,7 @@ export default function MyQuestionnaire() {
 
   const clickPublish = (id) => async () => {
     setSelecteId(id);
-    const { data } = await get("/group/group", false, true);
+    const { data } = await getJoinedGroups();
     setGroupsInfo(data.data);
     handleOpen(setPublicedDialog)(true)();
   };
@@ -137,16 +136,11 @@ export default function MyQuestionnaire() {
   const confirmDelete = async () => {
     setDeleteDialogOpen(false);
     try {
-      const res = await post(
-        "/questionnaire/questionnaire/delete/" + selecteId,
-        null,
-        false,
-        true
-      );
-      if (res.status === 200) {
+      const data = await deleteQuestionnaireByQid(selecteId);
+      if (data.status === 200) {
         getMyQuestionnaires(current, size);
       } else {
-        alert(res.msg);
+        alert(data.msg);
       }
     } catch (error) {
       console.log(error);
@@ -155,12 +149,11 @@ export default function MyQuestionnaire() {
 
   const updatePublish = async () => {
     try {
-      const res = await post(
-        "/questionnaire/questionnaire/publish",
-        { qid: selecteId, open: publiced, group_id: selectedGroup || null },
-        false,
-        true
-      );
+      const res = await publishQuestionnaire({
+        qid: selecteId,
+        open: publiced,
+        group_id: selectedGroup || null,
+      });
       if (res.status === 200) {
         getMyQuestionnaires(current, size);
       } else {

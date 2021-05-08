@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 
-import { get, post } from "Utils/Axios.js";
+import { getQuestionnaireByQid, preserveQuestionnaire } from "Api/Api.js";
 
 import EditSider from "components/Sidebar/EditSider.js";
 import EditContent from "components/Content/EditContent.js";
@@ -19,7 +19,7 @@ let ps;
 
 const useStyles = makeStyles(styles);
 export default function Edit(props) {
-  const id = props.match.params.id;
+  const qid = props.match.params.id;
   const classes = useStyles();
   const history = useHistory();
   const mainPanel = React.createRef();
@@ -60,12 +60,7 @@ export default function Edit(props) {
     questionnaire.questions = questions;
     questionnaire.scoring_mode = scoringModeOpen;
     try {
-      const res = await post(
-        "/questionnaire/questionnaire" + (id ? "/questions" : ""),
-        questionnaire,
-        false,
-        true
-      );
+      const { data } = await preserveQuestionnaire(qid, questionnaire);
     } catch (error) {
       console.log(error);
     } finally {
@@ -105,25 +100,20 @@ export default function Edit(props) {
   }, [mainPanel]);
 
   React.useEffect(() => {
-    const getQuestionnaireById = async () => {
+    const getQuestionnaire = async () => {
       try {
-        const { data } = await get(
-          "/questionnaire/questionnaire/" + id,
-          false,
-          true
-        );
-        const questionnaire = data.data;
-        setScoringModeOpen(questionnaire.scoring_mode);
-        setQuestionnaire(questionnaire);
-        setQuestions(questionnaire.questions);
+        const { data } = await getQuestionnaireByQid(qid);
+        setScoringModeOpen(data.scoring_mode);
+        setQuestionnaire(data);
+        setQuestions(data.questions);
       } catch (error) {
         console.log(error);
       }
     };
-    if (id) {
-      getQuestionnaireById();
+    if (qid) {
+      getQuestionnaire();
     }
-  }, [id]);
+  }, [qid]);
 
   return (
     <div className={classes.wrapper}>

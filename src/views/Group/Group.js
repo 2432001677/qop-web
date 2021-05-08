@@ -2,8 +2,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import * as R from "ramda";
 import { handleOpen } from "Utils/Utils.js";
-import { get } from "Utils/Axios";
-import { getQuestionnaires, inviteUser } from "Api/Api.js";
+import {
+  getJoinedGroups,
+  getQuestionnairesByGroupId,
+  inviteUser,
+} from "Api/Api.js";
 import { emailReg, phoneNumberReg } from "Utils/Reg.js";
 import DialogScaffod from "components/Dialog/DialogScaffod.js";
 // @material-ui/core components
@@ -46,7 +49,7 @@ export default function Groups() {
   const classes = useStyles();
   const [groupsInfo, setGroupsInfo] = useState([]);
   const [questionnaires, setQuestionnaires] = useState([]);
-  const [groupIndex, setGroupIndex] = useState(0);
+  const [groupIndex, setGroupIndex] = useState("");
   const changeGroup = (e) => {
     setGroupIndex(e.target.value);
   };
@@ -56,27 +59,33 @@ export default function Groups() {
   };
 
   useEffect(() => {
-    const getJoinedGroups = async () => {
+    const getJoinedGroupsAndQuestionnaires = async () => {
       try {
-        const { data } = await get("/group/group", false, true);
-        setGroupsInfo(data.data);
-        if (data.data.length !== 0) {
-          const questionnaires = await getQuestionnaires(data.data[0].id);
-          setQuestionnaires(questionnaires);
+        const { data } = await getJoinedGroups();
+        const groups = data;
+        setGroupsInfo(groups);
+        if (groups.length !== 0) {
+          const { data } = await getQuestionnairesByGroupId(groups[0].id);
+          setQuestionnaires(data);
+          setGroupIndex(0);
         }
       } catch (error) {
         console.log(error);
       }
     };
-    getJoinedGroups();
+    getJoinedGroupsAndQuestionnaires();
   }, []);
 
   useEffect(() => {
     const getQuestionnaireByGroupId = async () => {
-      const data = groupsInfo[groupIndex]
-        ? await getQuestionnaires(groupsInfo[groupIndex].id)
-        : [];
-      setQuestionnaires(data);
+      if (groupsInfo[groupIndex]) {
+        const { data } = await getQuestionnairesByGroupId(
+          groupsInfo[groupIndex].id
+        );
+        setQuestionnaires(data);
+      } else {
+        setQuestionnaires([]);
+      }
     };
     getQuestionnaireByGroupId();
   }, [groupIndex]);

@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef } from "react";
-import { get, post } from "Utils/Axios.js";
+import { getProfiles, updateProfiles } from "Api/Api.js";
 import { emailReg, phoneNumberReg } from "Utils/Reg.js";
 
 import { Avatar } from "antd";
@@ -59,11 +59,11 @@ export default function UserProfile() {
   useEffect(() => {
     const getUserProfiles = async () => {
       try {
-        const { data } = await get("/account/user/profiles", false, true);
-        setProfilesForm(data.data);
-        nickRef.current.value = data.data["nick_name"];
-        emailRef.current.value = data.data["email"];
-        phoneNumberRef.current.value = data.data["phone_number"];
+        const { data } = await getProfiles();
+        setProfilesForm(data);
+        nickRef.current.value = data["nick_name"];
+        emailRef.current.value = data["email"];
+        phoneNumberRef.current.value = data["phone_number"];
       } catch (error) {
         console.log(error);
       }
@@ -86,12 +86,7 @@ export default function UserProfile() {
       profiles["nick_name"] = nickRef.current.value;
       profiles["email"] = emailRef.current.value;
       profiles["phone_number"] = phoneNumberRef.current.value;
-      const { data } = await post(
-        "/account/user/profiles",
-        profiles,
-        false,
-        true
-      );
+      const { data } = await updateProfiles(profiles);
       setMsg(data.msg);
     } catch (error) {
       alert(error);

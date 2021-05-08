@@ -1,4 +1,28 @@
-import { get, post } from "Utils/Axios";
+import { get, getPages, post } from "Utils/Axios";
+
+const getJoinedGroups = async () => {
+  try {
+    const { data } = await get("/group/group", false, true);
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const getMyQuestionnairesPage = async (current, size) => {
+  try {
+    const { data } = await getPages(
+      "/account/user/my-questionnaire",
+      current,
+      size,
+      false,
+      true
+    );
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+};
 
 const getQuestionnaireByQid = async (qid) => {
   try {
@@ -11,6 +35,44 @@ const getQuestionnaireByQid = async (qid) => {
   } catch (error) {
     console.log(error);
   }
+};
+
+const deleteQuestionnaireByQid = async (qid) => {
+  try {
+    const { data } = await post(
+      "/questionnaire/questionnaire/delete/" + qid,
+      null,
+      false,
+      true
+    );
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const publishQuestionnaire = async (updateInfo) => {
+  try {
+    const { data } = await post(
+      "/questionnaire/questionnaire/publish",
+      updateInfo,
+      false,
+      true
+    );
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const preserveQuestionnaire = async (qid, questionnaire) => {
+  const { data } = await post(
+    "/questionnaire/questionnaire" + (qid ? "/questions" : ""),
+    questionnaire,
+    false,
+    true
+  );
+  return data;
 };
 
 const getGroupQuestionnaireByQid = async (gid, qid) => {
@@ -26,9 +88,14 @@ const getGroupQuestionnaireByQid = async (gid, qid) => {
   }
 };
 
-const submitGroupAnswer = async (gid,answers) => {
+const submitGroupAnswer = async (gid, answers) => {
   try {
-    const { data } = await post(`/group/group/${gid}/answer`, answers, false, true);
+    const { data } = await post(
+      `/group/group/${gid}/answer`,
+      answers,
+      false,
+      true
+    );
     return data;
   } catch (error) {
     console.log(error);
@@ -44,14 +111,14 @@ const submitAnswer = async (answers) => {
   }
 };
 
-const getQuestionnaires = async (groupId) => {
+const getQuestionnairesByGroupId = async (groupId) => {
   try {
     const { data } = await get(
       `/group/group/${groupId}/questionnaires`,
       false,
       true
     );
-    return data.data;
+    return data;
   } catch (error) {
     console.log(error);
   }
@@ -84,13 +151,58 @@ const responseInvitation = async (req) => {
   }
 };
 
+const register = async (registerForm) => {
+  try {
+    const { data } = await post(
+      "/account/user/register",
+      registerForm,
+      false,
+      false
+    );
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const getProfiles = async () => {
+  try {
+    const { data } = await get("/account/user/profiles", false, true);
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const updateProfiles = async (profiles) => {
+  try {
+    const { data } = await post(
+      "/account/user/profiles",
+      profiles,
+      false,
+      true
+    );
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export {
+  getJoinedGroups,
+  getMyQuestionnairesPage,
   getQuestionnaireByQid,
   getGroupQuestionnaireByQid,
+  deleteQuestionnaireByQid,
+  publishQuestionnaire,
+  preserveQuestionnaire,
   submitGroupAnswer,
   submitAnswer,
-  getQuestionnaires,
+  getQuestionnairesByGroupId,
   inviteUser,
   getMyNotifications,
   responseInvitation,
+  register,
+  getProfiles,
+  updateProfiles,
 };

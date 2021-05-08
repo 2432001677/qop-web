@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link, useHistory } from "react-router-dom";
-import { post } from "Utils/Axios.js";
+import { register } from "Api/Api.js";
 
 import Avatar from "@material-ui/core/Avatar";
 import Button from "@material-ui/core/Button";
@@ -61,13 +61,8 @@ export default function LoginIn() {
       return;
     }
     try {
-      const { status } = await post(
-        "/account/user/register",
-        registerForm,
-        false,
-        false
-      );
-      if (status === 200) {
+      const { code } = await register(registerForm);
+      if (code === 200) {
         setOpenDialog(true);
       }
     } catch (error) {
