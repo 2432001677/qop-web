@@ -1,6 +1,12 @@
 import React, { useEffect, useState, useRef } from "react";
+import { useHistory } from "react-router-dom";
 import Navbar from "components/Navbars/Navbar.js";
-import { get, post } from "Utils/Axios.js";
+import {
+  getQuestionnaireByQid,
+  submitAnswer,
+  submitGroupAnswer,
+  getGroupQuestionnaireByQid,
+} from "Api/Api.js";
 import routes from "routes.js";
 import * as R from "ramda";
 
@@ -29,7 +35,8 @@ import {
 let ps;
 const useStyles = makeStyles(styles);
 export default function Questionnaire(props) {
-  const id = props.match.params.id;
+  const { qid, gid } = props.match.params;
+  const history = useHistory();
   const classes = useStyles();
   const mainPanel = useRef();
   const [scoringModeOpen, setScoringModeOpen] = useState(false);
@@ -77,15 +84,17 @@ export default function Questionnaire(props) {
   }, [mainPanel]);
 
   useEffect(() => {
-    const getQuestionnaireById = async () => {
+    const getQuestionnaire = async () => {
       try {
-        const { data } = await get(
-          "/questionnaire/questionnaire/" + id,
-          false,
-          true
-        );
-        const questionnaire = data.data;
-        console.log(data.data);
+        let questionnaire;
+        if (gid) {
+          const { data } = await getGroupQuestionnaireByQid(gid, qid);
+          questionnaire = data;
+        } else {
+          const { data } = await getQuestionnaireByQid(qid);
+          questionnaire = data;
+        }
+
         setScoringModeOpen(questionnaire.scoring_mode);
         answers.questionnaire_id = questionnaire.id;
         answers.title = questionnaire.title;
@@ -96,20 +105,23 @@ export default function Questionnaire(props) {
         console.log(error);
       }
     };
-    getQuestionnaireById();
+    getQuestionnaire();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const submitAnswers = async () => {
     answers.answered_questions.forEach((question) => console.log(question));
     try {
-      const { data } = await post(
-        "/questionnaire/answer",
-        answers,
-        false,
-        true
-      );
-      console.log(data);
+      let res;
+      if (gid) {
+        const { data } = await submitGroupAnswer(gid, answers);
+        res = data;
+      } else {
+        const { data } = await submitAnswer(answers);
+        res = data;
+      }
+      history.push("/result");
+      console.log(res);
     } catch (error) {
       console.log(error);
     }

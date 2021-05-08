@@ -1,5 +1,49 @@
 import { get, post } from "Utils/Axios";
 
+const getQuestionnaireByQid = async (qid) => {
+  try {
+    const { data } = await get(
+      `/questionnaire/questionnaire/${qid}`,
+      false,
+      true
+    );
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const getGroupQuestionnaireByQid = async (gid, qid) => {
+  try {
+    const { data } = await get(
+      `/group/group/${gid}/questionnaire/${qid}`,
+      false,
+      true
+    );
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const submitGroupAnswer = async (gid,answers) => {
+  try {
+    const { data } = await post(`/group/group/${gid}/answer`, answers, false, true);
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+const submitAnswer = async (answers) => {
+  try {
+    const { data } = await post("/questionnaire/answer", answers, false, true);
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 const getQuestionnaires = async (groupId) => {
   try {
     const { data } = await get(
@@ -41,6 +85,10 @@ const responseInvitation = async (req) => {
 };
 
 export {
+  getQuestionnaireByQid,
+  getGroupQuestionnaireByQid,
+  submitGroupAnswer,
+  submitAnswer,
   getQuestionnaires,
   inviteUser,
   getMyNotifications,

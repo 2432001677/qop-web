@@ -126,7 +126,7 @@ export default function Statistic(props) {
       }
     };
     analyze();
-  }, []);
+  }, [statistic]);
 
   const BlankStatistic = (props) => {
     return (

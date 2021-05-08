@@ -10,6 +10,7 @@ import Login from "views/Login/Login.js";
 import Register from "views/Register/Register.js";
 import Questionnaire from "views/Questionnaire/Questionnaire.js";
 import Analysis from "views/Analysis/Analysis.js";
+import ResultPage from "components/ResultPage/ResultPage.js";
 
 import "assets/css/material-dashboard-react.css?v=1.9.0";
 
@@ -23,8 +24,10 @@ ReactDOM.render(
       <Route path="/register" component={Register} />
       <Route path="/edit/:id" component={Edit} />
       <Route path="/edit" component={Edit} />
-      <Route path="/questionnaire/:id" component={Questionnaire} />
+      <Route path="/group/:gid/questionnaire/:qid" component={Questionnaire} />
+      <Route path="/questionnaire/:qid" component={Questionnaire} />
       <Route path="/analysis/:id" component={Analysis} />
+      <Route path="/result" component={ResultPage} />
       <Redirect from="/" to="/admin/questionnaire" />
     </Switch>
   </Router>,
