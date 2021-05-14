@@ -18,6 +18,8 @@ export default function Analysis(props) {
   const statistic = {
     title: "问卷",
     answer_count: 55,
+    average_total_score: 80,
+    scoring_mode: true,
     analysis_form_list: [
       {
         qtitle: "你当前的心情",

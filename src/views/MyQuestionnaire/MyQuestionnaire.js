@@ -11,7 +11,7 @@ import DialogScaffod from "components/Dialog/DialogScaffod.js";
 import * as R from "ramda";
 import { useHistory } from "react-router-dom";
 
-import { List, Skeleton, Space, Pagination } from "antd";
+import { List, Skeleton, Space, Pagination, Empty } from "antd";
 
 import { SmileTwoTone, CloseCircleTwoTone } from "@ant-design/icons";
 
@@ -99,7 +99,9 @@ export default function MyQuestionnaire() {
     setLoading(true);
     try {
       const data = await getMyQuestionnairesPage(current, size);
-      setResponse(data);
+      if (data.code === "200") {
+        setResponse(data);
+      }
       setLoading(false);
     } catch (error) {
       console.log(error);
@@ -277,6 +279,7 @@ export default function MyQuestionnaire() {
       <List
         itemLayout="horizontal"
         dataSource={response.data}
+        locale={{ emptyText: "😥" }}
         renderItem={(item) => (
           <List.Item
             extra={formatDate(new Date(item.create_time))}
@@ -330,6 +333,27 @@ export default function MyQuestionnaire() {
           </List.Item>
         )}
       />
+      {response.data.length === 0 ? (
+        <Empty
+          image="https://gw.alipayobjects.com/zos/antfincdn/ZHrcdLPrvN/empty.svg"
+          imageStyle={{
+            height: 60,
+          }}
+          description={
+            <span>
+              <a href="">{"还没有问卷"}</a>
+            </span>
+          }
+        >
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => history.push("/edit")}
+          >
+            {"新建一个！"}
+          </Button>
+        </Empty>
+      ) : null}
       <Pagination
         current={current}
         pageSize={size}

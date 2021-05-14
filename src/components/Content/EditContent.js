@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import * as R from "ramda";
 import classNames from "classnames";
 
@@ -32,7 +32,6 @@ import {
   Input,
   Button,
   Checkbox,
-  Rate,
   Cascader,
   Slider,
   InputNumber,
@@ -277,7 +276,7 @@ export default function EditContent(props) {
     const addNewOneOption = () => {
       const question = questions[index];
       const optionNum = question["options"].length + 1;
-      question["options"].push(`选项${optionNum}`);
+      question["options"].push({ text: `选项${optionNum}`, score: 0 });
       question["option_num"] = optionNum;
     };
     return (
@@ -346,23 +345,43 @@ export default function EditContent(props) {
       />
     );
   };
-  const Rates = (props) => {
+  const Rates = ({ index, ...rest }) => {
     const toolTips = ["很差", "较差", "中等", "较好", "完美"];
-    const [value, setValue] = useState(3);
+    const question = questions[index];
+    if (question.options.length === 0) {
+      toolTips.map((prop, index) =>
+        question.options.push({ text: prop, score: 0 })
+      );
+    }
     return (
-      <span>
-        <Rate
-          tooltips={toolTips}
-          value={value}
-          style={{ marginLeft: "5%", marginTop: "20px" }}
-          onChange={(value) => setValue(value)}
-        />
-        {value ? (
-          <span className="ant-rate-text">{toolTips[value - 1]}</span>
-        ) : (
-          ""
-        )}
-      </span>
+      <div style={{ display: "flex", marginLeft: "50px" }}>
+        {toolTips.map((prop, index) => {
+          return (
+            <div
+              key={`input-div-${index}`}
+              style={{ height: "70px", width: "300px", display: "flex" }}
+            >
+              <h4 style={{ marginTop: "22px" }}>{prop}</h4>
+              <InputNumber
+                key={`input-${index}`}
+                style={{
+                  display: scoringModeOpen ? "inline" : "none",
+                  marginTop: "20px",
+                  marginLeft: "5px",
+                  height: "30px",
+                  width: "50px",
+                }}
+                className={hoverList[question.pass || 0]}
+                min={0}
+                max={100}
+                onChange={(value) => (question.options[index].score = value)}
+                onBlur={updateQuestions}
+                defaultValue={question.options[index].score}
+              />
+            </div>
+          );
+        })}
+      </div>
     );
   };
   const Cascade = (props) => {
@@ -405,16 +424,16 @@ export default function EditContent(props) {
             className={hoverList[questions[index].pass || 0]}
             min={0}
             max={100}
-            onChange={(value) => (questions[index].score = value)}
+            onChange={(value) => (questions[index].sum_score = value)}
             onBlur={() => setQuestions(questions.slice())}
-            defaultValue={questions[index].score}
+            defaultValue={questions[index].sum_score}
           />
         </span>
         {rest.options.map((prop, key) => {
           return (
             <WeightOption
               key={`options-${key}`}
-              value={prop}
+              value={prop.text}
               questionIndex={index}
               optionIndex={key}
             />

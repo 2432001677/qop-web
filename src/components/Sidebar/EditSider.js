@@ -38,6 +38,7 @@ export default function EditSider({ questions, setQuestions }) {
       question.qtitle = "填空题";
     } else if (qtype === 3) {
       question.qtitle = "评分题";
+      question.options = [];
     } else if (qtype === 4) {
       question.qtitle = "级联题";
     } else if (qtype === 5) {
@@ -51,8 +52,8 @@ export default function EditSider({ questions, setQuestions }) {
       ];
     } else if (qtype === 6) {
       question.qtitle = "比重题";
-      question.score = 0;
-      question.options = ["选项1"];
+      question.sum_score = 0;
+      question.options = [{ text: "选项1", score: 0 }];
     } else if (qtype === 7) {
       question.qtitle = "附件题";
     } else if (qtype === 8) {

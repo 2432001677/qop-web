@@ -130,18 +130,19 @@ export default function Questionnaire(props) {
   // 具体问题
   const SingleSelect = ({ index, ...rest }) => {
     const question = answers.answered_questions[index];
+    question.index = index;
     const changeOption = (e) => {
       const optionIndex = e.target.value;
-      question.answer = [{ option_index: optionIndex }];
+      question.answer = [optionIndex];
       if (scoringModeOpen) {
-        question.answer[0].score = question.options[optionIndex].score;
+        question.score = question.options[optionIndex].score;
       }
     };
     return (
       <Radio.Group
         style={{ width: "100%" }}
         onChange={R.compose(updateAnswers, changeOption)}
-        value={question.answer ? question.answer[0].option_index : ""}
+        value={question.answer ? question.answer[0] : ""}
       >
         <div>
           {rest.options.map((prop, key) => {
@@ -161,6 +162,7 @@ export default function Questionnaire(props) {
   };
   const MultiSelect = ({ index, ...rest }) => {
     const question = answers.answered_questions[index];
+    question.index = index;
     const changeOption = (optionIndex) => {
       question.answer = optionIndex;
       question.score = 0;
@@ -188,6 +190,8 @@ export default function Questionnaire(props) {
 
   const Blank = ({ index }) => {
     const question = answers.answered_questions[index];
+    question.index = index;
+    question.score = 0;
     return (
       <Input.TextArea
         showCount
@@ -197,26 +201,28 @@ export default function Questionnaire(props) {
         placeholder="输入文字"
         onChange={(e) => (question.content = e.target.value)}
         onBlur={updateAnswers}
-        value={question.content}
+        defaultValue={question.content}
       />
     );
   };
   const Rates = ({ index, ...rest }) => {
     const question = answers.answered_questions[index];
-    const toolTips = ["很差", "较差", "中等", "较好", "完美"];
+    question.index = index;
+    let toolTips = question.options.map((prop, index) => prop.text);
     const changeRate = (value) => {
-      question.answer = [value];
+      question.score = question.options[value - 1].score;
+      question.answer = [value - 1];
     };
     return (
       <div>
         <Rate
           tooltips={toolTips}
-          value={question.answer ? question.answer[0] : 0}
+          value={question.answer ? question.answer[0] + 1 : 0}
           onChange={R.compose(updateAnswers, changeRate)}
         />{" "}
         {question.answer ? (
           <span className="ant-rate-text">
-            {toolTips[question.answer[0] - 1]}
+            {toolTips[question.answer[0] + 1]}
           </span>
         ) : (
           ""
@@ -240,10 +246,11 @@ export default function Questionnaire(props) {
   // value可能会重复问题
   const DropdownSelect = ({ index }) => {
     const question = answers.answered_questions[index];
+    question.index = index;
     const changeValue = (optionIndex) => {
-      question.answer = [{ option_index: optionIndex[0] }];
+      question.answer = optionIndex;
       if (scoringModeOpen) {
-        question.answer[0].score = question.options[optionIndex].score;
+        question.score = question.options[optionIndex].score;
       }
     };
     return (
@@ -252,19 +259,25 @@ export default function Questionnaire(props) {
           width="500px"
           options={question.options}
           onChange={R.compose(updateAnswers, changeValue)}
-          value={question.answer ? [question.answer[0].option_index] : []}
+          value={question.answer ? question.answer : []}
         />
       </div>
     );
   };
   const WeightsAssign = ({ index, ...rest }) => {
     const question = answers.answered_questions[index];
+    question.index = index;
     if (!question.answer) {
-      question.answer = question.options.map(() => 0);
+      question.answer = question.options.map(() => {
+        return { weight: 0, score: 0 };
+      });
     }
     const changeWeight = (index) => {
       return (value) => {
-        question.answer[index] = value;
+        question.answer[index] = {
+          weight: value,
+          score: (value * question.sum_score) / 100,
+        };
       };
     };
 
@@ -293,11 +306,11 @@ export default function Questionnaire(props) {
                 key={`weight-${key}`}
                 style={{ width: "80%", marginLeft: "3%" }}
               >
-                <span>{prop}</span>
+                <span>{prop.text}</span>
                 <Row>
                   <Col span={15}>
                     <Slider
-                      value={question.answer[key]}
+                      value={question.answer[key].weight}
                       onChange={changeWeight(key)}
                       onAfterChange={updateAnswers}
                     />
@@ -307,7 +320,7 @@ export default function Questionnaire(props) {
                       min={0}
                       max={100}
                       style={{ margin: "0 36px" }}
-                      value={question.answer[key]}
+                      value={question.answer[key].weight}
                       onChange={changeWeight(key)}
                       onBlur={updateAnswers}
                       onStep={clickStep(key)}

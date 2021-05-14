@@ -4,6 +4,11 @@ import ChartistGraph from "react-chartist";
 // @material-ui/core
 import { makeStyles } from "@material-ui/core/styles";
 import Icon from "@material-ui/core/Icon";
+import InputLabel from "@material-ui/core/InputLabel";
+import MenuItem from "@material-ui/core/MenuItem";
+import FormControl from "@material-ui/core/FormControl";
+import Select from "@material-ui/core/Select";
+
 // @material-ui/icons
 import Store from "@material-ui/icons/Store";
 import Warning from "@material-ui/icons/Warning";
@@ -43,8 +48,71 @@ const useStyles = makeStyles(styles);
 
 export default function PassAnalysis() {
   const classes = useStyles();
+  const [age, setAge] = React.useState("");
+
+  const handleChange = (event) => {
+    setAge(event.target.value);
+  };
   return (
     <div>
+      <GridContainer>
+        <GridItem xs={12} sm={6} md={3}>
+          <FormControl className={classes.formControl} fullWidth>
+            <InputLabel>{'筛选'}</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              value={age}
+              onChange={handleChange}
+            >
+              <MenuItem value={10}>{'公开'}</MenuItem>
+              <MenuItem value={20}>{'小组'}</MenuItem>
+              <MenuItem value={30}>{'未公开'}</MenuItem>
+            </Select>
+          </FormControl>
+        </GridItem>
+        <GridItem xs={12} sm={6} md={3}>
+          <FormControl className={classes.formControl} fullWidth>
+            <InputLabel>Age</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              value={age}
+              onChange={handleChange}
+            >
+              <MenuItem value={10}>Ten</MenuItem>
+              <MenuItem value={20}>Twenty</MenuItem>
+              <MenuItem value={30}>Thirty</MenuItem>
+            </Select>
+          </FormControl>
+        </GridItem>
+        <GridItem xs={12} sm={6} md={3}>
+          <FormControl className={classes.formControl} fullWidth>
+            <InputLabel>Age</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              value={age}
+              onChange={handleChange}
+            >
+              <MenuItem value={10}>Ten</MenuItem>
+              <MenuItem value={20}>Twenty</MenuItem>
+              <MenuItem value={30}>Thirty</MenuItem>
+            </Select>
+          </FormControl>
+        </GridItem>
+        <GridItem xs={12} sm={6} md={3}>
+          <FormControl className={classes.formControl} fullWidth>
+            <InputLabel>Age</InputLabel>
+            <Select
+              labelId="demo-simple-select-label"
+              value={age}
+              onChange={handleChange}
+            >
+              <MenuItem value={10}>Ten</MenuItem>
+              <MenuItem value={20}>Twenty</MenuItem>
+              <MenuItem value={30}>Thirty</MenuItem>
+            </Select>
+          </FormControl>
+        </GridItem>
+      </GridContainer>
       <GridContainer>
         <GridItem xs={12} sm={6} md={3}>
           <Card>
