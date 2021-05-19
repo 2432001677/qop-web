@@ -140,7 +140,7 @@ export default function FixedPlugin(props) {
             <div className="button-container">
               <Button
                 color="success"
-                href="https://www.creative-tim.com/product/material-dashboard-react?ref=mdr-fixed-plugin"
+                href="https://github.com/2432001677/qop-web"
                 target="_blank"
                 fullWidth
               >
@@ -148,23 +148,11 @@ export default function FixedPlugin(props) {
               </Button>
             </div>
           </li>
-          {/* <li className="button-container">
-            <div className="button-container">
-              <Button
-                color="warning"
-                href="https://www.creative-tim.com/product/material-dashboard-pro-react?ref=mdr-fixed-plugin"
-                target="_blank"
-                fullWidth
-              >
-                Get PRO version
-              </Button>
-            </div>
-          </li> */}
           <li className="button-container">
             <Button
               color="info"
               fullWidth
-              href="https://demos.creative-tim.com/material-dashboard-react/#/documentation/tutorial?ref=mdr-fixed-plugin"
+              href="https://github.com/2432001677/qop-web"
               target="_blank"
             >
               Documentation

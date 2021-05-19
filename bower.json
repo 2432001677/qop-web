@@ -1,10 +1,10 @@
 {
-  "name": "material-dashboard-react",
-  "homepage": "https://github.com/creativetimofficial/material-dashboard-react",
+  "name": "qop-web",
+  "homepage": "https://github.com/2432001677/qop-web",
   "authors": [
-    "creative-tim"
+    "Bruce Yu"
   ],
-  "description": "A Badass Material-UI Kit based on Material Design",
+  "description": "QOP is my online questionnaire creation and publishing platform combined with PASS theory.",
   "main": "public/index.html",
   "keywords": [
     "material",
@@ -15,7 +15,7 @@
     "google",
     "twitter"
   ],
-  "license": "Creative TIM License",
+  "license": "Bruce Yu License",
   "ignore": [
     "**/.*",
     "node_modules",

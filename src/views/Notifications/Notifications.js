@@ -128,14 +128,14 @@ export default function Notifications() {
           Handcrafted by our friends from{" "}
           <a
             target="_blank"
-            href="https://material-ui-next.com/?ref=creativetime"
+            href="https://github.com/2432001677/qop-web"
           >
             Material UI
           </a>{" "}
           and styled by{" "}
           <a
             target="_blank"
-            href="https://www.creative-tim.com/?ref=mdr-notifications-page"
+            href="https://github.com/2432001677/qop-web"
           >
             Creative Tim
           </a>

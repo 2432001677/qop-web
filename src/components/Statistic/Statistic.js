@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 
 import { BackTop } from "antd";
 
@@ -173,7 +173,6 @@ export default function Statistic(props) {
     );
   };
   const Statistic = ({ qtype, ...rest }) => {
-    console.log(props);
     if (qtype === 2) {
       return <BlankStatistic {...rest} />;
     } else {

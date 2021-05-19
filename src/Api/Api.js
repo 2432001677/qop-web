@@ -188,6 +188,15 @@ const updateProfiles = async (profiles) => {
   }
 };
 
+const getAnalysisByQid = async (qid) => {
+  try {
+    const { data } = await get(`/analysis/analysis/${qid}`, false, true);
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export {
   getJoinedGroups,
   getMyQuestionnairesPage,
@@ -205,4 +214,5 @@ export {
   register,
   getProfiles,
   updateProfiles,
+  getAnalysisByQid,
 };

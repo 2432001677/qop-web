@@ -210,8 +210,10 @@ export default function Questionnaire(props) {
     question.index = index;
     let toolTips = question.options.map((prop, index) => prop.text);
     const changeRate = (value) => {
-      question.score = question.options[value - 1].score;
-      question.answer = [value - 1];
+      if (value && value >= 1) {
+        question.score = question.options[value - 1].score;
+        question.answer = [value - 1];
+      }
     };
     return (
       <div>
@@ -222,7 +224,7 @@ export default function Questionnaire(props) {
         />{" "}
         {question.answer ? (
           <span className="ant-rate-text">
-            {toolTips[question.answer[0] + 1]}
+            {toolTips[question.answer[0]]}
           </span>
         ) : (
           ""

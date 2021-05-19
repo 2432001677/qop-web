@@ -26,7 +26,7 @@ ReactDOM.render(
       <Route path="/edit" component={Edit} />
       <Route path="/group/:gid/questionnaire/:qid" component={Questionnaire} />
       <Route path="/questionnaire/:qid" component={Questionnaire} />
-      <Route path="/analysis/:id" component={Analysis} />
+      <Route path="/analysis/:qid" component={Analysis} />
       <Route path="/result" component={ResultPage} />
       <Redirect from="/" to="/admin/questionnaire" />
     </Switch>

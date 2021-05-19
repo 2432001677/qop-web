@@ -24,6 +24,7 @@ export default function EditSider({ questions, setQuestions }) {
     let question = {
       qtitle: "",
       qtype: qtype,
+      pass: 0,
       required: true,
       option_num: 1,
       options: [],
