@@ -117,7 +117,7 @@ export default function MyQuestionnaire() {
   const clickPublish = (id) => async () => {
     setSelecteId(id);
     const { data } = await getJoinedGroups();
-    setGroupsInfo(data.data);
+    setGroupsInfo(data);
     handleOpen(setPublicedDialog)(true)();
   };
 

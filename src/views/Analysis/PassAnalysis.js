@@ -48,67 +48,81 @@ const useStyles = makeStyles(styles);
 
 export default function PassAnalysis() {
   const classes = useStyles();
-  const [age, setAge] = React.useState("");
+  const [category, setCategory] = React.useState("");
+  const [group, setGroup] = React.useState("");
+  const [questionnaire, setQuestionnaire] = React.useState("");
+  const [question, setQuestion] = React.useState("");
 
-  const handleChange = (event) => {
-    setAge(event.target.value);
+  const handleCategory = (event) => {
+    setCategory(event.target.value);
   };
+  const handleGroup = (event) => {
+    setGroup(event.target.value);
+  };
+  const handleQuestionnaire = (event) => {
+    setQuestionnaire(event.target.value);
+  };
+  const handleQuestion = (event) => {
+    setQuestion(event.target.value);
+  };
+
   return (
     <div>
       <GridContainer>
         <GridItem xs={12} sm={6} md={3}>
           <FormControl className={classes.formControl} fullWidth>
-            <InputLabel>{'筛选'}</InputLabel>
+            <InputLabel>{"筛选"}</InputLabel>
             <Select
               labelId="demo-simple-select-label"
-              value={age}
-              onChange={handleChange}
+              value={category}
+              onChange={handleCategory}
             >
-              <MenuItem value={10}>{'公开'}</MenuItem>
-              <MenuItem value={20}>{'小组'}</MenuItem>
-              <MenuItem value={30}>{'未公开'}</MenuItem>
+              <MenuItem value={10}>{"公开"}</MenuItem>
+              <MenuItem value={20}>{"小组"}</MenuItem>
+              <MenuItem value={30}>{"未公开"}</MenuItem>
             </Select>
           </FormControl>
         </GridItem>
         <GridItem xs={12} sm={6} md={3}>
           <FormControl className={classes.formControl} fullWidth>
-            <InputLabel>Age</InputLabel>
+            <InputLabel>小组</InputLabel>
             <Select
               labelId="demo-simple-select-label"
-              value={age}
-              onChange={handleChange}
+              value={group}
+              onChange={handleGroup}
             >
-              <MenuItem value={10}>Ten</MenuItem>
-              <MenuItem value={20}>Twenty</MenuItem>
-              <MenuItem value={30}>Thirty</MenuItem>
+              <MenuItem value={10}>aa</MenuItem>
+              <MenuItem value={20}>bb</MenuItem>
+              <MenuItem value={30}>cc</MenuItem>
             </Select>
           </FormControl>
         </GridItem>
         <GridItem xs={12} sm={6} md={3}>
           <FormControl className={classes.formControl} fullWidth>
-            <InputLabel>Age</InputLabel>
+            <InputLabel>问卷</InputLabel>
             <Select
               labelId="demo-simple-select-label"
-              value={age}
-              onChange={handleChange}
+              value={questionnaire}
+              onChange={handleQuestionnaire}
             >
-              <MenuItem value={10}>Ten</MenuItem>
-              <MenuItem value={20}>Twenty</MenuItem>
-              <MenuItem value={30}>Thirty</MenuItem>
+              <MenuItem value={10}>毕设完成情况问卷</MenuItem>
+              <MenuItem value={20}>大学生问卷</MenuItem>
+              <MenuItem value={30}>程序员的调查问卷</MenuItem>
             </Select>
           </FormControl>
         </GridItem>
         <GridItem xs={12} sm={6} md={3}>
           <FormControl className={classes.formControl} fullWidth>
-            <InputLabel>Age</InputLabel>
+            <InputLabel>问题</InputLabel>
             <Select
               labelId="demo-simple-select-label"
-              value={age}
-              onChange={handleChange}
+              value={question}
+              onChange={handleQuestion}
             >
-              <MenuItem value={10}>Ten</MenuItem>
-              <MenuItem value={20}>Twenty</MenuItem>
-              <MenuItem value={30}>Thirty</MenuItem>
+              <MenuItem value={10}>1</MenuItem>
+              <MenuItem value={20}>2</MenuItem>
+              <MenuItem value={30}>3</MenuItem>
+              <MenuItem value={30}>4</MenuItem>
             </Select>
           </FormControl>
         </GridItem>
@@ -122,7 +136,7 @@ export default function PassAnalysis() {
               </CardIcon>
               <p className={classes.cardCategory}>{"计划"}</p>
               <h3 className={classes.cardTitle}>
-                49/50 <small>GB</small>
+                9/30 <small>🎨</small>
               </h3>
             </CardHeader>
             <CardFooter stats>
@@ -131,7 +145,7 @@ export default function PassAnalysis() {
                   <Warning />
                 </Danger>
                 <a href="#pablo" onClick={(e) => e.preventDefault()}>
-                  Get more space
+                  计划性较低
                 </a>
               </div>
             </CardFooter>
@@ -144,12 +158,12 @@ export default function PassAnalysis() {
                 <Store />
               </CardIcon>
               <p className={classes.cardCategory}>{"注意"}</p>
-              <h3 className={classes.cardTitle}>$34,245</h3>
+              <h3 className={classes.cardTitle}>👆32</h3>
             </CardHeader>
             <CardFooter stats>
               <div className={classes.stats}>
                 <DateRange />
-                Last 24 Hours
+                注意力正常
               </div>
             </CardFooter>
           </Card>
@@ -161,12 +175,12 @@ export default function PassAnalysis() {
                 <Icon>info_outline</Icon>
               </CardIcon>
               <p className={classes.cardCategory}>{"同时性加工"}</p>
-              <h3 className={classes.cardTitle}>75</h3>
+              <h3 className={classes.cardTitle}>35</h3>
             </CardHeader>
             <CardFooter stats>
               <div className={classes.stats}>
                 <LocalOffer />
-                Tracked from Github
+                同时处理能力
               </div>
             </CardFooter>
           </Card>
@@ -178,45 +192,18 @@ export default function PassAnalysis() {
                 <Accessibility />
               </CardIcon>
               <p className={classes.cardCategory}>{"继时性加工"}</p>
-              <h3 className={classes.cardTitle}>+245</h3>
+              <h3 className={classes.cardTitle}>+24</h3>
             </CardHeader>
             <CardFooter stats>
               <div className={classes.stats}>
                 <Update />
-                Just Updated
+                连续性
               </div>
             </CardFooter>
           </Card>
         </GridItem>
       </GridContainer>
       <GridContainer>
-        <GridItem xs={12} sm={12} md={4}>
-          <Card chart>
-            <CardHeader color="success">
-              <ChartistGraph
-                className="ct-chart"
-                data={dailySalesChart.data}
-                type="Line"
-                options={dailySalesChart.options}
-                listener={dailySalesChart.animation}
-              />
-            </CardHeader>
-            <CardBody>
-              <h4 className={classes.cardTitle}>Daily Sales</h4>
-              <p className={classes.cardCategory}>
-                <span className={classes.successText}>
-                  <ArrowUpward className={classes.upArrowCardCategory} /> 55%
-                </span>{" "}
-                increase in today sales.
-              </p>
-            </CardBody>
-            <CardFooter chart>
-              <div className={classes.stats}>
-                <AccessTime /> updated 4 minutes ago
-              </div>
-            </CardFooter>
-          </Card>
-        </GridItem>
         <GridItem xs={12} sm={12} md={4}>
           <Card chart>
             <CardHeader color="warning">
@@ -230,12 +217,40 @@ export default function PassAnalysis() {
               />
             </CardHeader>
             <CardBody>
-              <h4 className={classes.cardTitle}>Email Subscriptions</h4>
-              <p className={classes.cardCategory}>Last Campaign Performance</p>
+              <h4 className={classes.cardTitle}>计划值</h4>
+              <p className={classes.cardCategory}>分布相差较大</p>
             </CardBody>
             <CardFooter chart>
               <div className={classes.stats}>
-                <AccessTime /> campaign sent 2 days ago
+                <AccessTime />
+                2天以内的数据
+              </div>
+            </CardFooter>
+          </Card>
+        </GridItem>
+        <GridItem xs={12} sm={12} md={4}>
+          <Card chart>
+            <CardHeader color="success">
+              <ChartistGraph
+                className="ct-chart"
+                data={dailySalesChart.data}
+                type="Line"
+                options={dailySalesChart.options}
+                listener={dailySalesChart.animation}
+              />
+            </CardHeader>
+            <CardBody>
+              <h4 className={classes.cardTitle}>注意值</h4>
+              <p className={classes.cardCategory}>
+                <span className={classes.successText}>
+                  <ArrowUpward className={classes.upArrowCardCategory} /> 55%
+                </span>{" "}
+                近期内整体上升
+              </p>
+            </CardBody>
+            <CardFooter chart>
+              <div className={classes.stats}>
+                <AccessTime /> 4分钟前更新
               </div>
             </CardFooter>
           </Card>
@@ -252,18 +267,19 @@ export default function PassAnalysis() {
               />
             </CardHeader>
             <CardBody>
-              <h4 className={classes.cardTitle}>Completed Tasks</h4>
-              <p className={classes.cardCategory}>Last Campaign Performance</p>
+              <h4 className={classes.cardTitle}>同时性-继时性</h4>
+              <p className={classes.cardCategory}>表现整体下降</p>
             </CardBody>
             <CardFooter chart>
               <div className={classes.stats}>
-                <AccessTime /> campaign sent 2 days ago
+                <AccessTime />
+                自2天前开始统计
               </div>
             </CardFooter>
           </Card>
         </GridItem>
       </GridContainer>
-      <GridContainer>
+      {/* <GridContainer>
         <GridItem xs={12} sm={12} md={6}>
           <CustomTabs
             title="Tasks:"
@@ -327,7 +343,7 @@ export default function PassAnalysis() {
             </CardBody>
           </Card>
         </GridItem>
-      </GridContainer>
+      </GridContainer> */}
     </div>
   );
 }
