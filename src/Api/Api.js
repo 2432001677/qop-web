@@ -9,6 +9,15 @@ const getJoinedGroups = async () => {
   }
 };
 
+const getMyGroups = async () => {
+  try {
+    const { data } = await get("/account/user/groups", false, true);
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 const getMyQuestionnairesPage = async (current, size) => {
   try {
     const { data } = await getPages(
@@ -197,8 +206,22 @@ const getAnalysisByQid = async (qid) => {
   }
 };
 
+const getPassAnalysis = async (qid, group, question) => {
+  try {
+    let url = `/analysis/analysis/pass/${qid}?group=${group}`;
+    if (question) {
+      url += "&question=" + question;
+    }
+    const { data } = await get(url, false, true);
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export {
   getJoinedGroups,
+  getMyGroups,
   getMyQuestionnairesPage,
   getQuestionnaireByQid,
   getGroupQuestionnaireByQid,
@@ -215,4 +238,5 @@ export {
   getProfiles,
   updateProfiles,
   getAnalysisByQid,
+  getPassAnalysis,
 };

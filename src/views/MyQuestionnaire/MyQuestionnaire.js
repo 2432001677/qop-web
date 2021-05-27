@@ -159,7 +159,7 @@ export default function MyQuestionnaire() {
       if (res.status === 200) {
         getMyQuestionnaires(current, size);
       } else {
-        alert(res.msg);
+        alert("更新成功！");
       }
     } catch (error) {
       console.log(error);
