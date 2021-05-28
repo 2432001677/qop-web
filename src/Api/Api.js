@@ -142,6 +142,15 @@ const inviteUser = async (req) => {
   }
 };
 
+const leaveGroupByGroupId = async (groupId) => {
+  try {
+    const { data } = await get(`/group/group/leave/${groupId}`, false, true);
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 const getMyNotifications = async (groupId) => {
   try {
     const { data } = await get(`/account/user/notification`, false, true);
@@ -232,6 +241,7 @@ export {
   submitAnswer,
   getQuestionnairesByGroupId,
   inviteUser,
+  leaveGroupByGroupId,
   getMyNotifications,
   responseInvitation,
   register,

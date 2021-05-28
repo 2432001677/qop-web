@@ -27,7 +27,6 @@ export default function Notifications() {
   const getNotifications = async () => {
     const data = await getMyNotifications();
     if (!(data === null || data === undefined)) {
-      console.log(data);
       setNotifications(data.data);
     }
   };

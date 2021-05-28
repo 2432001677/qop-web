@@ -6,6 +6,7 @@ import {
   getJoinedGroups,
   getQuestionnairesByGroupId,
   inviteUser,
+  leaveGroupByGroupId,
 } from "Api/Api.js";
 import { emailReg, phoneNumberReg } from "Utils/Reg.js";
 import DialogScaffod from "components/Dialog/DialogScaffod.js";
@@ -54,8 +55,13 @@ export default function Groups() {
     setGroupIndex(e.target.value);
   };
 
-  const leaveGroup = () => {
-    console.log("leave" + groupsInfo[groupIndex].group_name);
+  const leaveGroup = async () => {
+    try {
+      const res = await leaveGroupByGroupId(groupsInfo[groupIndex].id);
+      getJoinedGroupsAndQuestionnaires()
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   useEffect(() => {
@@ -119,7 +125,7 @@ export default function Groups() {
                       className={classes.icon}
                       onClick={() => {
                         const w = window.open("about:blank");
-                        w.location.href = `${location.origin}/questionnaire/${prop.id}`;
+                        w.location.href = `${location.origin}/group/${groupsInfo[groupIndex].id}/questionnaire/${prop.id}`;
                       }}
                     >
                       <InfoIcon />

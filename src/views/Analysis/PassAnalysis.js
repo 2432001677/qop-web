@@ -234,7 +234,6 @@ export default function PassAnalysis() {
           handleGroup({ target: { value: 0 } }, null, gid);
         }
       } else {
-        console.log(index);
         const { data } = await getMyQuestionnairesPage(1, 100);
         setGroup("");
         setQuestionnairesInfo(data);
@@ -278,6 +277,7 @@ export default function PassAnalysis() {
     }
   };
   const handleQuestionnaire = async (event, o, id, gid, c) => {
+    c = c || category;
     const index = event.target.value;
     setQuestionnaire(index);
     try {
@@ -291,6 +291,8 @@ export default function PassAnalysis() {
     }
   };
   const handleQuestion = async (event, o, id, gid, c) => {
+    gid = gid || groupsInfo[group];
+    c = c || category;
     const index = event.target.value;
     setQuestion(index);
     let analysis;
@@ -302,15 +304,20 @@ export default function PassAnalysis() {
     } else if (index > 0) {
       analysis = await getPassAnalysis(
         id || questionnairesInfo[questionnaire].id,
-        c === 0 ? -1 : gid
+        c === 0 ? -1 : gid,
+        index - 1
       );
     }
-    // console.log(analysis);
-    // const { planning, attention, simultaneous, successive } = analysis.data;
-    // setPlanning(planning);
-    // setAttention(attention);
-    // setSimultaneous(simultaneous);
-    // setSuccessive(successive);
+    if (analysis) {
+      const { planning, attention, simultaneous, successive } = analysis.data;
+      planning.series = [planning.series];
+      attention.series = [attention.series];
+      simultaneous.series = [simultaneous.series];
+      setPlanning(planning);
+      setAttention(attention);
+      setSimultaneous(simultaneous);
+      setSuccessive(successive);
+    }
   };
 
   useEffect(() => {
@@ -392,7 +399,8 @@ export default function PassAnalysis() {
               </CardIcon>
               <p className={classes.cardCategory}>{"计划"}</p>
               <h3 className={classes.cardTitle}>
-                9/30 <small>🎨</small>
+                {planning.proportion}
+                <small>🎨</small>
               </h3>
             </CardHeader>
             <CardFooter stats>
@@ -401,7 +409,7 @@ export default function PassAnalysis() {
                   <Warning />
                 </Danger>
                 <a href="#pablo" onClick={(e) => e.preventDefault()}>
-                  计划性较低
+                  {planning.result}
                 </a>
               </div>
             </CardFooter>
@@ -414,12 +422,12 @@ export default function PassAnalysis() {
                 <Store />
               </CardIcon>
               <p className={classes.cardCategory}>{"注意"}</p>
-              <h3 className={classes.cardTitle}>👆32</h3>
+              <h3 className={classes.cardTitle}>👆{attention.score}</h3>
             </CardHeader>
             <CardFooter stats>
               <div className={classes.stats}>
                 <DateRange />
-                注意力正常
+                {attention.result}
               </div>
             </CardFooter>
           </Card>
@@ -431,12 +439,12 @@ export default function PassAnalysis() {
                 <Icon>info_outline</Icon>
               </CardIcon>
               <p className={classes.cardCategory}>{"同时性加工"}</p>
-              <h3 className={classes.cardTitle}>35</h3>
+              <h3 className={classes.cardTitle}>{simultaneous.score}</h3>
             </CardHeader>
             <CardFooter stats>
               <div className={classes.stats}>
                 <LocalOffer />
-                同时处理能力
+                {simultaneous.result}
               </div>
             </CardFooter>
           </Card>
@@ -448,12 +456,12 @@ export default function PassAnalysis() {
                 <Accessibility />
               </CardIcon>
               <p className={classes.cardCategory}>{"继时性加工"}</p>
-              <h3 className={classes.cardTitle}>+24</h3>
+              <h3 className={classes.cardTitle}>{successive.power}</h3>
             </CardHeader>
             <CardFooter stats>
               <div className={classes.stats}>
                 <Update />
-                连续性
+                {successive.result}
               </div>
             </CardFooter>
           </Card>

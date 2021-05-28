@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import classNames from "classnames";
 import * as R from "ramda";
 // @material-ui/core components
@@ -23,14 +23,26 @@ import Button from "components/CustomButtons/Button.js";
 
 import styles from "assets/jss/material-dashboard-react/components/headerLinksStyle.js";
 import { useHistory, Link } from "react-router-dom";
+import { getMyNotifications } from "Api/Api.js";
 
 const useStyles = makeStyles(styles);
 
 export default function AdminNavbarLinks() {
   const classes = useStyles();
   const history = useHistory();
+  const [notifications, setNotifications] = useState([]);
   const [openNotification, setOpenNotification] = React.useState(null);
   const [openProfile, setOpenProfile] = React.useState(null);
+
+  useEffect(() => {
+    const getNotification = setInterval(async () => {
+      const data = await getMyNotifications();
+      if (!(data === null || data === undefined)) {
+        setNotifications(data.data);
+      }
+    }, 3000);
+    return () => clearInterval(getNotification);
+  }, []);
   const handleClickNotification = (event) => {
     if (openNotification && openNotification.contains(event.target)) {
       setOpenNotification(null);
@@ -122,7 +134,7 @@ export default function AdminNavbarLinks() {
           className={classes.buttonLink}
         >
           <Notifications className={classes.icons} />
-          <span className={classes.notifications}>5</span>
+          <span className={classes.notifications}>{notifications.length}</span>
           <Hidden mdUp implementation="css">
             <p onClick={handleCloseNotification} className={classes.linkText}>
               通知
@@ -176,12 +188,12 @@ export default function AdminNavbarLinks() {
                     >
                       其它通知
                     </MenuItem>
-                    <MenuItem
+                    {/* <MenuItem
                       onClick={handleCloseNotification}
                       className={classes.dropdownItem}
                     >
                       另一个
-                    </MenuItem>
+                    </MenuItem> */}
                   </MenuList>
                 </ClickAwayListener>
               </Paper>
